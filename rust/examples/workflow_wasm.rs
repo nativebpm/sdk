@@ -3,36 +3,29 @@ use nativebpm_client::apis::{configuration, default_api};
 
 #[tokio::main]
 async fn main() {
-    println!("=== NativeBPM Rust SDK: Workflow with WASM Service Task ===");
+    println!("=== NativeBPM Rust SDK: Workflow as Code ===");
 
     // 1. Build workflow as code using Fluent API method chaining
-    let mut workflow = Workflow::new("wasm-demo", "Workflow with WASM Service Task");
+    let mut workflow = Workflow::new("native-demo", "Workflow as Code");
 
     // Chain starting from the start event
     workflow.start_event("start")
-        .connect_to("calculate")
-        .service_task("calculate", "Calculate Totals", "payment_topic")
-        .wasm("./calculate_total.wasm")
-        .connect_to("aiCheck")
-        .ai_task("aiCheck", "AI Fraud Guard")
-        .provider("google")
-        .model("gemini-2.5-flash")
-        .prompt("Analyze transaction for fraud: ${orderAmount}")
-        .result_var("isFraudulent")
         .connect_to("gateway")
-        .exclusive_gateway("gateway", "Fraud Gateway")
-        .condition("userTask", "${isFraudulent == true}")
-        .default("end")
+        .exclusive_gateway("gateway", "Urgency Gateway")
+        .condition("reviewOrder", "${isUrgent == true}")
+        .default("notifyCustomer")
         .builder()
-        .user_task("userTask", "Manual Fraud Approval")
-        .assignee("security_officer")
+        .service_task("notifyCustomer", "Send Confirmation Email", "email_topic")
+        .connect_to("end")
+        .user_task("reviewOrder", "Review Order Details")
+        .assignee("sales_representative")
         .connect_to("end")
         .end_event("end", "Process Finished");
 
     // Compile the workflow AST to standard BPMN 2.0 XML using the embedded Go engine
     let bpmn_xml = match workflow.build_xml() {
         Ok(xml) => {
-            println!("✓ Successfully compiled WASM workflow AST to BPMN 2.0 XML.");
+            println!("✓ Successfully compiled native workflow AST to BPMN 2.0 XML.");
             xml
         }
         Err(e) => {
@@ -48,7 +41,8 @@ async fn main() {
 
     println!("\nDeploying to NativeBPM engine...");
     
-    let bpmn_path = std::env::temp_dir().join("wasm-demo.bpmn");
+    // In actual usage, you would write the XML to a file to deploy via multipart/form-data
+    let bpmn_path = std::env::temp_dir().join("native-demo.bpmn");
     if std::fs::write(&bpmn_path, bpmn_xml).is_ok() {
         match default_api::deploy_definition(&config, Some(bpmn_path)).await {
             Ok(definition) => {
@@ -56,15 +50,16 @@ async fn main() {
 
                 // Start a process instance
                 let mut variables = std::collections::HashMap::new();
-                variables.insert("orderAmount".to_string(), serde_json::json!(2500));
+                variables.insert("customerEmail".to_string(), serde_json::json!("customer@example.com"));
+                variables.insert("isUrgent".to_string(), serde_json::json!(true));
 
                 let start_request = nativebpm_client::models::StartInstanceRequest {
                     instance_id: None,
-                    business_key: Some("tx-8837".to_string()),
+                    business_key: Some("order-5541".to_string()),
                     variables: Some(variables),
                 };
 
-                match default_api::start_instance(&config, "wasm-demo", Some(start_request)).await {
+                match default_api::start_instance(&config, "native-demo", Some(start_request)).await {
                     Ok(instance) => {
                         println!("✓ Started process instance ID: {} (completed: {})", instance.id, instance.completed);
                     }
