@@ -1,0 +1,138 @@
+name: Publish SDK Packages to GitLab Registry
+
+on:
+  push:
+    tags:
+      - "java/v*"
+      - "dotnet/v*"
+      - "python/v*"
+      - "typescript/v*"
+
+permissions:
+  contents: read
+
+jobs:
+  publish-java:
+    if: startsWith(github.ref, 'refs/tags/java/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Java JDK
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: 'maven'
+
+      - name: Publish Java Package
+        env:
+          CI_JOB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+          CI_PROJECT_ID: ${{ secrets.GITLAB_PROJECT_ID }}
+          CI_API_V4_URL: ${{ secrets.GITLAB_API_V4_URL }}
+        run: |
+          cd java
+          TAG_NAME="${GITHUB_REF#refs/tags/}"
+          VERSION="${TAG_NAME#java/v}"
+          echo "Publishing version $VERSION"
+          mvn versions:set -DnewVersion=$VERSION
+          echo "<settings xmlns='http://maven.apache.org/SETTINGS/1.0.0' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd'>
+            <servers>
+              <server>
+                <id>gitlab-maven</id>
+                <configuration>
+                  <httpHeaders>
+                    <property>
+                      <name>Job-Token</name>
+                      <value>${CI_JOB_TOKEN}</value>
+                    </property>
+                  </httpHeaders>
+                </configuration>
+              </server>
+            </servers>
+          </settings>" > settings.xml
+          mvn deploy -s settings.xml -DskipTests -DCI_API_V4_URL=${{ secrets.GITLAB_API_V4_URL }} -DCI_PROJECT_ID=${{ secrets.GITLAB_PROJECT_ID }}
+
+  publish-dotnet:
+    if: startsWith(github.ref, 'refs/tags/dotnet/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0'
+
+      - name: Publish .NET Package
+        env:
+          CI_JOB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+          CI_PROJECT_ID: ${{ secrets.GITLAB_PROJECT_ID }}
+          CI_API_V4_URL: ${{ secrets.GITLAB_API_V4_URL }}
+        run: |
+          cd dotnet
+          TAG_NAME="${GITHUB_REF#refs/tags/}"
+          VERSION="${TAG_NAME#dotnet/v}"
+          echo "Publishing version $VERSION"
+          dotnet pack -c Release -p:PackageVersion=$VERSION -o out src/NativeBPM.Client/NativeBPM.Client.csproj
+          dotnet nuget add source "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/nuget/index.json" --name gitlab --username gitlab-ci-token --password ${CI_JOB_TOKEN} --store-password-in-clear-text
+          dotnet nuget push "out/*.nupkg" --source gitlab --api-key ${CI_JOB_TOKEN}
+
+  publish-python:
+    if: startsWith(github.ref, 'refs/tags/python/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Install build dependencies
+        run: pip install build twine
+
+      - name: Publish Python Package
+        env:
+          CI_JOB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+          CI_PROJECT_ID: ${{ secrets.GITLAB_PROJECT_ID }}
+          CI_API_V4_URL: ${{ secrets.GITLAB_API_V4_URL }}
+        run: |
+          cd python
+          TAG_NAME="${GITHUB_REF#refs/tags/}"
+          VERSION="${TAG_NAME#python/v}"
+          echo "Publishing version $VERSION"
+          sed -i "s/version = \".*\"/version = \"$VERSION\"/" pyproject.toml
+          python -m build
+          TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
+
+  publish-typescript:
+    if: startsWith(github.ref, 'refs/tags/typescript/v')
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Publish TypeScript Package
+        env:
+          CI_JOB_TOKEN: ${{ secrets.GITLAB_TOKEN }}
+          CI_PROJECT_ID: ${{ secrets.GITLAB_PROJECT_ID }}
+          CI_API_V4_URL: ${{ secrets.GITLAB_API_V4_URL }}
+        run: |
+          cd typescript
+          npm ci
+          TAG_NAME="${GITHUB_REF#refs/tags/}"
+          VERSION="${TAG_NAME#typescript/v}"
+          echo "Publishing version $VERSION"
+          npm version $VERSION --no-git-tag-version
+          npm config set @nativebpm:registry ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/npm/
+          npm config set -- //gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken ${CI_JOB_TOKEN}
+          npm publish
