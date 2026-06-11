@@ -507,11 +507,11 @@ class ExclusiveGatewayBuilder {
     }
 
     public function nextWithCondition(string $targetID, string $condition): Workflow {
-        return $this->workflow->sequenceFlowWithCondition($this->id, $targetID, condition);
+        return $this->workflow->sequenceFlowWithCondition($this->id, $targetID, $condition);
     }
 
     public function condition(string $targetID, string $condition): ExclusiveGatewayBuilder {
-        $this->workflow->sequenceFlowWithCondition($this->id, $targetID, condition);
+        $this->workflow->sequenceFlowWithCondition($this->id, $targetID, $condition);
         return $this;
     }
 

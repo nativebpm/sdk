@@ -27,57 +27,53 @@ public class ClientExample {
 
         DefaultApi api = new DefaultApi(client);
 
-        // Temp file for deployment multipart upload
-        File tempFile = null;
+        // Temp files for deployment multipart upload
+        File tempFile1 = null;
+        File tempFile2 = null;
         try {
-            // Build workflow dynamically using Workflow as Code Fluent API
-            System.out.println("🔨 Building workflow dynamically using Workflow as Code Fluent API...");
-            Workflow workflow = new Workflow("orderProcess", "Order Processing Workflow");
-            workflow.startEvent("start")
-                    .next("calculateTotal");
-
-            workflow.serviceTask("calculateTotal", "Calculate Totals", "payment-topic")
-                    .wasm("./payment.wasm")
-                    .next("gateway");
-
-            workflow.exclusiveGateway("gateway", "Urgency Gateway")
-                    .condition("reviewOrder", "${isUrgent == true}")
-                    .defaultValue("notifyCustomer");
-
-            workflow.userTask("reviewOrder", "Manual Urgency Review")
-                    .assignee("sales_representative")
-                    .next("end");
-
-            workflow.serviceTask("notifyCustomer", "Send Notification", "notification-topic")
-                    .next("end");
-
-            workflow.endEvent("end", "End");
-
-            String bpmnXml = workflow.buildXML();
-
-            tempFile = File.createTempFile("simpleProcess", ".bpmn");
-            try (FileWriter writer = new FileWriter(tempFile, StandardCharsets.UTF_8)) {
-                writer.write(bpmnXml);
+            // SCENARIO 1: Workflow as Code (Without custom Guest WASM tasks)
+            System.out.println("--------------------------------------------------");
+            String bpmnXml1 = WorkflowWasmExample.buildWorkflow();
+            tempFile1 = File.createTempFile("nativeProcess", ".bpmn");
+            try (FileWriter writer = new FileWriter(tempFile1, StandardCharsets.UTF_8)) {
+                writer.write(bpmnXml1);
             }
 
-            // 2. Deploy Definition
-            System.out.println("📦 Deploying process definition...");
-            ProcessDefinition definition = api.deployDefinition(tempFile);
-            System.out.println("✅ Deployed! ID: " + definition.getId() + ", Hash: " + definition.getHash());
+            System.out.println("📦 Deploying native process definition...");
+            ProcessDefinition def1 = api.deployDefinition(tempFile1);
+            System.out.println("✅ Deployed! ID: " + def1.getId() + ", Hash: " + def1.getHash());
 
-            // 3. Start Process Instance
-            System.out.println("⚡ Starting process instance...");
-            String instanceId = UUID.randomUUID().toString();
-            String businessKey = "bk-java-" + System.currentTimeMillis();
+            System.out.println("⚡ Starting native process instance...");
+            StartInstanceRequest startRequest1 = new StartInstanceRequest();
+            startRequest1.setInstanceId(UUID.randomUUID());
+            startRequest1.setBusinessKey("bk-java-native-" + System.currentTimeMillis());
+            startRequest1.putVariablesItem("isUrgent", true);
 
-            StartInstanceRequest startRequest = new StartInstanceRequest();
-            startRequest.setInstanceId(UUID.fromString(instanceId));
-            startRequest.setBusinessKey(businessKey);
-            startRequest.putVariablesItem("started_by", "java-example-client");
-            startRequest.putVariablesItem("count", 100);
+            ProcessInstance inst1 = api.startInstance(def1.getId(), startRequest1);
+            System.out.println("✅ Instance started! ID: " + inst1.getId() + ", Completed: " + inst1.getCompleted());
 
-            ProcessInstance instance = api.startInstance(definition.getId(), startRequest);
-            System.out.println("✅ Instance started! ID: " + instance.getId() + ", Completed: " + instance.getCompleted());
+            // SCENARIO 2: Workflow with Guest WASM Plugins
+            System.out.println("--------------------------------------------------");
+            String bpmnXml2 = WorkflowWithWasmPluginsExample.buildWorkflow();
+            tempFile2 = File.createTempFile("wasmProcess", ".bpmn");
+            try (FileWriter writer = new FileWriter(tempFile2, StandardCharsets.UTF_8)) {
+                writer.write(bpmnXml2);
+            }
+
+            System.out.println("📦 Deploying WASM process definition...");
+            ProcessDefinition def2 = api.deployDefinition(tempFile2);
+            System.out.println("✅ Deployed! ID: " + def2.getId() + ", Hash: " + def2.getHash());
+
+            System.out.println("⚡ Starting WASM process instance...");
+            StartInstanceRequest startRequest2 = new StartInstanceRequest();
+            startRequest2.setInstanceId(UUID.randomUUID());
+            startRequest2.setBusinessKey("bk-java-wasm-" + System.currentTimeMillis());
+            startRequest2.putVariablesItem("orderAmount", 2500);
+
+            ProcessInstance inst2 = api.startInstance(def2.getId(), startRequest2);
+            System.out.println("✅ Instance started! ID: " + inst2.getId() + ", Completed: " + inst2.getCompleted());
+
+            System.out.println("--------------------------------------------------");
 
             // 4. List Active Definitions
             System.out.println("📋 Listing deployed definitions...");
@@ -103,8 +99,11 @@ public class ClientExample {
             System.err.println("❌ IO error occurred!");
             e.printStackTrace();
         } finally {
-            if (tempFile != null && tempFile.exists()) {
-                tempFile.delete();
+            if (tempFile1 != null && tempFile1.exists()) {
+                tempFile1.delete();
+            }
+            if (tempFile2 != null && tempFile2.exists()) {
+                tempFile2.delete();
             }
         }
     }

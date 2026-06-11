@@ -37,82 +37,13 @@ namespace ConsoleApp
             var serviceProvider = services.BuildServiceProvider();
             var api = serviceProvider.GetRequiredService<IDefaultApi>();
 
-            string tempFilePath = Path.GetTempFileName() + ".bpmn";
             try
             {
-                // 1. Build workflow as code using the Fluent API builder
-                Console.WriteLine("🔨 Building workflow dynamically using Workflow as Code Fluent API...");
-                using var workflow = new Workflow("orderProcess", "Order Processing Workflow");
-                
-                workflow.StartEvent("start")
-                    .Next("calculateTotal");
-                
-                // WASM-based execution logic
-                workflow.ServiceTask("calculateTotal", "Calculate Totals", "payment-topic")
-                    .Wasm("./payment.wasm")
-                    .Next("gateway");
+                await RunWorkflowWasmAsync(api);
+                await RunWorkflowWithWasmPluginsAsync(api);
 
-                // Condition-based routing in native BPMN
-                workflow.ExclusiveGateway("gateway", "Urgency Gateway")
-                    .Condition("reviewOrder", "${isUrgent == true}")
-                    .DefaultValue("notifyCustomer");
-
-                // Human-in-the-loop user task
-                workflow.UserTask("reviewOrder", "Manual Urgency Review")
-                    .Assignee("sales_representative")
-                    .Next("end");
-
-                // Native topic-based service task
-                workflow.ServiceTask("notifyCustomer", "Send Notification", "notification-topic")
-                    .Next("end");
-
-                workflow.EndEvent("end", "End");
-
-                string bpmnXml = workflow.BuildXml();
-
-                await File.WriteAllTextAsync(tempFilePath, bpmnXml, Encoding.UTF8);
-
-                // 2. Deploy Definition
-                Console.WriteLine("📦 Deploying process definition...");
-                using var fileStream = File.OpenRead(tempFilePath);
-                var fileParam = new FileParameter(fileStream, "simpleProcess.bpmn", "application/octet-stream");
-                var definitionResponse = await api.DeployDefinitionAsync(fileParam);
-                
-                if (definitionResponse.IsSuccessStatusCode && definitionResponse.TryOk(out var definition) && definition != null)
-                {
-                    Console.WriteLine($"✅ Deployed! ID: {definition.Id}, Hash: {definition.Hash}");
-
-                    // 3. Start Process Instance
-                    Console.WriteLine("⚡ Starting process instance...");
-                    var instanceId = Guid.NewGuid();
-                    var businessKey = "bk-dotnet-" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds();
-
-                    var startRequest = new StartInstanceRequest(
-                        instanceId: instanceId,
-                        businessKey: businessKey,
-                        variables: new Dictionary<string, object>
-                        {
-                            { "started_by", "dotnet-example-client" },
-                            { "count", 100 }
-                        }
-                    );
-
-                    var startResponse = await api.StartInstanceAsync(definition.Id, startRequest);
-                    if (startResponse.IsSuccessStatusCode && startResponse.TryOk(out var instance) && instance != null)
-                    {
-                        Console.WriteLine($"✅ Instance started! ID: {instance.Id}, Completed: {instance.Completed}");
-                    }
-                    else
-                    {
-                        Console.WriteLine("❌ Failed to parse start instance response.");
-                    }
-                }
-                else
-                {
-                    Console.WriteLine($"❌ Failed to deploy definition. Status: {definitionResponse.StatusCode}");
-                }
-
-                // 4. List Active Definitions
+                // List deployed process definitions
+                Console.WriteLine("--------------------------------------------------");
                 Console.WriteLine("📋 Listing deployed definitions...");
                 var definitionsResponse = await api.ListDefinitionsAsync();
                 if (definitionsResponse.IsSuccessStatusCode && definitionsResponse.TryOk(out var definitions) && definitions != null)
@@ -123,7 +54,7 @@ namespace ConsoleApp
                     }
                 }
 
-                // 5. List Instances
+                // List process instances
                 Console.WriteLine("📋 Listing process instances...");
                 var instancesResponse = await api.ListInstancesAsync();
                 if (instancesResponse.IsSuccessStatusCode && instancesResponse.TryOk(out var instances) && instances != null)
@@ -147,6 +78,73 @@ namespace ConsoleApp
                 Console.WriteLine($"❌ Error occurred: {e.Message}");
                 Console.WriteLine(e.StackTrace);
             }
+        }
+
+        static async Task RunWorkflowWasmAsync(IDefaultApi api)
+        {
+            Console.WriteLine("--------------------------------------------------");
+            Console.WriteLine("=== NativeBPM .NET SDK: Workflow as Code ===");
+            Console.WriteLine("🔨 Building workflow dynamically using Fluent API...");
+            using var workflow = new Workflow("native-demo", "Workflow as Code");
+
+            workflow.StartEvent("start")
+                .Next("gateway");
+
+            workflow.ExclusiveGateway("gateway", "Urgency Gateway")
+                .Condition("reviewOrder", "${isUrgent == true}")
+                .DefaultValue("notifyCustomer");
+
+            workflow.ServiceTask("notifyCustomer", "Send Confirmation Email", "email_topic")
+                .Next("end");
+
+            workflow.UserTask("reviewOrder", "Review Order Details")
+                .Assignee("sales_representative")
+                .Next("end");
+
+            workflow.EndEvent("end", "Process Finished");
+
+            string bpmnXml = workflow.BuildXml();
+            Console.WriteLine("✓ Successfully compiled native workflow AST to BPMN 2.0 XML.");
+
+            string tempFilePath = Path.GetTempFileName() + ".bpmn";
+            try
+            {
+                await File.WriteAllTextAsync(tempFilePath, bpmnXml, Encoding.UTF8);
+
+                Console.WriteLine("📦 Deploying native process definition...");
+                using var fileStream = File.OpenRead(tempFilePath);
+                var fileParam = new FileParameter(fileStream, "nativeProcess.bpmn", "application/octet-stream");
+                var definitionResponse = await api.DeployDefinitionAsync(fileParam);
+
+                if (definitionResponse.IsSuccessStatusCode && definitionResponse.TryOk(out var definition) && definition != null)
+                {
+                    Console.WriteLine($"✅ Deployed! ID: {definition.Id}, Hash: {definition.Hash}");
+
+                    Console.WriteLine("⚡ Starting native process instance...");
+                    var startRequest = new StartInstanceRequest(
+                        instanceId: Guid.NewGuid(),
+                        businessKey: "bk-dotnet-native-" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                        variables: new Dictionary<string, object>
+                        {
+                            { "isUrgent", true }
+                        }
+                    );
+
+                    var startResponse = await api.StartInstanceAsync(definition.Id, startRequest);
+                    if (startResponse.IsSuccessStatusCode && startResponse.TryOk(out var instance) && instance != null)
+                    {
+                        Console.WriteLine($"✅ Instance started! ID: {instance.Id}, Completed: {instance.Completed}");
+                    }
+                    else
+                    {
+                        Console.WriteLine("❌ Failed to start native process instance.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"❌ Failed to deploy native process. Status: {definitionResponse.StatusCode}");
+                }
+            }
             finally
             {
                 if (File.Exists(tempFilePath))
@@ -155,5 +153,86 @@ namespace ConsoleApp
                 }
             }
         }
+
+        static async Task RunWorkflowWithWasmPluginsAsync(IDefaultApi api)
+        {
+            Console.WriteLine("--------------------------------------------------");
+            Console.WriteLine("=== NativeBPM .NET SDK: Workflow with Guest WASM Plugins ===");
+            Console.WriteLine("🔨 Building workflow dynamically using Fluent API...");
+            using var workflow = new Workflow("wasm-demo", "Workflow with Guest WASM Plugins");
+
+            workflow.StartEvent("start")
+                .Next("calculate");
+
+            workflow.ServiceTask("calculate", "Calculate Totals", "payment_topic")
+                .Wasm("./calculate_total.wasm")
+                .Next("aiCheck");
+
+            workflow.AITask("aiCheck", "AI Fraud Guard")
+                .Provider("google")
+                .Model("gemini-2.5-flash")
+                .Prompt("Analyze transaction for fraud: ${orderAmount}")
+                .ResultVar("isFraudulent")
+                .Next("gateway");
+
+            workflow.ExclusiveGateway("gateway", "Fraud Gateway")
+                .Condition("userTask", "${isFraudulent == true}")
+                .DefaultValue("end");
+
+            workflow.UserTask("userTask", "Manual Fraud Approval")
+                .Assignee("security_officer")
+                .Next("end");
+
+            workflow.EndEvent("end", "Process Finished");
+
+            string bpmnXml = workflow.BuildXml();
+            Console.WriteLine("✓ Successfully compiled WASM workflow AST to BPMN 2.0 XML.");
+
+            string tempFilePath = Path.GetTempFileName() + ".bpmn";
+            try
+            {
+                await File.WriteAllTextAsync(tempFilePath, bpmnXml, Encoding.UTF8);
+
+                Console.WriteLine("📦 Deploying WASM process definition...");
+                using var fileStream = File.OpenRead(tempFilePath);
+                var fileParam = new FileParameter(fileStream, "wasmProcess.bpmn", "application/octet-stream");
+                var definitionResponse = await api.DeployDefinitionAsync(fileParam);
+
+                if (definitionResponse.IsSuccessStatusCode && definitionResponse.TryOk(out var definition) && definition != null)
+                {
+                    Console.WriteLine($"✅ Deployed! ID: {definition.Id}, Hash: {definition.Hash}");
+
+                    Console.WriteLine("⚡ Starting WASM process instance...");
+                    var startRequest = new StartInstanceRequest(
+                        instanceId: Guid.NewGuid(),
+                        businessKey: "bk-dotnet-wasm-" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds(),
+                        variables: new Dictionary<string, object>
+                        {
+                            { "orderAmount", 2500 }
+                        }
+                    );
+
+                    var startResponse = await api.StartInstanceAsync(definition.Id, startRequest);
+                    if (startResponse.IsSuccessStatusCode && startResponse.TryOk(out var instance) && instance != null)
+                    {
+                        Console.WriteLine($"✅ Instance started! ID: {instance.Id}, Completed: {instance.Completed}");
+                    }
+                    else
+                    {
+                        Console.WriteLine("❌ Failed to start WASM process instance.");
+                    }
+                }
+                else
+                {
+                    Console.WriteLine($"❌ Failed to deploy WASM process. Status: {definitionResponse.StatusCode}");
+                }
+            }
+            finally
+            {
+                if (File.Exists(tempFilePath))
+                {
+                    File.Delete(tempFilePath);
+                }
+            }
     }
 }
