@@ -1,0 +1,68 @@
+stages:
+  - publish
+
+publish-java:
+  stage: publish
+  image: maven:3.9-eclipse-temurin-17
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^java\/v/'
+  script:
+    - cd java
+    - export VERSION=$(echo $CI_COMMIT_TAG | sed 's|java/v||')
+    - mvn versions:set -DnewVersion=$VERSION
+    - |
+      echo "<settings xmlns='http://maven.apache.org/SETTINGS/1.0.0' xmlns:xsi='http://www.w3.org/2001/XMLSchema-instance' xsi:schemaLocation='http://maven.apache.org/SETTINGS/1.0.0 https://maven.apache.org/xsd/settings-1.0.0.xsd'>
+        <servers>
+          <server>
+            <id>gitlab-maven</id>
+            <configuration>
+              <httpHeaders>
+                <property>
+                  <name>Job-Token</name>
+                  <value>${CI_JOB_TOKEN}</value>
+                </property>
+              </httpHeaders>
+            </configuration>
+          </server>
+        </servers>
+      </settings>" > settings.xml
+    - mvn deploy -s settings.xml -DskipTests
+
+publish-dotnet:
+  stage: publish
+  image: mcr.microsoft.com/dotnet/sdk:8.0
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^dotnet\/v/'
+  script:
+    - cd dotnet
+    - export VERSION=$(echo $CI_COMMIT_TAG | sed 's|dotnet/v||')
+    - dotnet pack -c Release -p:PackageVersion=$VERSION -o out src/NativeBPM.Client/NativeBPM.Client.csproj
+    - dotnet nuget add source "${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/nuget/index.json" --name gitlab --username gitlab-ci-token --password ${CI_JOB_TOKEN} --store-password-in-clear-text
+    - dotnet nuget push "out/*.nupkg" --source gitlab --api-key ${CI_JOB_TOKEN}
+
+publish-python:
+  stage: publish
+  image: python:3.11
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^python\/v/'
+  script:
+    - cd python
+    - export VERSION=$(echo $CI_COMMIT_TAG | sed 's|python/v||')
+    - sed -i "s/version = \".*\"/version = \"$VERSION\"/" pyproject.toml
+    - pip install build twine
+    - python -m build
+    - TWINE_PASSWORD=${CI_JOB_TOKEN} TWINE_USERNAME=gitlab-ci-token twine upload --repository-url ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/pypi dist/*
+
+publish-typescript:
+  stage: publish
+  image: node:20
+  rules:
+    - if: '$CI_COMMIT_TAG =~ /^typescript\/v/'
+  script:
+    - cd typescript
+    - npm ci
+    - export VERSION=$(echo $CI_COMMIT_TAG | sed 's|typescript/v||')
+    - npm version $VERSION --no-git-tag-version
+    - npm config set @nativebpm:registry ${CI_API_V4_URL}/projects/${CI_PROJECT_ID}/packages/npm/
+    - npm config set -- //gitlab.com/api/v4/projects/${CI_PROJECT_ID}/packages/npm/:_authToken ${CI_JOB_TOKEN}
+    - npm publish

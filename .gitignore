@@ -1,0 +1,11 @@
+node_modules/
+.npm/
+npm-debug.log
+.venv/
+venv/
+__pycache__/
+*.pyc
+.DS_Store
+java/src/test/resources/
+php/examples/workflow_code.php
+python/perf_test.py
