@@ -12,6 +12,16 @@ This repository houses the client libraries and Fluent Workflow builders for all
 
 ---
 
+## 📖 API Documentation & Resources
+
+* **Interactive Swagger UI**: Accessible at `http://localhost:8080/ui/docs` (choose topic *6. REST API Reference* inside your local NativeBPM Console).
+* **Raw OpenAPI Specification**: Exposed dynamically by the engine at `http://localhost:8080/api/openapi.json`.
+* **Central Repo Resources**:
+  - [openapi.yaml](file:///Users/user/github.com/nativebpm/sdk/openapi.yaml): The platform OpenAPI 3.0 specification file.
+  - [core.wasm](file:///Users/user/github.com/nativebpm/sdk/core.wasm): The pre-compiled WebAssembly Workflow-as-Code core builder.
+
+---
+
 ## 🚀 Supported Languages
 
 Click on the language badges below to navigate to their respective subdirectories and check out the documentation and runnable examples:

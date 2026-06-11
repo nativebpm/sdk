@@ -12,6 +12,16 @@
 
 ---
 
+## 📖 Документация API и ресурсы
+
+* **Интерактивный Swagger UI**: Доступен по адресу `http://localhost:8080/ui/docs` (выберите тему *6. REST API Reference* во встроенной панели управления NativeBPM).
+* **Спецификация OpenAPI (JSON)**: Динамически отдается движком по адресу `http://localhost:8080/api/openapi.json`.
+* **Центральные ресурсы репозитория**:
+  - [openapi.yaml](file:///Users/user/github.com/nativebpm/sdk/openapi.yaml): Файл спецификации OpenAPI 3.0 платформы.
+  - [core.wasm](file:///Users/user/github.com/nativebpm/sdk/core.wasm): Прекомпилированное WebAssembly-ядро конструктора Workflow-as-Code.
+
+---
+
 ## 🚀 Поддерживаемые языки
 
 Нажмите на бейдж интересующего вас языка, чтобы перейти в соответствующую папку с документацией и готовыми примерами кода:
