@@ -5,5 +5,5 @@ go 1.23
 require (
 	github.com/andybalholm/brotli v1.1.0
 	github.com/tetratelabs/wazero v1.8.0
+	gitlab.com/nativebpm/sdk/go/api v0.0.0-20260611124459-887e14163f37
 )
-
