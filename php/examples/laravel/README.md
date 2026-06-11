@@ -19,7 +19,7 @@ Here is the excerpt from `composer.json`:
                 "name": "nativebpm/client",
                 "version": "1.0.0",
                 "source": {
-                    "url": "https://gitlab.com/nativebpm/platform.git",
+                    "url": "https://gitlab.com/nativebpm/sdk.git",
                     "type": "git",
                     "reference": "sdk/php/v1.0.0"
                 },

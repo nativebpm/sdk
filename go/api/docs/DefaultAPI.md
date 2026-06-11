@@ -43,7 +43,7 @@ import (
 	"context"
 	"fmt"
 	"os"
-	openapiclient "gitlab.com/nativebpm/platform/sdk/go/api"
+	openapiclient "gitlab.com/nativebpm/sdk/go/api"
 )
 
 func main() {
@@ -115,7 +115,7 @@ import (
 	"context"
 	"fmt"
 	"os"
-	openapiclient "gitlab.com/nativebpm/platform/sdk/go/api"
+	openapiclient "gitlab.com/nativebpm/sdk/go/api"
 )
 
 func main() {
@@ -187,7 +187,7 @@ import (
 	"context"
 	"fmt"
 	"os"
-	openapiclient "gitlab.com/nativebpm/platform/sdk/go/api"
+	openapiclient "gitlab.com/nativebpm/sdk/go/api"
 )
 
 func main() {
@@ -259,7 +259,7 @@ import (
 	"context"
 	"fmt"
 	"os"
-	openapiclient "gitlab.com/nativebpm/platform/sdk/go/api"
+	openapiclient "gitlab.com/nativebpm/sdk/go/api"
 )
 
 func main() {
@@ -325,7 +325,7 @@ import (
 	"context"
 	"fmt"
 	"os"
-	openapiclient "gitlab.com/nativebpm/platform/sdk/go/api"
+	openapiclient "gitlab.com/nativebpm/sdk/go/api"
 )
 
 func main() {
@@ -395,7 +395,7 @@ import (
 	"context"
 	"fmt"
 	"os"
-	openapiclient "gitlab.com/nativebpm/platform/sdk/go/api"
+	openapiclient "gitlab.com/nativebpm/sdk/go/api"
 )
 
 func main() {
@@ -461,7 +461,7 @@ import (
 	"context"
 	"fmt"
 	"os"
-	openapiclient "gitlab.com/nativebpm/platform/sdk/go/api"
+	openapiclient "gitlab.com/nativebpm/sdk/go/api"
 )
 
 func main() {
@@ -531,7 +531,7 @@ import (
 	"context"
 	"fmt"
 	"os"
-	openapiclient "gitlab.com/nativebpm/platform/sdk/go/api"
+	openapiclient "gitlab.com/nativebpm/sdk/go/api"
 )
 
 func main() {
@@ -601,7 +601,7 @@ import (
 	"context"
 	"fmt"
 	"os"
-	openapiclient "gitlab.com/nativebpm/platform/sdk/go/api"
+	openapiclient "gitlab.com/nativebpm/sdk/go/api"
 )
 
 func main() {
@@ -662,7 +662,7 @@ import (
 	"context"
 	"fmt"
 	"os"
-	openapiclient "gitlab.com/nativebpm/platform/sdk/go/api"
+	openapiclient "gitlab.com/nativebpm/sdk/go/api"
 )
 
 func main() {
@@ -732,7 +732,7 @@ import (
 	"context"
 	"fmt"
 	"os"
-	openapiclient "gitlab.com/nativebpm/platform/sdk/go/api"
+	openapiclient "gitlab.com/nativebpm/sdk/go/api"
 )
 
 func main() {
@@ -793,7 +793,7 @@ import (
 	"context"
 	"fmt"
 	"os"
-	openapiclient "gitlab.com/nativebpm/platform/sdk/go/api"
+	openapiclient "gitlab.com/nativebpm/sdk/go/api"
 )
 
 func main() {
@@ -863,7 +863,7 @@ import (
 	"context"
 	"fmt"
 	"os"
-	openapiclient "gitlab.com/nativebpm/platform/sdk/go/api"
+	openapiclient "gitlab.com/nativebpm/sdk/go/api"
 )
 
 func main() {
@@ -933,7 +933,7 @@ import (
 	"context"
 	"fmt"
 	"os"
-	openapiclient "gitlab.com/nativebpm/platform/sdk/go/api"
+	openapiclient "gitlab.com/nativebpm/sdk/go/api"
 )
 
 func main() {
@@ -994,7 +994,7 @@ import (
 	"context"
 	"fmt"
 	"os"
-	openapiclient "gitlab.com/nativebpm/platform/sdk/go/api"
+	openapiclient "gitlab.com/nativebpm/sdk/go/api"
 )
 
 func main() {
@@ -1067,7 +1067,7 @@ import (
 	"context"
 	"fmt"
 	"os"
-	openapiclient "gitlab.com/nativebpm/platform/sdk/go/api"
+	openapiclient "gitlab.com/nativebpm/sdk/go/api"
 )
 
 func main() {
@@ -1137,7 +1137,7 @@ import (
 	"context"
 	"fmt"
 	"os"
-	openapiclient "gitlab.com/nativebpm/platform/sdk/go/api"
+	openapiclient "gitlab.com/nativebpm/sdk/go/api"
 )
 
 func main() {
@@ -1209,7 +1209,7 @@ import (
 	"context"
 	"fmt"
 	"os"
-	openapiclient "gitlab.com/nativebpm/platform/sdk/go/api"
+	openapiclient "gitlab.com/nativebpm/sdk/go/api"
 )
 
 func main() {
@@ -1279,7 +1279,7 @@ import (
 	"context"
 	"fmt"
 	"os"
-	openapiclient "gitlab.com/nativebpm/platform/sdk/go/api"
+	openapiclient "gitlab.com/nativebpm/sdk/go/api"
 )
 
 func main() {

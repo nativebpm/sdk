@@ -9,7 +9,7 @@
 Чтобы установить пакет из публичного реестра GitLab PyPI Package Registry:
 
 ```bash
-pip install nativebpm-sdk --extra-index-url https://gitlab.com/api/v4/projects/nativebpm%2Fplatform/packages/pypi/simple
+pip install nativebpm-sdk --extra-index-url https://gitlab.com/api/v4/projects/nativebpm%2Fsdk/packages/pypi/simple
 ```
 
 Для локальной разработки:
@@ -74,14 +74,14 @@ git push origin sdk/python/v1.0.0
 2. Загрузите собранные пакеты с помощью Twine:
    - **Используя личный токен доступа (Personal Access Token)**:
      ```bash
-     twine upload --repository-url https://gitlab.com/api/v4/projects/nativebpm%2Fplatform/packages/pypi \
+     twine upload --repository-url https://gitlab.com/api/v4/projects/nativebpm%2Fsdk/packages/pypi \
        -u your_gitlab_username \
        -p your_personal_access_token \
        dist/*
      ```
    - **Используя токен развертывания проекта (Deploy Token)**:
      ```bash
-     twine upload --repository-url https://gitlab.com/api/v4/projects/nativebpm%2Fplatform/packages/pypi \
+     twine upload --repository-url https://gitlab.com/api/v4/projects/nativebpm%2Fsdk/packages/pypi \
        -u gitlab+deploy-token-name \
        -p deploy_token_password \
        dist/*

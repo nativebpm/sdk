@@ -27,7 +27,7 @@ mvn clean install
 <repositories>
     <repository>
         <id>gitlab-maven</id>
-        <url>https://gitlab.com/api/v4/projects/nativebpm%2Fplatform/packages/maven</url>
+        <url>https://gitlab.com/api/v4/projects/nativebpm%2Fsdk/packages/maven</url>
     </repository>
 </repositories>
 
@@ -44,7 +44,7 @@ mvn clean install
 ```groovy
 repositories {
     maven {
-        url "https://gitlab.com/api/v4/projects/nativebpm%2Fplatform/packages/maven"
+        url "https://gitlab.com/api/v4/projects/nativebpm%2Fsdk/packages/maven"
     }
 }
 

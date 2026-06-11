@@ -24,7 +24,7 @@ To consume the package from the GitLab NuGet Package Registry:
 
 1. Add the NuGet source (replace `<your_gitlab_token>` if repository requires auth; for public reading, the password can be any token or skipped if using public download endpoints):
 ```bash
-dotnet nuget add source "https://gitlab.com/api/v4/projects/nativebpm%2Fplatform/packages/nuget/index.json" \
+dotnet nuget add source "https://gitlab.com/api/v4/projects/nativebpm%2Fsdk/packages/nuget/index.json" \
   --name gitlab \
   --username gitlab-ci-token \
   --password your_personal_access_or_deploy_token \
@@ -122,7 +122,7 @@ To manually publish a NuGet release package:
    ```
 2. Add the GitLab source and push:
    ```bash
-   dotnet nuget add source "https://gitlab.com/api/v4/projects/nativebpm%2Fplatform/packages/nuget/index.json" \
+   dotnet nuget add source "https://gitlab.com/api/v4/projects/nativebpm%2Fsdk/packages/nuget/index.json" \
      --name gitlab \
      --username gitlab-ci-token \
      --password your_personal_access_or_deploy_token \

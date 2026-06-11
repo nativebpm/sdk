@@ -10,8 +10,8 @@
 
 1. Настройте ваш файл `.npmrc` (если репозиторий требует авторизации, укажите ваш токен, иначе публичный доступ открыт для чтения):
 ```text
-@nativebpm:registry=https://gitlab.com/api/v4/projects/nativebpm%2Fplatform/packages/npm/
-//gitlab.com/api/v4/projects/nativebpm%2Fplatform/packages/npm/:_authToken="your_gitlab_token"
+@nativebpm:registry=https://gitlab.com/api/v4/projects/nativebpm%2Fsdk/packages/npm/
+//gitlab.com/api/v4/projects/nativebpm%2Fsdk/packages/npm/:_authToken="your_gitlab_token"
 ```
 
 2. Установите зависимость:
@@ -78,7 +78,7 @@ git push origin sdk/typescript/v1.0.0
    ```
 2. Настройте аутентификацию и опубликуйте пакет:
    ```bash
-   npm config set @nativebpm:registry https://gitlab.com/api/v4/projects/nativebpm%2Fplatform/packages/npm/
-   npm config set -- //gitlab.com/api/v4/projects/nativebpm%2Fplatform/packages/npm/:_authToken your_personal_access_or_deploy_token
+   npm config set @nativebpm:registry https://gitlab.com/api/v4/projects/nativebpm%2Fsdk/packages/npm/
+   npm config set -- //gitlab.com/api/v4/projects/nativebpm%2Fsdk/packages/npm/:_authToken your_personal_access_or_deploy_token
    npm publish
    ```

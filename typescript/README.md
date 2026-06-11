@@ -10,8 +10,8 @@ To install the package from the GitLab npm Package Registry:
 
 1. Configure your `.npmrc` file (replace `<your_gitlab_token>` if the repository or package registry requires private authentication, otherwise public access is open for reading):
 ```text
-@nativebpm:registry=https://gitlab.com/api/v4/projects/nativebpm%2Fplatform/packages/npm/
-//gitlab.com/api/v4/projects/nativebpm%2Fplatform/packages/npm/:_authToken="your_gitlab_token"
+@nativebpm:registry=https://gitlab.com/api/v4/projects/nativebpm%2Fsdk/packages/npm/
+//gitlab.com/api/v4/projects/nativebpm%2Fsdk/packages/npm/:_authToken="your_gitlab_token"
 ```
 
 2. Install the dependency:
@@ -78,8 +78,8 @@ To manually publish a release version:
    ```
 2. Configure authentication and publish:
    ```bash
-   npm config set @nativebpm:registry https://gitlab.com/api/v4/projects/nativebpm%2Fplatform/packages/npm/
-   npm config set -- //gitlab.com/api/v4/projects/nativebpm%2Fplatform/packages/npm/:_authToken your_personal_access_or_deploy_token
+   npm config set @nativebpm:registry https://gitlab.com/api/v4/projects/nativebpm%2Fsdk/packages/npm/
+   npm config set -- //gitlab.com/api/v4/projects/nativebpm%2Fsdk/packages/npm/:_authToken your_personal_access_or_deploy_token
    npm publish
    ```
 

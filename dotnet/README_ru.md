@@ -24,7 +24,7 @@ dotnet pack -c Release -o ./out
 
 1. Добавьте источник NuGet (замените `<your_gitlab_token>` вашим токеном доступа, если требуется авторизация):
 ```bash
-dotnet nuget add source "https://gitlab.com/api/v4/projects/nativebpm%2Fplatform/packages/nuget/index.json" \
+dotnet nuget add source "https://gitlab.com/api/v4/projects/nativebpm%2Fsdk/packages/nuget/index.json" \
   --name gitlab \
   --username gitlab-ci-token \
   --password your_personal_access_or_deploy_token \
@@ -136,7 +136,7 @@ git push origin sdk/dotnet/v1.0.0
    ```
 2. Добавьте источник GitLab NuGet и выполните push:
    ```bash
-   dotnet nuget add source "https://gitlab.com/api/v4/projects/nativebpm%2Fplatform/packages/nuget/index.json" \
+   dotnet nuget add source "https://gitlab.com/api/v4/projects/nativebpm%2Fsdk/packages/nuget/index.json" \
      --name gitlab \
      --username gitlab-ci-token \
      --password your_personal_access_or_deploy_token \

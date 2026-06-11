@@ -7,7 +7,7 @@
 ## Установка
 
 ```bash
-go get gitlab.com/nativebpm/platform/sdk/go
+go get gitlab.com/nativebpm/sdk/go
 ```
 
 ## Запуск тестов
@@ -30,7 +30,7 @@ import (
 	"fmt"
 	"log"
 
-	"gitlab.com/nativebpm/platform/sdk/go"
+	"gitlab.com/nativebpm/sdk/go"
 )
 
 func main() {
