@@ -1,4 +1,4 @@
-module gitlab.com/nativebpm/platform/sdk/go/api
+module gitlab.com/nativebpm/sdk/go/api
 
 go 1.23
 
