@@ -799,5 +799,27 @@ mod tests {
         assert!(xml_str.contains("id=\"task1\""));
         assert!(xml_str.contains("id=\"end\""));
     }
+
+    #[test]
+    #[ignore]
+    fn test_workflow_builder_benchmark() {
+        let mut w = Workflow::new("benchmark-process", "Benchmark Process");
+        w.start_event("start")
+            .connect_to("task1")
+            .service_task("task1", "Service Task", "my-topic")
+            .wasm("core.wasm")
+            .connect_to("end")
+            .end_event("end", "End");
+
+        let iterations = 5; // Let's run 5 iterations to check the speed of WASM loading and compilation
+        let start = std::time::Instant::now();
+        for _ in 0..iterations {
+            let xml = w.build_xml().unwrap();
+            assert!(xml.contains("id=\"benchmark-process\""));
+        }
+        let duration = start.elapsed();
+        println!("Compiled {} workflows in {:?}", iterations, duration);
+        println!("Average compilation time per workflow: {:?}", duration / iterations);
+    }
 }
 
