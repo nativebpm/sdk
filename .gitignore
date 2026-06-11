@@ -9,3 +9,6 @@ __pycache__/
 java/src/test/resources/
 php/examples/workflow_code.php
 python/perf_test.py
+go.work
+go.work.sum
+
