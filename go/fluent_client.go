@@ -4,7 +4,7 @@ import (
 	"context"
 	"os"
 
-	"gitlab.com/nativebpm/platform/sdk/go/api"
+	"gitlab.com/nativebpm/sdk/go/api"
 )
 
 // Client wraps the generated APIClient to provide a Fluent API.

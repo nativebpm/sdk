@@ -5,7 +5,7 @@ import (
 	"fmt"
 	"os"
 
-	"gitlab.com/nativebpm/platform/sdk/go"
+	"gitlab.com/nativebpm/sdk/go"
 )
 
 func main() {

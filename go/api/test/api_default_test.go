@@ -14,7 +14,7 @@ import (
 	"github.com/stretchr/testify/assert"
 	"github.com/stretchr/testify/require"
 	"testing"
-	openapiclient "gitlab.com/nativebpm/platform/sdk/go/api"
+	openapiclient "gitlab.com/nativebpm/sdk/go/api"
 )
 
 func Test_api_DefaultAPIService(t *testing.T) {
