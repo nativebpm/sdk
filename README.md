@@ -48,11 +48,11 @@ To ensure strict parity, identical schema output, and instant local validation a
 
 ```mermaid
 flowchart TD
-    subgraph Host Application (Go, Python, JS, Rust, etc.)
+    subgraph "Host Application (Go, Python, JS, Rust, etc.)"
         API[Fluent Workflow API Builder] -->|Builds AST| AST[Workflow AST Struct]
     end
 
-    subgraph Embedded Sandbox
+    subgraph "Embedded Sandbox"
         WASM_RUN[WASM Runtime: Wazero / Wasmtime] -->|Instantiates| CORE[core.wasm Compiler]
     end
 

@@ -48,11 +48,11 @@ NativeBPM предоставляет передовой конструктор *
 
 ```mermaid
 flowchart TD
-    subgraph Хост-приложение (Go, Python, JS, Rust и др.)
+    subgraph "Хост-приложение (Go, Python, JS, Rust и др.)"
         API[Fluent Workflow API Builder] -->|Формирует AST| AST[Workflow AST Struct]
     end
 
-    subgraph Изолированная среда (Sandbox)
+    subgraph "Изолированная среда (Sandbox)"
         WASM_RUN[WASM Runtime: Wazero / Wasmtime] -->|Инициализирует| CORE[Компилятор core.wasm]
     end
 
