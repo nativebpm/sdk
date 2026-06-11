@@ -3,19 +3,17 @@ package nativebpm
 import (
 	"context"
 	"os"
-
-	"gitlab.com/nativebpm/sdk/go/api"
 )
 
 // Client wraps the generated APIClient to provide a Fluent API.
 type Client struct {
-	apiClient *api.APIClient
+	apiClient *APIClient
 }
 
 // NewClient creates a new Client instance configured with host and API token.
 func NewClient(hostURL, apiToken string) (*Client, error) {
-	cfg := api.NewConfiguration()
-	cfg.Servers = api.ServerConfigurations{
+	cfg := NewConfiguration()
+	cfg.Servers = ServerConfigurations{
 		{
 			URL: hostURL,
 		},
@@ -24,7 +22,7 @@ func NewClient(hostURL, apiToken string) (*Client, error) {
 		cfg.AddDefaultHeader("Authorization", "Bearer "+apiToken)
 	}
 	return &Client{
-		apiClient: api.NewAPIClient(cfg),
+		apiClient: NewAPIClient(cfg),
 	}, nil
 }
 
@@ -66,7 +64,7 @@ func (s *DefinitionsService) List() *ListDefinitionsBuilder {
 	return &ListDefinitionsBuilder{service: s}
 }
 
-func (b *ListDefinitionsBuilder) Send(ctx context.Context) ([]api.ProcessDefinition, error) {
+func (b *ListDefinitionsBuilder) Send(ctx context.Context) ([]ProcessDefinition, error) {
 	res, _, err := b.service.client.apiClient.DefaultAPI.ListDefinitions(ctx).Execute()
 	return res, err
 }
@@ -94,7 +92,7 @@ func (b *DeployDefinitionBuilder) WithBPMN(xmlData []byte) *DeployDefinitionBuil
 	return b
 }
 
-func (b *DeployDefinitionBuilder) Send(ctx context.Context) (*api.ProcessDefinition, error) {
+func (b *DeployDefinitionBuilder) Send(ctx context.Context) (*ProcessDefinition, error) {
 	if b.err != nil {
 		return nil, b.err
 	}
@@ -135,7 +133,7 @@ func (s *InstancesService) List() *ListInstancesBuilder {
 	return &ListInstancesBuilder{service: s}
 }
 
-func (b *ListInstancesBuilder) Send(ctx context.Context) ([]api.ProcessInstance, error) {
+func (b *ListInstancesBuilder) Send(ctx context.Context) ([]ProcessInstance, error) {
 	res, _, err := b.service.client.apiClient.DefaultAPI.ListInstances(ctx).Execute()
 	return res, err
 }
@@ -173,8 +171,8 @@ func (b *StartInstanceBuilder) WithVariable(key string, val interface{}) *StartI
 	return b
 }
 
-func (b *StartInstanceBuilder) Send(ctx context.Context) (*api.ProcessInstance, error) {
-	req := api.StartInstanceRequest{
+func (b *StartInstanceBuilder) Send(ctx context.Context) (*ProcessInstance, error) {
+	req := StartInstanceRequest{
 		InstanceId:  &b.instanceID,
 		BusinessKey: &b.businessKey,
 		Variables:   b.variables,
@@ -194,7 +192,7 @@ func (s *InstancesService) Get(id string) *GetInstanceBuilder {
 	return &GetInstanceBuilder{service: s, id: id}
 }
 
-func (b *GetInstanceBuilder) Send(ctx context.Context) (*api.ProcessInstance, error) {
+func (b *GetInstanceBuilder) Send(ctx context.Context) (*ProcessInstance, error) {
 	res, _, err := b.service.client.apiClient.DefaultAPI.GetInstance(ctx, b.id).Execute()
 	return res, err
 }
@@ -208,7 +206,7 @@ func (s *InstancesService) History(id string) *GetInstanceHistoryBuilder {
 	return &GetInstanceHistoryBuilder{service: s, id: id}
 }
 
-func (b *GetInstanceHistoryBuilder) Send(ctx context.Context) ([]api.HistoryRecord, error) {
+func (b *GetInstanceHistoryBuilder) Send(ctx context.Context) ([]HistoryRecord, error) {
 	res, _, err := b.service.client.apiClient.DefaultAPI.GetInstanceHistory(ctx, b.id).Execute()
 	return res, err
 }
@@ -237,8 +235,8 @@ func (b *CompleteInstanceTaskBuilder) WithVariable(key string, val interface{}) 
 	return b
 }
 
-func (b *CompleteInstanceTaskBuilder) Send(ctx context.Context) (*api.ProcessInstance, error) {
-	req := api.CompleteInstanceTaskRequest{
+func (b *CompleteInstanceTaskBuilder) Send(ctx context.Context) (*ProcessInstance, error) {
+	req := CompleteInstanceTaskRequest{
 		NodeId:    b.nodeID,
 		Variables: b.variables,
 	}
@@ -257,7 +255,7 @@ func (s *InstancesService) Resume(id string) *ResumeInstanceBuilder {
 	return &ResumeInstanceBuilder{service: s, id: id}
 }
 
-func (b *ResumeInstanceBuilder) Send(ctx context.Context) (*api.ProcessInstance, error) {
+func (b *ResumeInstanceBuilder) Send(ctx context.Context) (*ProcessInstance, error) {
 	res, _, err := b.service.client.apiClient.DefaultAPI.ResumeInstance(ctx, b.id).Execute()
 	return res, err
 }
@@ -287,7 +285,7 @@ func (b *ListTasksBuilder) WithAssignee(assignee string) *ListTasksBuilder {
 	return b
 }
 
-func (b *ListTasksBuilder) Send(ctx context.Context) ([]api.TaskRecord, error) {
+func (b *ListTasksBuilder) Send(ctx context.Context) ([]TaskRecord, error) {
 	req := b.service.client.apiClient.DefaultAPI.ListTasks(ctx)
 	if b.status != "" {
 		req = req.Status(b.status)
@@ -314,8 +312,8 @@ func (b *ClaimTaskBuilder) WithAssignee(assignee string) *ClaimTaskBuilder {
 	return b
 }
 
-func (b *ClaimTaskBuilder) Send(ctx context.Context) (*api.TaskRecord, error) {
-	req := api.ClaimTaskRequest{
+func (b *ClaimTaskBuilder) Send(ctx context.Context) (*TaskRecord, error) {
+	req := ClaimTaskRequest{
 		Assignee: b.assignee,
 	}
 	res, _, err := b.service.client.apiClient.DefaultAPI.ClaimTask(ctx, b.id).
@@ -342,8 +340,8 @@ func (b *CompleteTaskBuilder) WithVariable(key string, val interface{}) *Complet
 	return b
 }
 
-func (b *CompleteTaskBuilder) Send(ctx context.Context) (*api.ProcessInstance, error) {
-	req := api.CompleteTaskRequest{
+func (b *CompleteTaskBuilder) Send(ctx context.Context) (*ProcessInstance, error) {
+	req := CompleteTaskRequest{
 		Variables: b.variables,
 	}
 	res, _, err := b.service.client.apiClient.DefaultAPI.CompleteTask(ctx, b.id).
@@ -366,7 +364,7 @@ func (s *IncidentsService) List(processInstanceID string) *ListIncidentsBuilder 
 	return &ListIncidentsBuilder{service: s, processInstanceID: processInstanceID}
 }
 
-func (b *ListIncidentsBuilder) Send(ctx context.Context) ([]api.IncidentRecord, error) {
+func (b *ListIncidentsBuilder) Send(ctx context.Context) ([]IncidentRecord, error) {
 	res, _, err := b.service.client.apiClient.DefaultAPI.ListIncidents(ctx, b.processInstanceID).Execute()
 	return res, err
 }
@@ -406,7 +404,7 @@ func (s *WebhooksService) List() *ListWebhooksBuilder {
 	return &ListWebhooksBuilder{service: s}
 }
 
-func (b *ListWebhooksBuilder) Send(ctx context.Context) ([]api.WebhookRecord, error) {
+func (b *ListWebhooksBuilder) Send(ctx context.Context) ([]WebhookRecord, error) {
 	res, _, err := b.service.client.apiClient.DefaultAPI.ListWebhooks(ctx).Execute()
 	return res, err
 }
@@ -432,8 +430,8 @@ func (b *CreateWebhookBuilder) WithEvents(events []string) *CreateWebhookBuilder
 	return b
 }
 
-func (b *CreateWebhookBuilder) Send(ctx context.Context) (*api.WebhookRecord, error) {
-	req := api.CreateWebhookRequest{
+func (b *CreateWebhookBuilder) Send(ctx context.Context) (*WebhookRecord, error) {
+	req := CreateWebhookRequest{
 		Url:    b.targetURL,
 		Secret: &b.secretToken,
 		Events: b.eventTypes,
@@ -461,8 +459,8 @@ func (b *UpdateWebhookBuilder) WithURL(targetURL string) *UpdateWebhookBuilder {
 	return b
 }
 
-func (b *UpdateWebhookBuilder) Send(ctx context.Context) (*api.WebhookRecord, error) {
-	req := api.CreateWebhookRequest{
+func (b *UpdateWebhookBuilder) Send(ctx context.Context) (*WebhookRecord, error) {
+	req := CreateWebhookRequest{
 		Url:    b.targetURL,
 		Secret: &b.secretToken,
 		Events: b.eventTypes,
@@ -499,7 +497,7 @@ func (s *WebhooksService) Deliveries(webhookID string) *ListWebhookDeliveriesBui
 	return &ListWebhookDeliveriesBuilder{service: s, webhookID: webhookID}
 }
 
-func (b *ListWebhookDeliveriesBuilder) Send(ctx context.Context) ([]api.WebhookDeliveryRecord, error) {
+func (b *ListWebhookDeliveriesBuilder) Send(ctx context.Context) ([]WebhookDeliveryRecord, error) {
 	res, _, err := b.service.client.apiClient.DefaultAPI.ListWebhookDeliveries(ctx, b.webhookID).Execute()
 	return res, err
 }
@@ -513,7 +511,7 @@ func (s *WebhooksService) Test(webhookID string) *TestWebhookBuilder {
 	return &TestWebhookBuilder{service: s, webhookID: webhookID}
 }
 
-func (b *TestWebhookBuilder) Send(ctx context.Context) (*api.ResolveIncident200Response, error) {
+func (b *TestWebhookBuilder) Send(ctx context.Context) (*ResolveIncident200Response, error) {
 	res, _, err := b.service.client.apiClient.DefaultAPI.TestWebhook(ctx, b.webhookID).Execute()
 	return res, err
 }
