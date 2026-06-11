@@ -1,0 +1,33 @@
+[package]
+name = "nativebpm-client"
+version = "1.0.0"
+authors = ["OpenAPI Generator team and contributors"]
+description = "REST API for managing, executing, and monitoring workflows, human tasks, incidents, and outgoing webhooks inside the NativeBPM Cloud-Native engine.  ### Authentication Requests must include a session cookie or a Bearer API token: `Authorization: Bearer <API_TOKEN>` "
+# Override this license by providing a License Object in the OpenAPI.
+license = "Unlicense"
+edition = "2021"
+
+[dependencies]
+serde = { version = "^1.0", features = ["derive"] }
+serde_with = { version = "^3.8", default-features = false, features = ["base64", "std", "macros"] }
+serde_json = "^1.0"
+serde_repr = "^0.1"
+url = "^2.5"
+uuid = { version = "^1.8", features = ["serde", "v4"] }
+chrono = { version = "^0.4",  features = ["serde"] }
+tokio = { version = "^1.46.0", features = ["fs"] }
+tokio-util = { version = "^0.7", features = ["codec"] }
+reqwest = { version = "^0.13", default-features = false, features = ["json", "multipart", "stream", "query", "form"] }
+wasmtime = "20.0.0"
+wasmtime-wasi = { version = "20.0.0", features = ["preview1"] }
+flate2 = "1.0"
+
+
+zip = "2.1"
+brotli = "6.0"
+
+[features]
+default = ["native-tls"]
+native-tls = ["reqwest/native-tls"]
+rustls = ["reqwest/rustls"]
+
