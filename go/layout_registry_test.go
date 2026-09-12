@@ -148,3 +148,62 @@ func TestLayout_RegisterCustomPreset(t *testing.T) {
 		t.Errorf("Custom layout strategy was not called during ToBPMNXML")
 	}
 }
+
+func TestLayout_PresetsProduceDistinctCoordinates(t *testing.T) {
+	buildSampleWorkflow := func(preset nativebpm.LayoutPreset) *nativebpm.Workflow {
+		wf := nativebpm.NewWorkflow("distinct_test", "Distinct Coordinates Test")
+		wf.Start("start").
+			ParallelGateway("gw_hub", "Argo Hub Router")
+
+		for i := 1; i <= 4; i++ {
+			tID := "task_branch_" + string(rune('0'+i))
+			wf.ServiceTask(tID, "Parallel Service", "topic")
+			wf.SequenceFlow("gw_hub", tID)
+			wf.SequenceFlow(tID, "gw_join")
+		}
+
+		wf.ParallelGateway("gw_join", "Join Convergence").
+			ServiceTask("task_commit", "Commit Result", "topic").
+			SequenceFlow("gw_join", "task_commit").
+			End("end", "End")
+		wf.SequenceFlow("task_commit", "end")
+
+		opts := nativebpm.DefaultLayoutOptions()
+		opts.Preset = preset
+		opts.CenterHubID = "gw_hub"
+		wf.SetLayoutOptions(opts)
+		return wf
+	}
+
+	tieredXML, err := buildSampleWorkflow(nativebpm.LayoutTiered).ToBPMNXML()
+	if err != nil {
+		t.Fatalf("Tiered XML failed: %v", err)
+	}
+
+	centerHubXML, err := buildSampleWorkflow(nativebpm.LayoutCenterHub).ToBPMNXML()
+	if err != nil {
+		t.Fatalf("CenterHub XML failed: %v", err)
+	}
+
+	clusterMeshXML, err := buildSampleWorkflow(nativebpm.LayoutClusterMesh).ToBPMNXML()
+	if err != nil {
+		t.Fatalf("ClusterMesh XML failed: %v", err)
+	}
+
+	linearXML, err := buildSampleWorkflow(nativebpm.LayoutLinear).ToBPMNXML()
+	if err != nil {
+		t.Fatalf("Linear XML failed: %v", err)
+	}
+
+	// The generated BPMN DI shapes must NOT be identical between different presets!
+	if string(tieredXML) == string(centerHubXML) {
+		t.Errorf("LayoutTiered and LayoutCenterHub must produce distinctly different XML layouts!")
+	}
+	if string(centerHubXML) == string(clusterMeshXML) {
+		t.Errorf("LayoutCenterHub and LayoutClusterMesh must produce distinctly different XML layouts!")
+	}
+	if string(tieredXML) == string(linearXML) {
+		t.Errorf("LayoutTiered and LayoutLinear must produce distinctly different XML layouts!")
+	}
+}
+

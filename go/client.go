@@ -18,7 +18,7 @@ import (
 	"errors"
 	"fmt"
 	"io"
-	"log"
+	"log/slog"
 	"mime/multipart"
 	"net/http"
 	"net/http/httputil"
@@ -251,7 +251,7 @@ func (c *APIClient) callAPI(request *http.Request) (*http.Response, error) {
 		if err != nil {
 			return nil, err
 		}
-		log.Printf("\n%s\n", string(dump))
+		slog.Debug("HTTP request dump", "dump", string(dump))
 	}
 
 	resp, err := c.cfg.HTTPClient.Do(request)
@@ -264,7 +264,7 @@ func (c *APIClient) callAPI(request *http.Request) (*http.Response, error) {
 		if err != nil {
 			return resp, err
 		}
-		log.Printf("\n%s\n", string(dump))
+		slog.Debug("HTTP response dump", "dump", string(dump))
 	}
 	return resp, err
 }

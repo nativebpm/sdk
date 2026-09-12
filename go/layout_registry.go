@@ -51,35 +51,47 @@ func init() {
 		Description: "Dynamically analyzes graph complexity, element count, and hub fan-out to pick the best layout with structured logging.",
 		BestFor:     "Zero-configuration workflows (recommended default).",
 		IsDefault:   true,
-	}, nil)
+	}, func(nodes []map[string]interface{}, flows []map[string]interface{}, opts LayoutOptions) map[string]Coords {
+		metrics := AnalyzeGraphComplexity(nodes, flows)
+		selected := AutoSelectLayoutPreset(nodes, flows)
+		LogAutoSelection(opts.WorkflowID, selected, metrics)
+		opts.Preset = selected
+		if opts.CenterHubID == "" && selected == LayoutCenterHub {
+			opts.CenterHubID = metrics.DetectedHubID
+		}
+		if strat, ok := GetLayoutStrategy(selected); ok && strat != nil {
+			return strat(nodes, flows, opts)
+		}
+		return StrategyTiered(nodes, flows, opts)
+	})
 
 	RegisterLayoutPreset(LayoutTiered, LayoutPresetInfo{
 		Preset:      LayoutTiered,
 		Name:        "Tiered Multilevel Pipeline",
 		Description: "Arranges nodes in topological columns left-to-right with Zero-Overlap collision resolution.",
 		BestFor:     "Complex business pipelines, multi-step approvals, and standard DAGs.",
-	}, nil)
+	}, StrategyTiered)
 
 	RegisterLayoutPreset(LayoutCenterHub, LayoutPresetInfo{
 		Preset:      LayoutCenterHub,
 		Name:        "Radial Center-Hub & Parallel Tunnels",
 		Description: "Centers a primary gateway/router with balanced parallel fan-out branches radiating outwards.",
 		BestFor:     "Network topologies, Cloudflare Argo smart routing, load balancers, and multi-region hubs.",
-	}, nil)
+	}, StrategyCenterHub)
 
 	RegisterLayoutPreset(LayoutLinear, LayoutPresetInfo{
 		Preset:      LayoutLinear,
 		Name:        "Compact Linear Sequence",
 		Description: "Single-tier horizontal flow with minimal vertical displacement.",
 		BestFor:     "Short sequential processes (<= 8 nodes) without branching.",
-	}, nil)
+	}, StrategyLinear)
 
 	RegisterLayoutPreset(LayoutClusterMesh, LayoutPresetInfo{
 		Preset:      LayoutClusterMesh,
 		Name:        "Cluster Mesh Interconnect",
 		Description: "Matrix layout designed for distributed quorum consensus, multi-master meshes, and interconnected nodes.",
 		BestFor:     "Distributed databases, Raft quorums, KeyDB/Redis multi-master clusters.",
-	}, nil)
+	}, StrategyClusterMesh)
 }
 
 // RegisterLayoutPreset registers a layout preset in the global registry.
