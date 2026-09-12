@@ -8,14 +8,54 @@ import (
 
 type M map[string]interface{}
 
+type LayoutPreset string
+
+const (
+	LayoutTiered    LayoutPreset = "tiered"
+	LayoutCenterHub LayoutPreset = "center_hub"
+	LayoutLinear    LayoutPreset = "linear"
+)
+
+type Coords struct {
+	X      float64 `json:"x"`
+	Y      float64 `json:"y"`
+	Width  float64 `json:"width,omitempty"`
+	Height float64 `json:"height,omitempty"`
+}
+
+type LayoutOptions struct {
+	Preset       LayoutPreset      `json:"preset,omitempty"`
+	StartX       float64           `json:"startX,omitempty"`
+	StartY       float64           `json:"startY,omitempty"`
+	ColSpacing   float64           `json:"colSpacing,omitempty"`
+	RowSpacing   float64           `json:"rowSpacing,omitempty"`
+	CenterHubID  string            `json:"centerHubId,omitempty"`
+	CustomCoords map[string]Coords `json:"customCoords,omitempty"`
+	NodeTiers    map[string]int    `json:"nodeTiers,omitempty"`
+}
+
+func DefaultLayoutOptions() LayoutOptions {
+	return LayoutOptions{
+		Preset:       LayoutTiered,
+		StartX:       150.0,
+		StartY:       200.0,
+		ColSpacing:   240.0,
+		RowSpacing:   130.0,
+		CustomCoords: make(map[string]Coords),
+		NodeTiers:    make(map[string]int),
+	}
+}
+
 type Workflow struct {
-	ID             string                   `json:"id"`
-	Name           string                   `json:"name"`
-	Nodes          []map[string]interface{} `json:"nodes"`
-	Flows          []map[string]interface{} `json:"flows"`
-	err            error
-	currentNodeID  string
-	pendingMerges  []string
+	ID            string                   `json:"id"`
+	Name          string                   `json:"name"`
+	Nodes         []map[string]interface{} `json:"nodes"`
+	Flows         []map[string]interface{} `json:"flows"`
+	LayoutOpts    LayoutOptions            `json:"layoutOpts,omitempty"`
+	NodeColors    map[string][2]string     `json:"nodeColors,omitempty"`
+	err           error
+	currentNodeID string
+	pendingMerges []string
 }
 
 func (w *Workflow) MarshalJSON() ([]byte, error) {
@@ -68,11 +108,61 @@ func (w *Workflow) MarshalJSON() ([]byte, error) {
 
 func NewWorkflow(id, name string) *Workflow {
 	w := &Workflow{
-		ID:    id,
-		Name:  name,
-		Nodes: make([]map[string]interface{}, 0),
-		Flows: make([]map[string]interface{}, 0),
+		ID:         id,
+		Name:       name,
+		Nodes:      make([]map[string]interface{}, 0),
+		Flows:      make([]map[string]interface{}, 0),
+		LayoutOpts: DefaultLayoutOptions(),
+		NodeColors: make(map[string][2]string),
 	}
+	return w
+}
+
+// SetLayoutPreset configures the automated layout engine preset.
+func (w *Workflow) SetLayoutPreset(preset LayoutPreset) *Workflow {
+	w.LayoutOpts.Preset = preset
+	return w
+}
+
+// SetCenterHub designates a central hub node for the LayoutCenterHub preset.
+func (w *Workflow) SetCenterHub(nodeID string) *Workflow {
+	w.LayoutOpts.CenterHubID = nodeID
+	return w
+}
+
+// SetNodePosition sets pixel-perfect coordinate overrides for a specific node.
+func (w *Workflow) SetNodePosition(nodeID string, x, y float64) *Workflow {
+	if w.LayoutOpts.CustomCoords == nil {
+		w.LayoutOpts.CustomCoords = make(map[string]Coords)
+	}
+	c := w.LayoutOpts.CustomCoords[nodeID]
+	c.X = x
+	c.Y = y
+	w.LayoutOpts.CustomCoords[nodeID] = c
+	return w
+}
+
+// SetNodeTier assigns an explicit column tier index for a specific node.
+func (w *Workflow) SetNodeTier(nodeID string, tier int) *Workflow {
+	if w.LayoutOpts.NodeTiers == nil {
+		w.LayoutOpts.NodeTiers = make(map[string]int)
+	}
+	w.LayoutOpts.NodeTiers[nodeID] = tier
+	return w
+}
+
+// SetLayoutOptions sets the complete LayoutOptions for the workflow.
+func (w *Workflow) SetLayoutOptions(opts LayoutOptions) *Workflow {
+	w.LayoutOpts = opts
+	return w
+}
+
+// SetNodeColor configures BPMN in Color (bioc:stroke and bioc:fill) for a node.
+func (w *Workflow) SetNodeColor(nodeID string, strokeHex, fillHex string) *Workflow {
+	if w.NodeColors == nil {
+		w.NodeColors = make(map[string][2]string)
+	}
+	w.NodeColors[nodeID] = [2]string{strokeHex, fillHex}
 	return w
 }
 
