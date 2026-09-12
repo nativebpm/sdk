@@ -537,6 +537,24 @@ impl<'a> ThenBuilder<'a> {
 
         else_b.workflow
     }
+
+    pub fn otherwise<F>(self, else_fn: F) -> &'a mut Workflow
+    where
+        F: FnOnce(&mut Branch<'_>),
+    {
+        self.Else(else_fn)
+    }
+
+    pub fn when<C>(self, condition: C) -> WhenBuilder<'a>
+    where
+        C: ToCondition,
+    {
+        WhenBuilder {
+            workflow: self.workflow,
+            gateway_id: self.gateway_id,
+            condition: condition.to_condition(),
+        }
+    }
 }
 
 pub struct WhenBranchBuilder<'b, 'a> {
@@ -598,6 +616,24 @@ impl<'b, 'a> ThenBranchBuilder<'b, 'a> {
 
         self.branch
     }
+
+    pub fn otherwise<F>(self, else_fn: F) -> &'b mut Branch<'a>
+    where
+        F: FnOnce(&mut Branch<'_>),
+    {
+        self.Else(else_fn)
+    }
+
+    pub fn when<C>(self, condition: C) -> WhenBranchBuilder<'b, 'a>
+    where
+        C: ToCondition,
+    {
+        WhenBranchBuilder {
+            branch: self.branch,
+            gateway_id: self.gateway_id,
+            condition: condition.to_condition(),
+        }
+    }
 }
 
 #[cfg(test)]
@@ -646,6 +682,31 @@ mod tests {
         assert!(json.contains("\"id\":\"task3\""));
         assert!(json.contains("\"id\":\"end_urgent\""));
         assert!(json.contains("\"id\":\"end_normal\""));
+    }
+
+    #[test]
+    fn test_workflow_builder_when_then_otherwise_chained() {
+        let mut w = Workflow::new("test-when-otherwise", "Test When Otherwise");
+        w.service_task("check", "Check Status", "status_topic", serde_json::json!({}))
+            .when("status == 'vip'")
+            .then(|b| {
+                b.service("vip_service", "VIP Service", "vip_topic", serde_json::json!({}));
+            })
+            .when("status == 'regular'")
+            .then(|b| {
+                b.service("regular_service", "Regular Service", "regular_topic", serde_json::json!({}));
+            })
+            .otherwise(|b| {
+                b.service("fallback_service", "Fallback Service", "fallback_topic", serde_json::json!({}));
+            })
+            .end_event("end", "Done");
+
+        let json_str = w.to_json();
+        assert!(json_str.is_ok());
+        let json = json_str.unwrap();
+        assert!(json.contains("\"id\":\"vip_service\""));
+        assert!(json.contains("\"id\":\"regular_service\""));
+        assert!(json.contains("\"id\":\"fallback_service\""));
     }
 }
 

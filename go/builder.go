@@ -379,6 +379,13 @@ type ThenBuilder struct {
 	gatewayID string
 }
 
+// IfElseBuilder facilitates chaining ElseIf(), Then(), and Else() after If() at the workflow level.
+type IfElseBuilder struct {
+	workflow  *Workflow
+	gatewayID string
+	condition string
+}
+
 // WhenBranchBuilder facilitates chaining Then() after When() at the branch level.
 type WhenBranchBuilder struct {
 	branch    *Branch
@@ -386,20 +393,13 @@ type WhenBranchBuilder struct {
 	condition string
 }
 
-// ThenBranchBuilder facilitates chaining Else() after Then() at the branch level.
+// ThenBranchBuilder facilitates chaining Otherwise() / Else() after Then() at the branch level.
 type ThenBranchBuilder struct {
 	branch    *Branch
 	gatewayID string
 }
 
-// IfElseBuilder facilitates canonical If-Else and If-Then-Else chaining at the workflow level.
-type IfElseBuilder struct {
-	workflow  *Workflow
-	gatewayID string
-	condition string
-}
-
-// IfElseBranchBuilder facilitates canonical If-Else chaining at the branch level.
+// IfElseBranchBuilder facilitates chaining ElseIf(), Then(), and Else() after If() at the branch level.
 type IfElseBranchBuilder struct {
 	branch    *Branch
 	gatewayID string
@@ -854,6 +854,24 @@ func (tbb *ThenBranchBuilder) Else(elseFn func(sub *Branch)) *Branch {
 // Otherwise is a canonical alias for Else on ThenBranchBuilder.
 func (tbb *ThenBranchBuilder) Otherwise(elseFn func(sub *Branch)) *Branch {
 	return tbb.Else(elseFn)
+}
+
+// When allows chaining additional conditions inside a branch.
+func (tbb *ThenBranchBuilder) When(condition interface{}) *WhenBranchBuilder {
+	var condStr string
+	switch c := condition.(type) {
+	case string:
+		condStr = c
+	case fmt.Stringer:
+		condStr = c.String()
+	default:
+		condStr = fmt.Sprintf("%v", c)
+	}
+	return &WhenBranchBuilder{
+		branch:    tbb.branch,
+		gatewayID: tbb.gatewayID,
+		condition: condStr,
+	}
 }
 
 // If defines a nested canonical conditional branch inside a branch.

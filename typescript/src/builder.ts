@@ -180,7 +180,13 @@ export class ThenBuilder {
     return this.workflow;
   }
 
+  public otherwise(elseFn: (flow: Branch) => void): Workflow {
+    return this.else(elseFn);
+  }
 
+  public when(condition: string | { toString(): string }): WhenBuilder {
+    return new WhenBuilder(this.workflow, this.gatewayID, String(condition));
+  }
 }
 
 export class WhenBranchBuilder {
@@ -212,7 +218,13 @@ export class ThenBranchBuilder {
     return this.branch;
   }
 
+  public otherwise(elseFn: (flow: Branch) => void): Branch {
+    return this.else(elseFn);
+  }
 
+  public when(condition: string | { toString(): string }): WhenBranchBuilder {
+    return new WhenBranchBuilder(this.branch, this.gatewayID, String(condition));
+  }
 }
 
 export class Workflow {

@@ -86,6 +86,30 @@ async function testBuilder() {
     throw new Error("Memory leak detected in TypeScript SDK!");
   }
 
+  // Test When-Then-Otherwise branching
+  console.log("Running TypeScript When-Then-Otherwise branching test...");
+  const wfBranch = new Workflow('ts-branching', 'TS Branching');
+  wfBranch.startEvent('start')
+    .serviceTask('check_env', 'Check Env', 'env_topic')
+    .when("env === 'prod'")
+    .then((b) => {
+      b.service('prod_handler', 'Prod Handler', 'prod_topic');
+    })
+    .when("env === 'stage'")
+    .then((b) => {
+      b.service('stage_handler', 'Stage Handler', 'stage_topic');
+    })
+    .otherwise((b) => {
+      b.service('dev_handler', 'Dev Handler', 'dev_topic');
+    })
+    .endEvent('end', 'Done');
+
+  const branchAst = wfBranch.toAST();
+  assert.ok(branchAst.nodes.find(n => n.id === 'prod_handler'), "Should contain prod_handler");
+  assert.ok(branchAst.nodes.find(n => n.id === 'stage_handler'), "Should contain stage_handler");
+  assert.ok(branchAst.nodes.find(n => n.id === 'dev_handler'), "Should contain dev_handler");
+  console.log("✓ When-Then-Otherwise branching validation passed");
+
   console.log("All TypeScript workflow builder tests completed successfully!");
 }
 
