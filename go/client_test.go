@@ -1,6 +1,7 @@
 package nativebpm
 
 import (
+	"context"
 	"encoding/json"
 	"testing"
 )
@@ -87,5 +88,30 @@ func TestBlockClosureDSL(t *testing.T) {
 	}
 	if !foundCondition {
 		t.Errorf("expected to find flow condition 'approved == true'")
+	}
+}
+
+func TestClient_NewWorker(t *testing.T) {
+	client, err := NewClient("unix:///tmp/nbpm.sock", "token-abc")
+	if err != nil {
+		t.Fatalf("unexpected error creating client: %v", err)
+	}
+
+	worker := client.NewWorker("inventory_check", func(ctx context.Context, task *TaskContext) (map[string]interface{}, error) {
+		return map[string]interface{}{"available": true}, nil
+	})
+
+	if worker == nil {
+		t.Fatal("expected non-nil worker")
+	}
+	if worker.serverURL != "unix:///tmp/nbpm.sock" {
+		t.Errorf("expected serverURL unix:///tmp/nbpm.sock, got %s", worker.serverURL)
+	}
+	if worker.apiToken != "token-abc" {
+		t.Errorf("expected apiToken token-abc, got %s", worker.apiToken)
+	}
+	topics := worker.getTopicList()
+	if len(topics) != 1 || topics[0] != "inventory_check" {
+		t.Errorf("expected topics [inventory_check], got %v", topics)
 	}
 }

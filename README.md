@@ -18,7 +18,7 @@ This repository houses the client libraries and Fluent Workflow builders for all
 * **Interactive Swagger UI**: Accessible at `http://localhost:8080/ui/docs` (choose topic *6. REST API Reference* inside your local NativeBPM Console).
 * **Raw OpenAPI Specification**: Exposed dynamically by the engine at `http://localhost:8080/api/openapi.json`.
 * **Central Repo Resources**:
-  - [openapi.yaml](file:///Users/user/github.com/nativebpm/sdk/api/openapi.yaml): The platform OpenAPI 3.0 specification file.
+  - [openapi.yaml](api/openapi.yaml): The platform OpenAPI 3.0 specification file.
 
 ---
 
@@ -147,7 +147,7 @@ To facilitate seamless AI and LLM orchestration without breaking BPMN 2.0 standa
 
 All client libraries in this monorepo are built on top of a single, standardized REST API contract defined by the OpenAPI 3.0 specification.
 
-For a detailed walkthrough on setting up your environment, modifying the API, generating code, and running tests, please refer to our [Contributing Guide](file:///Users/user/github.com/nativebpm/sdk/CONTRIBUTING.md).
+For a detailed walkthrough on setting up your environment, modifying the API, generating code, and running tests, please refer to our [Contributing Guide](CONTRIBUTING.md).
 
 ---
 
@@ -189,7 +189,7 @@ For package installation instructions and language-specific quickstarts, check t
 When you need to introduce new endpoints or modify existing data schemas (e.g., adding a new endpoint or extending data models):
 
 1. **Update the OpenAPI Contract**:
-   * Open the central API definition: [openapi.yaml](file:///Users/user/github.com/nativebpm/sdk/api/openapi.yaml).
+   * Open the central API definition: [openapi.yaml](api/openapi.yaml).
    * Define your new HTTP routes, methods (GET/POST/etc.), request bodies, path/query parameters, and response schemas.
    * Make sure to follow OpenAPI 3.0 rules and add appropriate `operationId` definitions.
 2. **Regenerate Base Clients**:
@@ -197,12 +197,12 @@ When you need to introduce new endpoints or modify existing data schemas (e.g., 
 3. **Update Fluent client wrappers**:
    * Modify the hand-written wrapper files in each language to expose the new functionality to developers.
    * Key wrapper files to update:
-     - **Go**: [fluent_client.go](file:///Users/user/github.com/nativebpm/sdk/go/fluent_client.go)
-     - **TypeScript**: [client.ts](file:///Users/user/github.com/nativebpm/sdk/typescript/src/client.ts)
-     - **Python**: [client.py](file:///Users/user/github.com/nativebpm/sdk/python/nativebpm/client.py)
-     - **Dart**: [client.dart](file:///Users/user/github.com/nativebpm/sdk/dart/lib/src/client.dart)
-     - **Kotlin**: [Client.kt](file:///Users/user/github.com/nativebpm/sdk/kotlin/src/main/kotlin/com/nativebpm/client/Client.kt)
-     - **Swift**: [Client.swift](file:///Users/user/github.com/nativebpm/sdk/swift/NativeBPMClient/Classes/OpenAPIs/Client.swift)
+     - **Go**: [fluent_client.go](go/fluent_client.go)
+     - **TypeScript**: [client.ts](typescript/src/client.ts)
+     - **Python**: [client.py](python/nativebpm/client.py)
+     - **Dart**: [client.dart](dart/lib/src/client.dart)
+     - **Kotlin**: [Client.kt](kotlin/src/main/kotlin/com/nativebpm/client/Client.kt)
+     - **Swift**: [Client.swift](swift/NativeBPMClient/Classes/OpenAPIs/Client.swift)
 
 ---
 

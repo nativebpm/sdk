@@ -7,20 +7,38 @@ import (
 	"fmt"
 	"io"
 	"mime/multipart"
+	"net"
 	"net/http"
+	"strings"
 )
 
 // Client wraps the generated APIClient to provide a Fluent API.
 type Client struct {
 	apiClient *APIClient
+	hostURL   string
+	apiToken  string
 }
 
 // NewClient creates a new Client instance configured with host and API token.
+// Supports both standard HTTP/HTTPS ("http://localhost:8080") and UNIX domain sockets ("unix:///tmp/nativebpm.sock").
 func NewClient(hostURL, apiToken string) (*Client, error) {
 	cfg := NewConfiguration()
+	serverURL := hostURL
+	if strings.HasPrefix(hostURL, "unix://") {
+		sockPath := strings.TrimPrefix(hostURL, "unix://")
+		transport := &http.Transport{
+			DialContext: func(ctx context.Context, _, _ string) (net.Conn, error) {
+				var d net.Dialer
+				return d.DialContext(ctx, "unix", sockPath)
+			},
+		}
+		cfg.HTTPClient = &http.Client{Transport: transport}
+		serverURL = "http://unix"
+	}
+
 	cfg.Servers = ServerConfigurations{
 		{
-			URL: hostURL,
+			URL: serverURL,
 		},
 	}
 	if apiToken != "" {
@@ -28,7 +46,19 @@ func NewClient(hostURL, apiToken string) (*Client, error) {
 	}
 	return &Client{
 		apiClient: NewAPIClient(cfg),
+		hostURL:   hostURL,
+		apiToken:  apiToken,
 	}, nil
+}
+
+// NewWorker creates a Yamux reverse-tunnel worker bound to this client's server and credentials.
+func (c *Client) NewWorker(topic string, handler TaskHandler) *Worker {
+	return NewWorker(c.hostURL, c.apiToken).WithTopic(topic, handler)
+}
+
+// NewWorkerBuilder returns a new Worker configuration builder.
+func (c *Client) NewWorkerBuilder() *Worker {
+	return NewWorker(c.hostURL, c.apiToken)
 }
 
 // Deploy compiles and deploys a process definition workflow schema to the engine.

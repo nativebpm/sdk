@@ -11,18 +11,18 @@ Please read through this guide to understand our architecture, code generation w
 The SDK monorepo uses a dual-layer architecture to keep the client libraries lightweight, consistent, and performant across all 10 supported programming languages:
 
 1. **Low-Level Generated Clients (Single Source of Truth)**:
-   * Built entirely from the OpenAPI 3.0 specification file: [openapi.yaml](file:///Users/user/github.com/nativebpm/sdk/api/openapi.yaml).
+   * Built entirely from the OpenAPI 3.0 specification file: [openapi.yaml](api/openapi.yaml).
    * Automatically generated using the `openapi-generator-cli` inside a Docker container.
    * Handles raw HTTP transport, endpoint routing, serialization/deserialization, and standard schema models.
 2. **High-Level Fluent Wrappers (Hand-written)**:
    * Ergonomic wrappers written manually for each language to provide a type-safe, idiomatic Fluent builder experience (method chaining, builders, workers).
    * Key wrapper files:
-     - **Go**: [go/fluent_client.go](file:///Users/user/github.com/nativebpm/sdk/go/fluent_client.go)
-     - **TypeScript**: [typescript/src/client.ts](file:///Users/user/github.com/nativebpm/sdk/typescript/src/client.ts)
-     - **Python**: [python/nativebpm/client.py](file:///Users/user/github.com/nativebpm/sdk/python/nativebpm/client.py)
-     - **Dart**: [dart/lib/src/client.dart](file:///Users/user/github.com/nativebpm/sdk/dart/lib/src/client.dart)
-     - **Kotlin**: [kotlin/src/main/kotlin/com/nativebpm/client/Client.kt](file:///Users/user/github.com/nativebpm/sdk/kotlin/src/main/kotlin/com/nativebpm/client/Client.kt)
-     - **Swift**: [swift/NativeBPMClient/Classes/OpenAPIs/Client.swift](file:///Users/user/github.com/nativebpm/sdk/swift/NativeBPMClient/Classes/OpenAPIs/Client.swift)
+     - **Go**: [go/fluent_client.go](go/fluent_client.go)
+     - **TypeScript**: [typescript/src/client.ts](typescript/src/client.ts)
+     - **Python**: [python/nativebpm/client.py](python/nativebpm/client.py)
+     - **Dart**: [dart/lib/src/client.dart](dart/lib/src/client.dart)
+     - **Kotlin**: [kotlin/src/main/kotlin/com/nativebpm/client/Client.kt](kotlin/src/main/kotlin/com/nativebpm/client/Client.kt)
+     - **Swift**: [swift/NativeBPMClient/Classes/OpenAPIs/Client.swift](swift/NativeBPMClient/Classes/OpenAPIs/Client.swift)
 
 ---
 
@@ -40,7 +40,7 @@ Before you begin making changes, ensure your environment has:
 To add new features or modify existing API endpoints, follow this sequence:
 
 ### Step 1: Update the OpenAPI Specification
-* Edit the central OpenAPI contract: [openapi.yaml](file:///Users/user/github.com/nativebpm/sdk/api/openapi.yaml).
+* Edit the central OpenAPI contract: [openapi.yaml](api/openapi.yaml).
 * Define the paths, HTTP verbs, path/query parameters, request payloads, and response models.
 * Provide clean, clear descriptions and specify correct `operationId` tags (these map to the generated method names in the client).
 

@@ -17,7 +17,7 @@
 * **Интерактивный Swagger UI**: Доступен по адресу `http://localhost:8080/ui/docs` (выберите тему *6. REST API Reference* во встроенной панели управления NativeBPM).
 * **Спецификация OpenAPI (JSON)**: Динамически отдается движком по адресу `http://localhost:8080/api/openapi.json`.
 * **Центральные ресурсы репозитория**:
-  - [openapi.yaml](file:///Users/user/github.com/nativebpm/sdk/api/openapi.yaml): Файл спецификации OpenAPI 3.0 платформы.
+  - [openapi.yaml](api/openapi.yaml): Файл спецификации OpenAPI 3.0 платформы.
 
 ---
 
@@ -146,7 +146,7 @@ flowchart TD
 
 Все клиентские библиотеки в этом монорепозитории построены на основе единого стандартизированного контракта REST API, который описан в спецификации OpenAPI 3.0.
 
-Для получения подробного руководства по настройке окружения, изменению API, генерации кода и запуску тестов, пожалуйста, обратитесь к нашему [Руководству по разработке (Contributing Guide)](file:///Users/user/github.com/nativebpm/sdk/CONTRIBUTING_ru.md).
+Для получения подробного руководства по настройке окружения, изменению API, генерации кода и запуску тестов, пожалуйста, обратитесь к нашему [Руководству по разработке (Contributing Guide)](CONTRIBUTING_ru.md).
 
 ---
 
@@ -188,7 +188,7 @@ err := client.Deploy(workflow)
 Если вам необходимо добавить новые эндпоинты или обновить существующие схемы данных (например, добавить новый эндпоинт или расширить существующую модель данных):
 
 1. **Обновите контракт OpenAPI**:
-   * Откройте файл [openapi.yaml](file:///Users/user/github.com/nativebpm/sdk/api/openapi.yaml) в корне репозитория.
+   * Откройте файл [openapi.yaml](api/openapi.yaml) в корне репозитория.
    * Добавьте новые пути запросов (paths), HTTP-методы (GET/POST/etc.), тела запросов, параметры и схемы ответов.
    * Убедитесь, что вы соблюдаете правила OpenAPI 3.0 и корректно прописали параметр `operationId`.
 2. **Сгенерируйте базовые клиенты**:
@@ -196,12 +196,12 @@ err := client.Deploy(workflow)
 3. **Обновите Fluent API обертки (wrappers)**:
    * Измените написанные вручную обертки в каждом языке, чтобы сделать новые методы доступными для конечных пользователей.
    * Основные файлы оберток для обновления:
-     - **Go**: [fluent_client.go](file:///Users/user/github.com/nativebpm/sdk/go/fluent_client.go)
-     - **TypeScript**: [client.ts](file:///Users/user/github.com/nativebpm/sdk/typescript/src/client.ts)
-     - **Python**: [client.py](file:///Users/user/github.com/nativebpm/sdk/python/nativebpm/client.py)
-     - **Dart**: [client.dart](file:///Users/user/github.com/nativebpm/sdk/dart/lib/src/client.dart)
-     - **Kotlin**: [Client.kt](file:///Users/user/github.com/nativebpm/sdk/kotlin/src/main/kotlin/com/nativebpm/client/Client.kt)
-     - **Swift**: [Client.swift](file:///Users/user/github.com/nativebpm/sdk/swift/NativeBPMClient/Classes/OpenAPIs/Client.swift)
+     - **Go**: [fluent_client.go](go/fluent_client.go)
+     - **TypeScript**: [client.ts](typescript/src/client.ts)
+     - **Python**: [client.py](python/nativebpm/client.py)
+     - **Dart**: [client.dart](dart/lib/src/client.dart)
+     - **Kotlin**: [Client.kt](kotlin/src/main/kotlin/com/nativebpm/client/Client.kt)
+     - **Swift**: [Client.swift](swift/NativeBPMClient/Classes/OpenAPIs/Client.swift)
 
 ---
 

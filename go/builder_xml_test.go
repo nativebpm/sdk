@@ -101,3 +101,84 @@ func TestWorkflow_LayoutCenterHub_And_Color(t *testing.T) {
 		t.Error("Expected bioc:stroke on gw_hub shape")
 	}
 }
+
+func TestWorkflow_CanonicalIfElse(t *testing.T) {
+	wf := nativebpm.NewWorkflow("canonical-if-else", "Canonical If-Else Process")
+	wf.Start("start").
+		Service("fetch_data", "Fetch Data", "data_topic").
+		If("data.score > 80", func(b *nativebpm.Branch) {
+			b.Service("fast_track", "Fast Track", "fast_topic")
+		}).
+		ElseIf("data.score > 50", func(b *nativebpm.Branch) {
+			b.Service("standard_review", "Standard Review", "std_topic")
+		}).
+		Otherwise(func(b *nativebpm.Branch) {
+			b.Service("manual_audit", "Manual Audit", "audit_topic")
+		}).
+		End("end", "Done")
+
+	xmlBytes, err := wf.ToBPMNXML()
+	if err != nil {
+		t.Fatalf("ToBPMNXML failed: %v", err)
+	}
+
+	xmlStr := string(xmlBytes)
+	if !strings.Contains(xmlStr, "<exclusiveGateway") {
+		t.Error("Expected exclusiveGateway in BPMN XML")
+	}
+	if !strings.Contains(xmlStr, "fast_track") || !strings.Contains(xmlStr, "standard_review") || !strings.Contains(xmlStr, "manual_audit") {
+		t.Error("Expected all three branches in XML")
+	}
+}
+
+func TestWorkflow_CanonicalIfThenElse(t *testing.T) {
+	wf := nativebpm.NewWorkflow("canonical-if-then-else", "Canonical If-Then-Else Process")
+	wf.Start("start").
+		Service("check_status", "Check Status", "status_topic").
+		If("status == 'ACTIVE'").
+		Then(func(b *nativebpm.Branch) {
+			b.Service("activate_premium", "Activate Premium", "prem_topic")
+		}).
+		Else(func(b *nativebpm.Branch) {
+			b.Service("send_reminder", "Send Reminder", "reminder_topic")
+		}).
+		End("end", "Complete")
+
+	xmlBytes, err := wf.ToBPMNXML()
+	if err != nil {
+		t.Fatalf("ToBPMNXML failed: %v", err)
+	}
+
+	xmlStr := string(xmlBytes)
+	if !strings.Contains(xmlStr, "activate_premium") || !strings.Contains(xmlStr, "send_reminder") {
+		t.Error("Expected task branches in XML")
+	}
+}
+
+func TestWorkflow_CanonicalWhenThenElseChained(t *testing.T) {
+	wf := nativebpm.NewWorkflow("canonical-when-then-else", "Canonical When-Then-Else")
+	wf.Start("start").
+		Service("evaluate_risk", "Evaluate Risk", "risk_topic").
+		When("risk == 'LOW'").
+		Then(func(b *nativebpm.Branch) {
+			b.Service("auto_approve", "Auto Approve", "approve_topic")
+		}).
+		When("risk == 'MEDIUM'").
+		Then(func(b *nativebpm.Branch) {
+			b.Service("manager_review", "Manager Review", "review_topic")
+		}).
+		Otherwise(func(b *nativebpm.Branch) {
+			b.Service("auto_reject", "Auto Reject", "reject_topic")
+		}).
+		End("end", "Evaluated")
+
+	xmlBytes, err := wf.ToBPMNXML()
+	if err != nil {
+		t.Fatalf("ToBPMNXML failed: %v", err)
+	}
+
+	xmlStr := string(xmlBytes)
+	if !strings.Contains(xmlStr, "auto_approve") || !strings.Contains(xmlStr, "manager_review") || !strings.Contains(xmlStr, "auto_reject") {
+		t.Error("Expected all three branches in XML")
+	}
+}

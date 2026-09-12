@@ -392,6 +392,20 @@ type ThenBranchBuilder struct {
 	gatewayID string
 }
 
+// IfElseBuilder facilitates canonical If-Else and If-Then-Else chaining at the workflow level.
+type IfElseBuilder struct {
+	workflow  *Workflow
+	gatewayID string
+	condition string
+}
+
+// IfElseBranchBuilder facilitates canonical If-Else chaining at the branch level.
+type IfElseBranchBuilder struct {
+	branch    *Branch
+	gatewayID string
+	condition string
+}
+
 func (w *Workflow) connectNode(id string) {
 	node := w.findNode(id)
 	hasStart := false
@@ -471,6 +485,132 @@ func (w *Workflow) BusinessRule(id, name, decisionRef string, options ...map[str
 	return w
 }
 
+// If defines a canonical conditional branch path on the main workflow.
+// Supports both two-argument direct block form:
+//   w.If("order.amount > 100", func(b *Branch) { ... }).Else(func(b *Branch) { ... })
+// and chained BDD/DSL builder form:
+//   w.If("order.amount > 100").Then(func(b *Branch) { ... }).Else(func(b *Branch) { ... })
+func (w *Workflow) If(condition interface{}, thenFn ...func(flow *Branch)) *IfElseBuilder {
+	gwID := fmt.Sprintf("gw_%s_decision", w.currentNodeID)
+	w.ExclusiveGateway(gwID, "Decision Gateway")
+	w.connectNode(gwID)
+
+	var condStr string
+	switch c := condition.(type) {
+	case string:
+		condStr = c
+	case fmt.Stringer:
+		condStr = c.String()
+	default:
+		condStr = fmt.Sprintf("%v", c)
+	}
+
+	builder := &IfElseBuilder{
+		workflow:  w,
+		gatewayID: gwID,
+		condition: condStr,
+	}
+
+	if len(thenFn) > 0 && thenFn[0] != nil {
+		thenBranch := &Branch{
+			workflow:      w,
+			gatewayID:     gwID,
+			currentNodeID: gwID,
+			isConditional: true,
+			condition:     condStr,
+		}
+		thenFn[0](thenBranch)
+		if !thenBranch.hasEnded && thenBranch.currentNodeID != gwID {
+			w.pendingMerges = append(w.pendingMerges, thenBranch.currentNodeID)
+		}
+	}
+
+	return builder
+}
+
+// Then defines the branch execution when the If condition evaluates to true.
+func (ie *IfElseBuilder) Then(thenFn func(flow *Branch)) *IfElseBuilder {
+	thenBranch := &Branch{
+		workflow:      ie.workflow,
+		gatewayID:     ie.gatewayID,
+		currentNodeID: ie.gatewayID,
+		isConditional: true,
+		condition:     ie.condition,
+	}
+	thenFn(thenBranch)
+	if !thenBranch.hasEnded && thenBranch.currentNodeID != ie.gatewayID {
+		ie.workflow.pendingMerges = append(ie.workflow.pendingMerges, thenBranch.currentNodeID)
+	}
+	return ie
+}
+
+// ElseIf defines an alternative conditional branch from the same decision gateway.
+func (ie *IfElseBuilder) ElseIf(condition interface{}, thenFn ...func(flow *Branch)) *IfElseBuilder {
+	var condStr string
+	switch c := condition.(type) {
+	case string:
+		condStr = c
+	case fmt.Stringer:
+		condStr = c.String()
+	default:
+		condStr = fmt.Sprintf("%v", c)
+	}
+	ie.condition = condStr
+
+	if len(thenFn) > 0 && thenFn[0] != nil {
+		branch := &Branch{
+			workflow:      ie.workflow,
+			gatewayID:     ie.gatewayID,
+			currentNodeID: ie.gatewayID,
+			isConditional: true,
+			condition:     condStr,
+		}
+		thenFn[0](branch)
+		if !branch.hasEnded && branch.currentNodeID != ie.gatewayID {
+			ie.workflow.pendingMerges = append(ie.workflow.pendingMerges, branch.currentNodeID)
+		}
+	}
+	return ie
+}
+
+// When allows seamlessly switching from If/ElseIf to When...Then semantics.
+func (ie *IfElseBuilder) When(condition interface{}) *WhenBuilder {
+	var condStr string
+	switch c := condition.(type) {
+	case string:
+		condStr = c
+	case fmt.Stringer:
+		condStr = c.String()
+	default:
+		condStr = fmt.Sprintf("%v", c)
+	}
+	return &WhenBuilder{
+		workflow:  ie.workflow,
+		gatewayID: ie.gatewayID,
+		condition: condStr,
+	}
+}
+
+// Else defines the default fallback path when conditions evaluate to false.
+func (ie *IfElseBuilder) Else(elseFn func(flow *Branch)) *Workflow {
+	elseBranch := &Branch{
+		workflow:      ie.workflow,
+		gatewayID:     ie.gatewayID,
+		currentNodeID: ie.gatewayID,
+		isConditional: false,
+	}
+	elseFn(elseBranch)
+	if !elseBranch.hasEnded && elseBranch.currentNodeID != ie.gatewayID {
+		ie.workflow.pendingMerges = append(ie.workflow.pendingMerges, elseBranch.currentNodeID)
+	}
+	return ie.workflow
+}
+
+// Otherwise is a canonical alias for Else.
+func (ie *IfElseBuilder) Otherwise(elseFn func(flow *Branch)) *Workflow {
+	return ie.Else(elseFn)
+}
+
 // When defines a conditional branch path starting condition on the main workflow.
 func (w *Workflow) When(condition interface{}) *WhenBuilder {
 	gwID := fmt.Sprintf("gw_%s_decision", w.currentNodeID)
@@ -532,6 +672,38 @@ func (tb *ThenBuilder) Else(elseFn func(flow *Branch)) *Workflow {
 	}
 
 	return tb.workflow
+}
+
+// Otherwise is a canonical alias for Else on ThenBuilder.
+func (tb *ThenBuilder) Otherwise(elseFn func(flow *Branch)) *Workflow {
+	return tb.Else(elseFn)
+}
+
+// When allows chaining additional conditions (When...Then...When...Then...Else).
+func (tb *ThenBuilder) When(condition interface{}) *WhenBuilder {
+	var condStr string
+	switch c := condition.(type) {
+	case string:
+		condStr = c
+	case fmt.Stringer:
+		condStr = c.String()
+	default:
+		condStr = fmt.Sprintf("%v", c)
+	}
+	return &WhenBuilder{
+		workflow:  tb.workflow,
+		gatewayID: tb.gatewayID,
+		condition: condStr,
+	}
+}
+
+// ElseIf allows chaining alternative conditions onto ThenBuilder.
+func (tb *ThenBuilder) ElseIf(condition interface{}, thenFn ...func(flow *Branch)) *IfElseBuilder {
+	ie := &IfElseBuilder{
+		workflow:  tb.workflow,
+		gatewayID: tb.gatewayID,
+	}
+	return ie.ElseIf(condition, thenFn...)
 }
 
 
@@ -677,6 +849,115 @@ func (tbb *ThenBranchBuilder) Else(elseFn func(sub *Branch)) *Branch {
 	}
 
 	return tbb.branch
+}
+
+// Otherwise is a canonical alias for Else on ThenBranchBuilder.
+func (tbb *ThenBranchBuilder) Otherwise(elseFn func(sub *Branch)) *Branch {
+	return tbb.Else(elseFn)
+}
+
+// If defines a nested canonical conditional branch inside a branch.
+func (b *Branch) If(condition interface{}, thenFn ...func(sub *Branch)) *IfElseBranchBuilder {
+	gwID := fmt.Sprintf("gw_%s_decision", b.currentNodeID)
+	b.workflow.ExclusiveGateway(gwID, "Decision Gateway")
+	b.connectNode(gwID)
+
+	var condStr string
+	switch c := condition.(type) {
+	case string:
+		condStr = c
+	case fmt.Stringer:
+		condStr = c.String()
+	default:
+		condStr = fmt.Sprintf("%v", c)
+	}
+
+	builder := &IfElseBranchBuilder{
+		branch:    b,
+		gatewayID: gwID,
+		condition: condStr,
+	}
+
+	if len(thenFn) > 0 && thenFn[0] != nil {
+		thenBranch := &Branch{
+			workflow:      b.workflow,
+			gatewayID:     gwID,
+			currentNodeID: gwID,
+			isConditional: true,
+			condition:     condStr,
+		}
+		thenFn[0](thenBranch)
+		if !thenBranch.hasEnded && thenBranch.currentNodeID != gwID {
+			b.workflow.pendingMerges = append(b.workflow.pendingMerges, thenBranch.currentNodeID)
+		}
+	}
+
+	return builder
+}
+
+// Then defines branch steps when the nested If condition evaluates to true.
+func (ieb *IfElseBranchBuilder) Then(thenFn func(flow *Branch)) *IfElseBranchBuilder {
+	thenBranch := &Branch{
+		workflow:      ieb.branch.workflow,
+		gatewayID:     ieb.gatewayID,
+		currentNodeID: ieb.gatewayID,
+		isConditional: true,
+		condition:     ieb.condition,
+	}
+	thenFn(thenBranch)
+	if !thenBranch.hasEnded && thenBranch.currentNodeID != ieb.gatewayID {
+		ieb.branch.workflow.pendingMerges = append(ieb.branch.workflow.pendingMerges, thenBranch.currentNodeID)
+	}
+	return ieb
+}
+
+// ElseIf adds an alternative conditional branch from the same decision gateway.
+func (ieb *IfElseBranchBuilder) ElseIf(condition interface{}, thenFn ...func(flow *Branch)) *IfElseBranchBuilder {
+	var condStr string
+	switch c := condition.(type) {
+	case string:
+		condStr = c
+	case fmt.Stringer:
+		condStr = c.String()
+	default:
+		condStr = fmt.Sprintf("%v", c)
+	}
+	ieb.condition = condStr
+
+	if len(thenFn) > 0 && thenFn[0] != nil {
+		branch := &Branch{
+			workflow:      ieb.branch.workflow,
+			gatewayID:     ieb.gatewayID,
+			currentNodeID: ieb.gatewayID,
+			isConditional: true,
+			condition:     condStr,
+		}
+		thenFn[0](branch)
+		if !branch.hasEnded && branch.currentNodeID != ieb.gatewayID {
+			ieb.branch.workflow.pendingMerges = append(ieb.branch.workflow.pendingMerges, branch.currentNodeID)
+		}
+	}
+	return ieb
+}
+
+// Else defines the default fallback path when all nested conditions evaluate to false.
+func (ieb *IfElseBranchBuilder) Else(elseFn func(flow *Branch)) *Branch {
+	elseBranch := &Branch{
+		workflow:      ieb.branch.workflow,
+		gatewayID:     ieb.gatewayID,
+		currentNodeID: ieb.gatewayID,
+		isConditional: false,
+	}
+	elseFn(elseBranch)
+	if !elseBranch.hasEnded && elseBranch.currentNodeID != ieb.gatewayID {
+		ieb.branch.workflow.pendingMerges = append(ieb.branch.workflow.pendingMerges, elseBranch.currentNodeID)
+	}
+	return ieb.branch
+}
+
+// Otherwise is a canonical alias for Else.
+func (ieb *IfElseBranchBuilder) Otherwise(elseFn func(flow *Branch)) *Branch {
+	return ieb.Else(elseFn)
 }
 
 

@@ -11,18 +11,18 @@
 SDK в данном монорепозитории используют двухслойную архитектуру, чтобы оставаться легковесными, единообразными и производительными во всех 10 поддерживаемых языках программирования:
 
 1. **Низкоуровневые сгенерированные клиенты (единственный источник правды)**:
-   * Строятся полностью на основе файла спецификации OpenAPI 3.0: [openapi.yaml](file:///Users/user/github.com/nativebpm/sdk/api/openapi.yaml).
+   * Строятся полностью на основе файла спецификации OpenAPI 3.0: [openapi.yaml](api/openapi.yaml).
    * Автоматически генерируются с помощью `openapi-generator-cli` внутри Docker-контейнера.
    * Отвечают за выполнение HTTP-запросов, маршрутизацию эндпоинтов, сериализацию/десериализацию данных и стандартные модели схем.
 2. **Высокоуровневые Fluent API обертки (написанные вручную)**:
    * Удобные обертки, написанные вручную на каждом языке, для обеспечения безопасного типов, идиоматичного Fluent API (конструкторы цепочек методов, билдеры и воркеры).
    * Основные файлы оберток:
-     - **Go**: [go/fluent_client.go](file:///Users/user/github.com/nativebpm/sdk/go/fluent_client.go)
-     - **TypeScript**: [typescript/src/client.ts](file:///Users/user/github.com/nativebpm/sdk/typescript/src/client.ts)
-     - **Python**: [python/nativebpm/client.py](file:///Users/user/github.com/nativebpm/sdk/python/nativebpm/client.py)
-     - **Dart**: [dart/lib/src/client.dart](file:///Users/user/github.com/nativebpm/sdk/dart/lib/src/client.dart)
-     - **Kotlin**: [kotlin/src/main/kotlin/com/nativebpm/client/Client.kt](file:///Users/user/github.com/nativebpm/sdk/kotlin/src/main/kotlin/com/nativebpm/client/Client.kt)
-     - **Swift**: [swift/NativeBPMClient/Classes/OpenAPIs/Client.swift](file:///Users/user/github.com/nativebpm/sdk/swift/NativeBPMClient/Classes/OpenAPIs/Client.swift)
+     - **Go**: [go/fluent_client.go](go/fluent_client.go)
+     - **TypeScript**: [typescript/src/client.ts](typescript/src/client.ts)
+     - **Python**: [python/nativebpm/client.py](python/nativebpm/client.py)
+     - **Dart**: [dart/lib/src/client.dart](dart/lib/src/client.dart)
+     - **Kotlin**: [kotlin/src/main/kotlin/com/nativebpm/client/Client.kt](kotlin/src/main/kotlin/com/nativebpm/client/Client.kt)
+     - **Swift**: [swift/NativeBPMClient/Classes/OpenAPIs/Client.swift](swift/NativeBPMClient/Classes/OpenAPIs/Client.swift)
 
 ---
 
@@ -40,7 +40,7 @@ SDK в данном монорепозитории используют двух
 Для добавления новых функций или изменения существующих эндпоинтов API следуйте этой последовательности шагов:
 
 ### Шаг 1: Обновление спецификации OpenAPI
-* Отредактируйте центральный файл контракта: [openapi.yaml](file:///Users/user/github.com/nativebpm/sdk/api/openapi.yaml).
+* Отредактируйте центральный файл контракта: [openapi.yaml](api/openapi.yaml).
 * Опишите новые пути (paths), HTTP-методы, параметры запросов, тела запросов и схемы ответов.
 * Используйте понятные описания и обязательно указывайте корректный `operationId` (он сопоставляется с именами генерируемых методов клиента).
 
