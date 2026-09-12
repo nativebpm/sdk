@@ -16,6 +16,7 @@ type XMLDefinitions struct {
 	XmlnsBpmndi     string         `xml:"xmlns:bpmndi,attr"`
 	XmlnsOmgdc      string         `xml:"xmlns:omgdc,attr"`
 	XmlnsOmgdi      string         `xml:"xmlns:omgdi,attr"`
+	XmlnsBioc       string         `xml:"xmlns:bioc,attr,omitempty"`
 	TargetNamespace string         `xml:"targetNamespace,attr"`
 	ID              string         `xml:"id,attr"`
 	Process         XMLProcess     `xml:"process"`
@@ -113,6 +114,8 @@ type XMLBPMNPlane struct {
 type XMLBPMNShape struct {
 	ID          string    `xml:"id,attr"`
 	BPMNElement string    `xml:"bpmnElement,attr"`
+	BiocStroke  string    `xml:"bioc:stroke,attr,omitempty"`
+	BiocFill    string    `xml:"bioc:fill,attr,omitempty"`
 	Bounds      XMLBounds `xml:"omgdc:Bounds"`
 }
 
@@ -132,14 +135,6 @@ type XMLBPMNEdge struct {
 type XMLWaypoint struct {
 	X float64 `xml:"x,attr"`
 	Y float64 `xml:"y,attr"`
-}
-
-// Coords represents computed bounds of a node.
-type Coords struct {
-	X      float64
-	Y      float64
-	Width  float64
-	Height float64
 }
 
 // ToBPMNXML compiles the Workflow into a standard BPMN 2.0 XML with complete BPMNDI layout.
@@ -184,8 +179,8 @@ func (w *Workflow) ToBPMNXML() ([]byte, error) {
 		}
 	}
 
-	// 2. Compute Layout (BFS Level-based auto layout)
-	coords := computeWorkflowLayout(nodes, flows)
+	// 2. Compute Layout with LayoutOptions and Zero-Overlap Engine
+	coords := computeWorkflowLayout(nodes, flows, w.LayoutOpts)
 
 	// 3. Build XML Process
 	proc := XMLProcess{
@@ -303,9 +298,16 @@ func (w *Workflow) ToBPMNXML() ([]byte, error) {
 		if !ok {
 			continue
 		}
+		var stroke, fill string
+		if colors, ok := w.NodeColors[id]; ok {
+			stroke = colors[0]
+			fill = colors[1]
+		}
 		plane.Shapes = append(plane.Shapes, XMLBPMNShape{
 			ID:          fmt.Sprintf("%s_di", id),
 			BPMNElement: id,
+			BiocStroke:  stroke,
+			BiocFill:    fill,
 			Bounds: XMLBounds{
 				X:      c.X,
 				Y:      c.Y,
@@ -421,12 +423,18 @@ func (w *Workflow) ToBPMNXML() ([]byte, error) {
 		plane.Edges = append(plane.Edges, edge)
 	}
 
+	var xmlnsBioc string
+	if len(w.NodeColors) > 0 {
+		xmlnsBioc = "http://bpmn.io/schema/bpmn/biocolor/1.0"
+	}
+
 	defs := XMLDefinitions{
 		XmlnsXsi:        "http://www.w3.org/2001/XMLSchema-instance",
 		Xmlns:           "http://www.omg.org/spec/BPMN/20100524/MODEL",
 		XmlnsBpmndi:     "http://www.omg.org/spec/BPMN/20100524/DI",
 		XmlnsOmgdc:      "http://www.omg.org/spec/DD/20100524/DC",
 		XmlnsOmgdi:      "http://www.omg.org/spec/DD/20100524/DI",
+		XmlnsBioc:       xmlnsBioc,
 		TargetNamespace: "http://bpmn.io/schema/bpmn",
 		ID:              "Definitions_1",
 		Process:         proc,
@@ -447,8 +455,30 @@ func (w *Workflow) ToBPMNXML() ([]byte, error) {
 	return buf.Bytes(), nil
 }
 
-// computeWorkflowLayout calculates coordinates using BFS level layout.
-func computeWorkflowLayout(nodes []map[string]interface{}, flows []map[string]interface{}) map[string]Coords {
+// computeWorkflowLayout calculates coordinates using LayoutOptions and Zero-Overlap collision resolution.
+func computeWorkflowLayout(nodes []map[string]interface{}, flows []map[string]interface{}, opts LayoutOptions) map[string]Coords {
+	if opts.Preset == "" {
+		opts.Preset = LayoutTiered
+	}
+	if opts.ColSpacing <= 0 {
+		opts.ColSpacing = 240.0
+	}
+	if opts.RowSpacing <= 0 {
+		opts.RowSpacing = 130.0
+	}
+	if opts.StartX <= 0 {
+		opts.StartX = 150.0
+	}
+	if opts.StartY <= 0 {
+		opts.StartY = 200.0
+	}
+	if opts.CustomCoords == nil {
+		opts.CustomCoords = make(map[string]Coords)
+	}
+	if opts.NodeTiers == nil {
+		opts.NodeTiers = make(map[string]int)
+	}
+
 	coords := make(map[string]Coords)
 	if len(nodes) == 0 {
 		return coords
@@ -547,6 +577,25 @@ func computeWorkflowLayout(nodes []map[string]interface{}, flows []map[string]in
 		}
 	}
 
+	// Apply manual tiers if specified
+	for id, tier := range opts.NodeTiers {
+		nodeLevels[id] = tier
+	}
+
+	// LayoutCenterHub preset adjustments: Hub sits in the center with fan-out
+	if opts.Preset == LayoutCenterHub && opts.CenterHubID != "" {
+		hubLvl := nodeLevels[opts.CenterHubID]
+		if hubLvl == 0 {
+			hubLvl = 1
+			nodeLevels[opts.CenterHubID] = hubLvl
+		}
+		for _, target := range outgoing[opts.CenterHubID] {
+			if _, manual := opts.NodeTiers[target]; !manual {
+				nodeLevels[target] = hubLvl + 1
+			}
+		}
+	}
+
 	for _, n := range nodes {
 		id, _ := n["id"].(string)
 		if id != "" {
@@ -556,6 +605,7 @@ func computeWorkflowLayout(nodes []map[string]interface{}, flows []map[string]in
 		}
 	}
 
+	// Group nodes by level to space them out vertically
 	levelGroups := make(map[int][]string)
 	for _, n := range nodes {
 		id, _ := n["id"].(string)
@@ -565,17 +615,18 @@ func computeWorkflowLayout(nodes []map[string]interface{}, flows []map[string]in
 		}
 	}
 
-	const maxCols = 5
+	// Assign absolute coordinates based on LayoutPreset
 	for lvl, nIDs := range levelGroups {
-		row := lvl / maxCols
-		col := lvl % maxCols
-		if row%2 != 0 {
-			col = (maxCols - 1) - col
-		}
-		x := 150.0 + float64(col)*240.0
+		x := opts.StartX + float64(lvl)*opts.ColSpacing
 		count := len(nIDs)
 		for i, nID := range nIDs {
-			y := 200.0 + float64(row)*220.0 + (float64(i)-float64(count-1)/2.0)*150.0
+			var y float64
+			if opts.Preset == LayoutLinear {
+				y = opts.StartY + float64(i)*opts.RowSpacing
+			} else {
+				// Tiered and CenterHub: symmetrically center vertically around StartY
+				y = opts.StartY + (float64(i)-float64(count-1)/2.0)*opts.RowSpacing
+			}
 
 			var w, h float64 = 100.0, 80.0
 			for _, n := range nodes {
@@ -599,6 +650,61 @@ func computeWorkflowLayout(nodes []map[string]interface{}, flows []map[string]in
 				Width:  w,
 				Height: h,
 			}
+		}
+	}
+
+	// Zero-Overlap Guarantee (Collision detection & resolution)
+	const minGap = 25.0
+	nodeList := make([]string, 0, len(coords))
+	for id := range coords {
+		nodeList = append(nodeList, id)
+	}
+
+	for pass := 0; pass < 8; pass++ {
+		collisionFound := false
+		for i := 0; i < len(nodeList); i++ {
+			idA := nodeList[i]
+			cA := coords[idA]
+			for j := i + 1; j < len(nodeList); j++ {
+				idB := nodeList[j]
+				cB := coords[idB]
+
+				hOverlap := (cA.Width+cB.Width)/2.0 + minGap - math.Abs((cA.X+cA.Width/2.0)-(cB.X+cB.Width/2.0))
+				vOverlap := (cA.Height+cB.Height)/2.0 + minGap - math.Abs((cA.Y+cA.Height/2.0)-(cB.Y+cB.Height/2.0))
+
+				if hOverlap > 0 && vOverlap > 0 {
+					collisionFound = true
+					if cB.Y >= cA.Y {
+						shift := (cA.Y + cA.Height + minGap) - cB.Y
+						cB.Y += shift
+						coords[idB] = cB
+					} else {
+						shift := (cB.Y + cB.Height + minGap) - cA.Y
+						cA.Y += shift
+						coords[idA] = cA
+					}
+				}
+			}
+		}
+		if !collisionFound {
+			break
+		}
+	}
+
+	// Apply Custom Coordinates overrides
+	for id, custom := range opts.CustomCoords {
+		if c, exists := coords[id]; exists {
+			if custom.Width > 0 {
+				c.Width = custom.Width
+			}
+			if custom.Height > 0 {
+				c.Height = custom.Height
+			}
+			c.X = custom.X
+			c.Y = custom.Y
+			coords[id] = c
+		} else {
+			coords[id] = custom
 		}
 	}
 
