@@ -456,7 +456,158 @@ func (w *Workflow) ToBPMNXML() ([]byte, error) {
 		return nil, err
 	}
 
-	return buf.Bytes(), nil
+	rawXML := buf.Bytes()
+	if w.LayoutOpts.Orientation == OrientationVertical {
+		return TransposeBPMNXML(rawXML)
+	}
+
+	return rawXML, nil
+}
+
+// TransposeBPMNXML transposes a standard horizontal BPMN 2.0 XML diagram into a vertical waterfall layout.
+// It swaps shape center positions (Bounds) and re-routes sequence flow waypoints to top/bottom boundary ports.
+func TransposeBPMNXML(xmlBytes []byte) ([]byte, error) {
+	var defs XMLDefinitions
+	if err := xml.Unmarshal(xmlBytes, &defs); err != nil {
+		return nil, fmt.Errorf("failed to unmarshal BPMN XML for transposition: %w", err)
+	}
+
+	origBounds := make(map[string]XMLBounds)
+	for _, shape := range defs.BPMNDiagram.BPMNPlane.Shapes {
+		origBounds[shape.BPMNElement] = shape.Bounds
+	}
+
+	newBounds := make(map[string]XMLBounds)
+	for i := range defs.BPMNDiagram.BPMNPlane.Shapes {
+		shape := &defs.BPMNDiagram.BPMNPlane.Shapes[i]
+		orig := origBounds[shape.BPMNElement]
+
+		cx := orig.X + orig.Width/2.0
+		cy := orig.Y + orig.Height/2.0
+
+		newCx := cy
+		newCy := cx
+
+		shape.Bounds.X = newCx - orig.Width/2.0
+		shape.Bounds.Y = newCy - orig.Height/2.0
+		shape.Bounds.Width = orig.Width
+		shape.Bounds.Height = orig.Height
+
+		newBounds[shape.BPMNElement] = shape.Bounds
+	}
+
+	flowMap := make(map[string]XMLSequenceFlow)
+	for _, f := range defs.Process.SequenceFlows {
+		flowMap[f.ID] = f
+	}
+
+	getTransposedEndpoint := func(ox, oy float64, orig, newEl XMLBounds) XMLWaypoint {
+		distRight := math.Abs(ox - (orig.X + orig.Width))
+		distLeft := math.Abs(ox - orig.X)
+		distBottom := math.Abs(oy - (orig.Y + orig.Height))
+		distTop := math.Abs(oy - orig.Y)
+
+		minDist := math.Min(math.Min(distRight, distLeft), math.Min(distBottom, distTop))
+
+		if minDist == distRight {
+			return XMLWaypoint{
+				X: newEl.X + newEl.Width/2.0,
+				Y: newEl.Y + newEl.Height,
+			}
+		}
+		if minDist == distLeft {
+			return XMLWaypoint{
+				X: newEl.X + newEl.Width/2.0,
+				Y: newEl.Y,
+			}
+		}
+		if minDist == distBottom {
+			return XMLWaypoint{
+				X: newEl.X + newEl.Width,
+				Y: newEl.Y + newEl.Height/2.0,
+			}
+		}
+		return XMLWaypoint{
+			X: newEl.X,
+			Y: newEl.Y + newEl.Height/2.0,
+		}
+	}
+
+	for i := range defs.BPMNDiagram.BPMNPlane.Edges {
+		edge := &defs.BPMNDiagram.BPMNPlane.Edges[i]
+		flow, exists := flowMap[edge.BPMNElement]
+		if !exists || len(edge.Waypoints) < 2 {
+			for j := range edge.Waypoints {
+				wp := &edge.Waypoints[j]
+				wp.X, wp.Y = wp.Y, wp.X
+			}
+			continue
+		}
+
+		origSrc, hasSrc := origBounds[flow.SourceRef]
+		origDst, hasDst := origBounds[flow.TargetRef]
+		newSrc := newBounds[flow.SourceRef]
+		newDst := newBounds[flow.TargetRef]
+
+		if !hasSrc || !hasDst {
+			for j := range edge.Waypoints {
+				wp := &edge.Waypoints[j]
+				wp.X, wp.Y = wp.Y, wp.X
+			}
+			continue
+		}
+
+		origWps := make([]XMLWaypoint, len(edge.Waypoints))
+		copy(origWps, edge.Waypoints)
+
+		startWp := getTransposedEndpoint(origWps[0].X, origWps[0].Y, origSrc, newSrc)
+		endWp := getTransposedEndpoint(origWps[len(origWps)-1].X, origWps[len(origWps)-1].Y, origDst, newDst)
+
+		newWps := []XMLWaypoint{startWp}
+
+		if len(origWps) > 2 {
+			midX := (startWp.X + endWp.X) / 2.0
+			midY1 := startWp.Y + 30.0
+			if origWps[1].X < origWps[0].X {
+				midY1 = startWp.Y - 30.0
+			}
+
+			midY2 := endWp.Y - 30.0
+			if origWps[len(origWps)-2].X > origWps[len(origWps)-1].X {
+				midY2 = endWp.Y + 30.0
+			}
+
+			isRightToLeft := (newDst.X + newDst.Width) <= newSrc.X
+			isLeftToRight := (newSrc.X + newSrc.Width) <= newDst.X
+
+			if isLeftToRight || isRightToLeft {
+				newWps = append(newWps,
+					XMLWaypoint{X: startWp.X, Y: midY1},
+					XMLWaypoint{X: midX, Y: midY1},
+					XMLWaypoint{X: midX, Y: midY2},
+					XMLWaypoint{X: endWp.X, Y: midY2},
+				)
+			} else {
+				newWps = append(newWps,
+					XMLWaypoint{X: startWp.X, Y: (startWp.Y + endWp.Y) / 2.0},
+					XMLWaypoint{X: endWp.X, Y: (startWp.Y + endWp.Y) / 2.0},
+				)
+			}
+		}
+
+		newWps = append(newWps, endWp)
+		edge.Waypoints = newWps
+	}
+
+	var outBuf bytes.Buffer
+	outBuf.WriteString(xml.Header)
+	outEnc := xml.NewEncoder(&outBuf)
+	outEnc.Indent("", "  ")
+	if err := outEnc.Encode(defs); err != nil {
+		return nil, err
+	}
+
+	return outBuf.Bytes(), nil
 }
 
 // computeWorkflowLayout calculates coordinates using LayoutOptions and Zero-Overlap collision resolution.

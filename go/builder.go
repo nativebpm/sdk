@@ -23,9 +23,17 @@ type Coords struct {
 	Height float64 `json:"height,omitempty"`
 }
 
+type LayoutOrientation string
+
+const (
+	OrientationHorizontal LayoutOrientation = "horizontal"
+	OrientationVertical   LayoutOrientation = "vertical"
+)
+
 type LayoutOptions struct {
 	WorkflowID   string            `json:"workflowId,omitempty"`
 	Preset       LayoutPreset      `json:"preset,omitempty"`
+	Orientation  LayoutOrientation `json:"orientation,omitempty"`
 	StartX       float64           `json:"startX,omitempty"`
 	StartY       float64           `json:"startY,omitempty"`
 	ColSpacing   float64           `json:"colSpacing,omitempty"`
@@ -38,6 +46,7 @@ type LayoutOptions struct {
 func DefaultLayoutOptions() LayoutOptions {
 	return LayoutOptions{
 		Preset:       LayoutAuto,
+		Orientation:  OrientationHorizontal,
 		StartX:       150.0,
 		StartY:       200.0,
 		ColSpacing:   240.0,
@@ -122,6 +131,12 @@ func NewWorkflow(id, name string) *Workflow {
 // SetLayoutPreset configures the automated layout engine preset.
 func (w *Workflow) SetLayoutPreset(preset LayoutPreset) *Workflow {
 	w.LayoutOpts.Preset = preset
+	return w
+}
+
+// SetOrientation configures the layout orientation (horizontal or vertical).
+func (w *Workflow) SetOrientation(orientation LayoutOrientation) *Workflow {
+	w.LayoutOpts.Orientation = orientation
 	return w
 }
 

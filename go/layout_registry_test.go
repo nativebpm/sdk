@@ -207,3 +207,42 @@ func TestLayout_PresetsProduceDistinctCoordinates(t *testing.T) {
 	}
 }
 
+func TestLayout_Orientation_TransposeBPMNXML(t *testing.T) {
+	wf := nativebpm.NewWorkflow("transposition_test", "Vertical Transposition Test")
+	wf.Start("start").
+		Service("task1", "Step 1", "topic1").
+		Service("task2", "Step 2", "topic2").
+		End("end", "End")
+
+	// Standard horizontal XML
+	horizXML, err := wf.ToBPMNXML()
+	if err != nil {
+		t.Fatalf("ToBPMNXML failed: %v", err)
+	}
+
+	// Transpose to vertical
+	vertXML, err := nativebpm.TransposeBPMNXML(horizXML)
+	if err != nil {
+		t.Fatalf("TransposeBPMNXML failed: %v", err)
+	}
+
+	if string(vertXML) == string(horizXML) {
+		t.Errorf("Transposed XML must be different from horizontal XML!")
+	}
+
+	// Also test workflow with Orientation: OrientationVertical
+	opts := nativebpm.DefaultLayoutOptions()
+	opts.Orientation = nativebpm.OrientationVertical
+	wf.SetLayoutOptions(opts)
+
+	autoVertXML, err := wf.ToBPMNXML()
+	if err != nil {
+		t.Fatalf("ToBPMNXML with OrientationVertical failed: %v", err)
+	}
+
+	if string(autoVertXML) == string(horizXML) {
+		t.Errorf("ToBPMNXML with OrientationVertical must produce vertical layout!")
+	}
+}
+
+
