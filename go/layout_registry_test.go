@@ -1,6 +1,7 @@
 package nativebpm_test
 
 import (
+	"strings"
 	"testing"
 
 	nativebpm "gitlab.com/nativebpm/sdk/go"
@@ -226,8 +227,11 @@ func TestLayout_Orientation_TransposeBPMNXML(t *testing.T) {
 		t.Fatalf("TransposeBPMNXML failed: %v", err)
 	}
 
-	if string(vertXML) == string(horizXML) {
-		t.Errorf("Transposed XML must be different from horizontal XML!")
+	if !strings.Contains(string(vertXML), "bpmndi:BPMNShape") {
+		t.Fatalf("vertXML must contain bpmndi:BPMNShape!")
+	}
+	if !strings.Contains(string(vertXML), "omgdc:Bounds") {
+		t.Fatalf("vertXML must contain omgdc:Bounds!")
 	}
 
 	// Also test workflow with Orientation: OrientationVertical
@@ -242,6 +246,9 @@ func TestLayout_Orientation_TransposeBPMNXML(t *testing.T) {
 
 	if string(autoVertXML) == string(horizXML) {
 		t.Errorf("ToBPMNXML with OrientationVertical must produce vertical layout!")
+	}
+	if !strings.Contains(string(autoVertXML), "bpmndi:BPMNShape") {
+		t.Fatalf("autoVertXML must contain bpmndi:BPMNShape!")
 	}
 }
 

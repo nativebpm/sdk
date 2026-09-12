@@ -5,6 +5,9 @@ import (
 	"encoding/xml"
 	"fmt"
 	"math"
+	"regexp"
+	"strconv"
+	"strings"
 )
 
 // XML Schema structures for OMG BPMN 2.0 and BPMN-DI
@@ -185,6 +188,18 @@ func (w *Workflow) ToBPMNXML() ([]byte, error) {
 		layoutOpts.WorkflowID = w.ID
 	}
 	coords := computeWorkflowLayout(nodes, flows, layoutOpts)
+
+	if layoutOpts.Orientation == OrientationVertical {
+		for id, c := range coords {
+			cx := c.X + c.Width/2.0
+			cy := c.Y + c.Height/2.0
+			newCx := cy
+			newCy := cx
+			c.X = newCx - c.Width/2.0
+			c.Y = newCy - c.Height/2.0
+			coords[id] = c
+		}
+	}
 
 	// 3. Build XML Process
 	proc := XMLProcess{
@@ -390,7 +405,19 @@ func (w *Workflow) ToBPMNXML() ([]byte, error) {
 			BPMNElement: fid,
 		}
 
-		if srcCoord.Y != dstCoord.Y {
+		if layoutOpts.Orientation == OrientationVertical {
+			if math.Abs(startWp.X-endWp.X) > 5.0 {
+				midY := (startWp.Y + endWp.Y) / 2.0
+				edge.Waypoints = []XMLWaypoint{
+					startWp,
+					{X: startWp.X, Y: midY},
+					{X: endWp.X, Y: midY},
+					endWp,
+				}
+			} else {
+				edge.Waypoints = []XMLWaypoint{startWp, endWp}
+			}
+		} else if srcCoord.Y != dstCoord.Y {
 			midY := (startWp.Y + endWp.Y) / 2.0
 			if math.Abs(dstCoord.X-srcCoord.X) > 250.0 {
 				maxY := srcCoord.Y
@@ -456,92 +483,146 @@ func (w *Workflow) ToBPMNXML() ([]byte, error) {
 		return nil, err
 	}
 
-	rawXML := buf.Bytes()
-	if w.LayoutOpts.Orientation == OrientationVertical {
-		return TransposeBPMNXML(rawXML)
-	}
-
-	return rawXML, nil
+	return buf.Bytes(), nil
 }
 
 // TransposeBPMNXML transposes a standard horizontal BPMN 2.0 XML diagram into a vertical waterfall layout.
 // It swaps shape center positions (Bounds) and re-routes sequence flow waypoints to top/bottom boundary ports.
 func TransposeBPMNXML(xmlBytes []byte) ([]byte, error) {
-	var defs XMLDefinitions
-	if err := xml.Unmarshal(xmlBytes, &defs); err != nil {
-		return nil, fmt.Errorf("failed to unmarshal BPMN XML for transposition: %w", err)
+	xmlStr := string(xmlBytes)
+
+	// 1. Map sequence flows
+	reFlow := regexp.MustCompile(`<[^:]*:?sequenceFlow\s+([^>]+)>`)
+	reAttr := regexp.MustCompile(`([a-zA-Z0-9_:]+)="([^"]*)"`)
+
+	type FlowInfo struct {
+		SourceRef string
+		TargetRef string
+	}
+	flows := make(map[string]FlowInfo)
+	for _, match := range reFlow.FindAllStringSubmatch(xmlStr, -1) {
+		attrs := make(map[string]string)
+		for _, attr := range reAttr.FindAllStringSubmatch(match[1], -1) {
+			attrs[attr[1]] = attr[2]
+		}
+		if id, ok := attrs["id"]; ok {
+			flows[id] = FlowInfo{
+				SourceRef: attrs["sourceRef"],
+				TargetRef: attrs["targetRef"],
+			}
+		}
 	}
 
-	origBounds := make(map[string]XMLBounds)
-	for _, shape := range defs.BPMNDiagram.BPMNPlane.Shapes {
-		origBounds[shape.BPMNElement] = shape.Bounds
+	// 2. Map and transpose shape bounds
+	type BoundsInfo struct {
+		X, Y, W, H float64
+	}
+	origBounds := make(map[string]BoundsInfo)
+	newBounds := make(map[string]BoundsInfo)
+
+	reShape := regexp.MustCompile(`(?s)<([^:]*:?BPMNShape)\s+([^>]*bpmnElement="([^"]+)"[^>]*)>(.*?)</[^:]*:?BPMNShape>`)
+	reBounds := regexp.MustCompile(`(?s)<([^:]*:?Bounds)\s+([^>]+)(/?>)`)
+
+	for _, match := range reShape.FindAllStringSubmatch(xmlStr, -1) {
+		bpmnElem := match[3]
+		inner := match[4]
+		bMatch := reBounds.FindStringSubmatch(inner)
+		if len(bMatch) > 2 {
+			attrs := make(map[string]string)
+			for _, attr := range reAttr.FindAllStringSubmatch(bMatch[2], -1) {
+				attrs[attr[1]] = attr[2]
+			}
+			x, _ := strconv.ParseFloat(attrs["x"], 64)
+			y, _ := strconv.ParseFloat(attrs["y"], 64)
+			w, _ := strconv.ParseFloat(attrs["width"], 64)
+			h, _ := strconv.ParseFloat(attrs["height"], 64)
+
+			orig := BoundsInfo{X: x, Y: y, W: w, H: h}
+			origBounds[bpmnElem] = orig
+
+			cx := x + w/2.0
+			cy := y + h/2.0
+			newCx := cy
+			newCy := cx
+
+			newX := newCx - w/2.0
+			newY := newCy - h/2.0
+			newBounds[bpmnElem] = BoundsInfo{X: newX, Y: newY, W: w, H: h}
+		}
 	}
 
-	newBounds := make(map[string]XMLBounds)
-	for i := range defs.BPMNDiagram.BPMNPlane.Shapes {
-		shape := &defs.BPMNDiagram.BPMNPlane.Shapes[i]
-		orig := origBounds[shape.BPMNElement]
+	// Replace all shape bounds in XML
+	xmlStr = reShape.ReplaceAllStringFunc(xmlStr, func(shapeXML string) string {
+		match := reShape.FindStringSubmatch(shapeXML)
+		if len(match) < 4 {
+			return shapeXML
+		}
+		bpmnElem := match[3]
+		nb, exists := newBounds[bpmnElem]
+		if !exists {
+			return shapeXML
+		}
+		return reBounds.ReplaceAllStringFunc(shapeXML, func(bXML string) string {
+			reX := regexp.MustCompile(`\bx="[^"]*"`)
+			reY := regexp.MustCompile(`\by="[^"]*"`)
+			res := reX.ReplaceAllString(bXML, fmt.Sprintf(`x="%.0f"`, nb.X))
+			res = reY.ReplaceAllString(res, fmt.Sprintf(`y="%.0f"`, nb.Y))
+			return res
+		})
+	})
 
-		cx := orig.X + orig.Width/2.0
-		cy := orig.Y + orig.Height/2.0
-
-		newCx := cy
-		newCy := cx
-
-		shape.Bounds.X = newCx - orig.Width/2.0
-		shape.Bounds.Y = newCy - orig.Height/2.0
-		shape.Bounds.Width = orig.Width
-		shape.Bounds.Height = orig.Height
-
-		newBounds[shape.BPMNElement] = shape.Bounds
-	}
-
-	flowMap := make(map[string]XMLSequenceFlow)
-	for _, f := range defs.Process.SequenceFlows {
-		flowMap[f.ID] = f
-	}
-
-	getTransposedEndpoint := func(ox, oy float64, orig, newEl XMLBounds) XMLWaypoint {
-		distRight := math.Abs(ox - (orig.X + orig.Width))
+	// 3. Helper for transposed endpoints
+	getTransposedEndpoint := func(ox, oy float64, orig, newEl BoundsInfo) (float64, float64) {
+		distRight := math.Abs(ox - (orig.X + orig.W))
 		distLeft := math.Abs(ox - orig.X)
-		distBottom := math.Abs(oy - (orig.Y + orig.Height))
+		distBottom := math.Abs(oy - (orig.Y + orig.H))
 		distTop := math.Abs(oy - orig.Y)
-
 		minDist := math.Min(math.Min(distRight, distLeft), math.Min(distBottom, distTop))
 
-		if minDist == distRight {
-			return XMLWaypoint{
-				X: newEl.X + newEl.Width/2.0,
-				Y: newEl.Y + newEl.Height,
-			}
+		if minDist == distRight { // was right -> becomes bottom
+			return newEl.X + newEl.W/2.0, newEl.Y + newEl.H
 		}
-		if minDist == distLeft {
-			return XMLWaypoint{
-				X: newEl.X + newEl.Width/2.0,
-				Y: newEl.Y,
-			}
+		if minDist == distLeft { // was left -> becomes top
+			return newEl.X + newEl.W/2.0, newEl.Y
 		}
-		if minDist == distBottom {
-			return XMLWaypoint{
-				X: newEl.X + newEl.Width,
-				Y: newEl.Y + newEl.Height/2.0,
-			}
+		if minDist == distBottom { // was bottom -> becomes right
+			return newEl.X + newEl.W, newEl.Y + newEl.H/2.0
 		}
-		return XMLWaypoint{
-			X: newEl.X,
-			Y: newEl.Y + newEl.Height/2.0,
-		}
+		return newEl.X, newEl.Y + newEl.H/2.0
 	}
 
-	for i := range defs.BPMNDiagram.BPMNPlane.Edges {
-		edge := &defs.BPMNDiagram.BPMNPlane.Edges[i]
-		flow, exists := flowMap[edge.BPMNElement]
-		if !exists || len(edge.Waypoints) < 2 {
-			for j := range edge.Waypoints {
-				wp := &edge.Waypoints[j]
-				wp.X, wp.Y = wp.Y, wp.X
-			}
-			continue
+	// 4. Replace edge waypoints
+	reEdge := regexp.MustCompile(`(?s)<([^:]*:?BPMNEdge)\s+([^>]*bpmnElement="([^"]+)"[^>]*)>(.*?)</[^:]*:?BPMNEdge>`)
+	reWaypoint := regexp.MustCompile(`<([^:]*:?waypoint)\s+([^>]+)(/?>)`)
+
+	xmlStr = reEdge.ReplaceAllStringFunc(xmlStr, func(edgeXML string) string {
+		match := reEdge.FindStringSubmatch(edgeXML)
+		if len(match) < 4 {
+			return edgeXML
+		}
+		tagName := match[1]
+		tagAttrs := match[2]
+		flowID := match[3]
+		inner := match[4]
+
+		flow, hasFlow := flows[flowID]
+		wpMatches := reWaypoint.FindAllStringSubmatch(inner, -1)
+		if !hasFlow || len(wpMatches) < 2 {
+			newInner := reWaypoint.ReplaceAllStringFunc(inner, func(wpXML string) string {
+				wMatch := reWaypoint.FindStringSubmatch(wpXML)
+				attrs := make(map[string]string)
+				for _, attr := range reAttr.FindAllStringSubmatch(wMatch[2], -1) {
+					attrs[attr[1]] = attr[2]
+				}
+				x := attrs["x"]
+				y := attrs["y"]
+				reX := regexp.MustCompile(`\bx="[^"]*"`)
+				reY := regexp.MustCompile(`\by="[^"]*"`)
+				res := reX.ReplaceAllString(wpXML, fmt.Sprintf(`x="%s"`, y))
+				res = reY.ReplaceAllString(res, fmt.Sprintf(`y="%s"`, x))
+				return res
+			})
+			return fmt.Sprintf("<%s %s>%s</%s>", tagName, tagAttrs, newInner, tagName)
 		}
 
 		origSrc, hasSrc := origBounds[flow.SourceRef]
@@ -550,64 +631,45 @@ func TransposeBPMNXML(xmlBytes []byte) ([]byte, error) {
 		newDst := newBounds[flow.TargetRef]
 
 		if !hasSrc || !hasDst {
-			for j := range edge.Waypoints {
-				wp := &edge.Waypoints[j]
-				wp.X, wp.Y = wp.Y, wp.X
-			}
-			continue
+			return edgeXML
 		}
 
-		origWps := make([]XMLWaypoint, len(edge.Waypoints))
-		copy(origWps, edge.Waypoints)
+		firstWpAttrs := make(map[string]string)
+		for _, attr := range reAttr.FindAllStringSubmatch(wpMatches[0][2], -1) {
+			firstWpAttrs[attr[1]] = attr[2]
+		}
+		fx, _ := strconv.ParseFloat(firstWpAttrs["x"], 64)
+		fy, _ := strconv.ParseFloat(firstWpAttrs["y"], 64)
 
-		startWp := getTransposedEndpoint(origWps[0].X, origWps[0].Y, origSrc, newSrc)
-		endWp := getTransposedEndpoint(origWps[len(origWps)-1].X, origWps[len(origWps)-1].Y, origDst, newDst)
+		lastWpAttrs := make(map[string]string)
+		for _, attr := range reAttr.FindAllStringSubmatch(wpMatches[len(wpMatches)-1][2], -1) {
+			lastWpAttrs[attr[1]] = attr[2]
+		}
+		lx, _ := strconv.ParseFloat(lastWpAttrs["x"], 64)
+		ly, _ := strconv.ParseFloat(lastWpAttrs["y"], 64)
 
-		newWps := []XMLWaypoint{startWp}
+		startX, startY := getTransposedEndpoint(fx, fy, origSrc, newSrc)
+		endX, endY := getTransposedEndpoint(lx, ly, origDst, newDst)
 
-		if len(origWps) > 2 {
-			midX := (startWp.X + endWp.X) / 2.0
-			midY1 := startWp.Y + 30.0
-			if origWps[1].X < origWps[0].X {
-				midY1 = startWp.Y - 30.0
-			}
-
-			midY2 := endWp.Y - 30.0
-			if origWps[len(origWps)-2].X > origWps[len(origWps)-1].X {
-				midY2 = endWp.Y + 30.0
-			}
-
-			isRightToLeft := (newDst.X + newDst.Width) <= newSrc.X
-			isLeftToRight := (newSrc.X + newSrc.Width) <= newDst.X
-
-			if isLeftToRight || isRightToLeft {
-				newWps = append(newWps,
-					XMLWaypoint{X: startWp.X, Y: midY1},
-					XMLWaypoint{X: midX, Y: midY1},
-					XMLWaypoint{X: midX, Y: midY2},
-					XMLWaypoint{X: endWp.X, Y: midY2},
-				)
-			} else {
-				newWps = append(newWps,
-					XMLWaypoint{X: startWp.X, Y: (startWp.Y + endWp.Y) / 2.0},
-					XMLWaypoint{X: endWp.X, Y: (startWp.Y + endWp.Y) / 2.0},
-				)
-			}
+		wpPrefix := "omgdi:waypoint"
+		if strings.Contains(wpMatches[0][1], ":") {
+			wpPrefix = wpMatches[0][1]
 		}
 
-		newWps = append(newWps, endWp)
-		edge.Waypoints = newWps
-	}
+		var newWpsXML strings.Builder
+		newWpsXML.WriteString(fmt.Sprintf("\n        <%s x=\"%.0f\" y=\"%.0f\"></%s>", wpPrefix, startX, startY, wpPrefix))
 
-	var outBuf bytes.Buffer
-	outBuf.WriteString(xml.Header)
-	outEnc := xml.NewEncoder(&outBuf)
-	outEnc.Indent("", "  ")
-	if err := outEnc.Encode(defs); err != nil {
-		return nil, err
-	}
+		if math.Abs(startX-endX) > 5.0 {
+			midY := (startY + endY) / 2.0
+			newWpsXML.WriteString(fmt.Sprintf("\n        <%s x=\"%.0f\" y=\"%.0f\"></%s>", wpPrefix, startX, midY, wpPrefix))
+			newWpsXML.WriteString(fmt.Sprintf("\n        <%s x=\"%.0f\" y=\"%.0f\"></%s>", wpPrefix, endX, midY, wpPrefix))
+		}
+		newWpsXML.WriteString(fmt.Sprintf("\n        <%s x=\"%.0f\" y=\"%.0f\"></%s>\n      ", wpPrefix, endX, endY, wpPrefix))
 
-	return outBuf.Bytes(), nil
+		return fmt.Sprintf("<%s %s>%s</%s>", tagName, tagAttrs, newWpsXML.String(), tagName)
+	})
+
+	return []byte(xmlStr), nil
 }
 
 // computeWorkflowLayout calculates coordinates using LayoutOptions and Zero-Overlap collision resolution.
