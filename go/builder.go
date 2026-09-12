@@ -24,6 +24,7 @@ type Coords struct {
 }
 
 type LayoutOptions struct {
+	WorkflowID   string            `json:"workflowId,omitempty"`
 	Preset       LayoutPreset      `json:"preset,omitempty"`
 	StartX       float64           `json:"startX,omitempty"`
 	StartY       float64           `json:"startY,omitempty"`
@@ -36,7 +37,7 @@ type LayoutOptions struct {
 
 func DefaultLayoutOptions() LayoutOptions {
 	return LayoutOptions{
-		Preset:       LayoutTiered,
+		Preset:       LayoutAuto,
 		StartX:       150.0,
 		StartY:       200.0,
 		ColSpacing:   240.0,

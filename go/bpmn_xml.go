@@ -180,7 +180,11 @@ func (w *Workflow) ToBPMNXML() ([]byte, error) {
 	}
 
 	// 2. Compute Layout with LayoutOptions and Zero-Overlap Engine
-	coords := computeWorkflowLayout(nodes, flows, w.LayoutOpts)
+	layoutOpts := w.LayoutOpts
+	if layoutOpts.WorkflowID == "" {
+		layoutOpts.WorkflowID = w.ID
+	}
+	coords := computeWorkflowLayout(nodes, flows, layoutOpts)
 
 	// 3. Build XML Process
 	proc := XMLProcess{
@@ -457,9 +461,19 @@ func (w *Workflow) ToBPMNXML() ([]byte, error) {
 
 // computeWorkflowLayout calculates coordinates using LayoutOptions and Zero-Overlap collision resolution.
 func computeWorkflowLayout(nodes []map[string]interface{}, flows []map[string]interface{}, opts LayoutOptions) map[string]Coords {
-	if opts.Preset == "" {
-		opts.Preset = LayoutTiered
+	if opts.Preset == "" || opts.Preset == LayoutAuto {
+		metrics := AnalyzeGraphComplexity(nodes, flows)
+		opts.Preset = AutoSelectLayoutPreset(nodes, flows)
+		if opts.CenterHubID == "" && opts.Preset == LayoutCenterHub {
+			opts.CenterHubID = metrics.DetectedHubID
+		}
+		LogAutoSelection(opts.WorkflowID, opts.Preset, metrics)
 	}
+
+	if customStrategy, ok := GetLayoutStrategy(opts.Preset); ok {
+		return customStrategy(nodes, flows, opts)
+	}
+
 	if opts.ColSpacing <= 0 {
 		opts.ColSpacing = 240.0
 	}
