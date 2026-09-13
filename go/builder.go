@@ -485,6 +485,20 @@ func (w *Workflow) BusinessRule(id, name, decisionRef string, options ...map[str
 	return w
 }
 
+// Parallel appends a parallel gateway and links it sequentially.
+func (w *Workflow) Parallel(id, name string) *Workflow {
+	w.ParallelGateway(id, name)
+	w.connectNode(id)
+	return w
+}
+
+// Gateway appends an exclusive gateway and links it sequentially.
+func (w *Workflow) Gateway(id, name string) *Workflow {
+	w.ExclusiveGateway(id, name)
+	w.connectNode(id)
+	return w
+}
+
 // If defines a canonical conditional branch path on the main workflow.
 // Supports both two-argument direct block form:
 //   w.If("order.amount > 100", func(b *Branch) { ... }).Else(func(b *Branch) { ... })

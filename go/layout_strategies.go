@@ -38,6 +38,116 @@ func buildGraphAdj(nodes []map[string]interface{}, flows []map[string]interface{
 	return outgoing, incoming, inCount
 }
 
+// GraphComponent represents a Weakly Connected Component of a BPMN workflow graph.
+type GraphComponent struct {
+	Nodes []map[string]interface{}
+	Flows []map[string]interface{}
+}
+
+// canReach returns true if there is a directed path from start to target.
+func canReach(start, target string, outgoing map[string][]string) bool {
+	if start == target {
+		return true
+	}
+	visited := map[string]bool{start: true}
+	queue := []string{start}
+	for len(queue) > 0 {
+		curr := queue[0]
+		queue = queue[1:]
+		if curr == target {
+			return true
+		}
+		for _, next := range outgoing[curr] {
+			if !visited[next] {
+				visited[next] = true
+				queue = append(queue, next)
+			}
+		}
+	}
+	return false
+}
+
+// decomposeWCC decomposes workflow graph nodes and flows into Weakly Connected Components (WCC)
+// using an undirected graph traversal.
+func decomposeWCC(nodes []map[string]interface{}, flows []map[string]interface{}) []GraphComponent {
+	if len(nodes) <= 1 {
+		if len(nodes) == 1 {
+			return []GraphComponent{{Nodes: nodes, Flows: flows}}
+		}
+		return nil
+	}
+
+	nodeMap := make(map[string]map[string]interface{}, len(nodes))
+	for _, n := range nodes {
+		id, _ := n["id"].(string)
+		if id != "" {
+			nodeMap[id] = n
+		}
+	}
+
+	undirectedAdj := make(map[string][]string)
+	for _, f := range flows {
+		src, _ := f["source"].(string)
+		tgt, _ := f["target"].(string)
+		if src != "" && tgt != "" {
+			undirectedAdj[src] = append(undirectedAdj[src], tgt)
+			undirectedAdj[tgt] = append(undirectedAdj[tgt], src)
+		}
+	}
+
+	visited := make(map[string]bool)
+	var components []GraphComponent
+
+	for _, n := range nodes {
+		startID, _ := n["id"].(string)
+		if startID == "" || visited[startID] {
+			continue
+		}
+
+		var compNodeIDs []string
+		queue := []string{startID}
+		visited[startID] = true
+
+		for len(queue) > 0 {
+			curr := queue[0]
+			queue = queue[1:]
+			compNodeIDs = append(compNodeIDs, curr)
+
+			for _, neighbor := range undirectedAdj[curr] {
+				if !visited[neighbor] {
+					visited[neighbor] = true
+					queue = append(queue, neighbor)
+				}
+			}
+		}
+
+		compNodeSet := make(map[string]bool, len(compNodeIDs))
+		var compNodes []map[string]interface{}
+		for _, id := range compNodeIDs {
+			compNodeSet[id] = true
+			if node, ok := nodeMap[id]; ok {
+				compNodes = append(compNodes, node)
+			}
+		}
+
+		var compFlows []map[string]interface{}
+		for _, f := range flows {
+			src, _ := f["source"].(string)
+			tgt, _ := f["target"].(string)
+			if compNodeSet[src] && compNodeSet[tgt] {
+				compFlows = append(compFlows, f)
+			}
+		}
+
+		components = append(components, GraphComponent{
+			Nodes: compNodes,
+			Flows: compFlows,
+		})
+	}
+
+	return components
+}
+
 // computeBFSLevels computes topological BFS depth levels for all nodes, detecting back-edges.
 func computeBFSLevels(nodes []map[string]interface{}, outgoing map[string][]string, inCount map[string]int) (map[string]int, int) {
 	state := make(map[string]int)
@@ -269,6 +379,11 @@ func StrategyTiered(nodes []map[string]interface{}, flows []map[string]interface
 
 // StrategyCenterHub implements the Radial Hub & Parallel Fan-out Corridors layout.
 func StrategyCenterHub(nodes []map[string]interface{}, flows []map[string]interface{}, opts LayoutOptions) map[string]Coords {
+	components := decomposeWCC(nodes, flows)
+	if len(components) > 1 {
+		return computeDisjointWorkflowLayout(components, opts)
+	}
+
 	startX := opts.StartX
 	if startX <= 0 {
 		startX = 150.0
@@ -356,7 +471,7 @@ func StrategyCenterHub(nodes []map[string]interface{}, flows []map[string]interf
 	// Also catch any roots connected upstream
 	for _, n := range nodes {
 		id, _ := n["id"].(string)
-		if inCount[id] == 0 && id != hubID && !visitedUp[id] {
+		if inCount[id] == 0 && id != hubID && !visitedUp[id] && canReach(id, hubID, outgoing) {
 			w, h := getNodeDimensions(n)
 			coords[id] = Coords{
 				X:      hubX - float64(upDist)*colSpacing,
@@ -792,4 +907,104 @@ func StrategyLinear(nodes []map[string]interface{}, flows []map[string]interface
 	resolveCollisions(coords, 25.0)
 	applyCustomCoords(coords, opts.CustomCoords)
 	return coords
+}
+
+// computeSingleComponentLayout computes coordinates for a single connected component using preset strategies.
+func computeSingleComponentLayout(nodes []map[string]interface{}, flows []map[string]interface{}, opts LayoutOptions) map[string]Coords {
+	if opts.Preset == "" || opts.Preset == LayoutAuto {
+		metrics := AnalyzeGraphComplexity(nodes, flows)
+		opts.Preset = AutoSelectLayoutPreset(nodes, flows)
+		if opts.CenterHubID == "" && opts.Preset == LayoutCenterHub {
+			opts.CenterHubID = metrics.DetectedHubID
+		}
+		LogAutoSelection(opts.WorkflowID, opts.Preset, metrics)
+	}
+
+	if customStrategy, ok := GetLayoutStrategy(opts.Preset); ok && customStrategy != nil {
+		return customStrategy(nodes, flows, opts)
+	}
+
+	return StrategyTiered(nodes, flows, opts)
+}
+
+// computeDisjointWorkflowLayout lays out multiple Weakly Connected Components (WCC)
+// in separate, non-overlapping horizontal corridors without spanning edges.
+func computeDisjointWorkflowLayout(components []GraphComponent, opts LayoutOptions) map[string]Coords {
+	if len(components) == 0 {
+		return make(map[string]Coords)
+	}
+	if len(components) == 1 {
+		return computeSingleComponentLayout(components[0].Nodes, components[0].Flows, opts)
+	}
+
+	// 1. Identify primary component (containing CenterHubID or largest node count)
+	primaryIdx := 0
+	if opts.CenterHubID != "" {
+		for i, c := range components {
+			for _, n := range c.Nodes {
+				if id, _ := n["id"].(string); id == opts.CenterHubID {
+					primaryIdx = i
+					break
+				}
+			}
+		}
+	} else {
+		maxNodes := -1
+		for i, c := range components {
+			if len(c.Nodes) > maxNodes {
+				maxNodes = len(c.Nodes)
+				primaryIdx = i
+			}
+		}
+	}
+
+	allCoords := make(map[string]Coords)
+
+	// 2. Lay out primary component
+	primary := components[primaryIdx]
+	primaryCoords := computeSingleComponentLayout(primary.Nodes, primary.Flows, opts)
+
+	maxY := -math.MaxFloat64
+	for id, c := range primaryCoords {
+		allCoords[id] = c
+		bottom := c.Y + c.Height
+		if bottom > maxY {
+			maxY = bottom
+		}
+	}
+
+	// 3. Lay out each secondary component in its own horizontal corridor below
+	startX := opts.StartX
+	if startX <= 0 {
+		startX = 150.0
+	}
+	spacing := 180.0
+	if opts.RowSpacing > 0 {
+		spacing = opts.RowSpacing * 1.5
+	}
+
+	for i, comp := range components {
+		if i == primaryIdx {
+			continue
+		}
+
+		secOpts := opts
+		secOpts.StartX = startX
+		secOpts.StartY = maxY + spacing
+		secOpts.CenterHubID = ""
+		if secOpts.Preset == LayoutCenterHub {
+			secOpts.Preset = LayoutTiered
+		}
+
+		secCoords := computeSingleComponentLayout(comp.Nodes, comp.Flows, secOpts)
+		for id, c := range secCoords {
+			allCoords[id] = c
+			bottom := c.Y + c.Height
+			if bottom > maxY {
+				maxY = bottom
+			}
+		}
+	}
+
+	return allCoords
 }

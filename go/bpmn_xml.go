@@ -13,17 +13,30 @@ import (
 // XML Schema structures for OMG BPMN 2.0 and BPMN-DI
 
 type XMLDefinitions struct {
-	XMLName         xml.Name       `xml:"definitions"`
-	XmlnsXsi        string         `xml:"xmlns:xsi,attr"`
-	Xmlns           string         `xml:"xmlns,attr"`
-	XmlnsBpmndi     string         `xml:"xmlns:bpmndi,attr"`
-	XmlnsOmgdc      string         `xml:"xmlns:omgdc,attr"`
-	XmlnsOmgdi      string         `xml:"xmlns:omgdi,attr"`
-	XmlnsBioc       string         `xml:"xmlns:bioc,attr,omitempty"`
-	TargetNamespace string         `xml:"targetNamespace,attr"`
-	ID              string         `xml:"id,attr"`
-	Process         XMLProcess     `xml:"process"`
-	BPMNDiagram     XMLBPMNDiagram `xml:"bpmndi:BPMNDiagram"`
+	XMLName         xml.Name          `xml:"definitions"`
+	XmlnsXsi        string            `xml:"xmlns:xsi,attr"`
+	Xmlns           string            `xml:"xmlns,attr"`
+	XmlnsBpmndi     string            `xml:"xmlns:bpmndi,attr"`
+	XmlnsOmgdc      string            `xml:"xmlns:omgdc,attr"`
+	XmlnsOmgdi      string            `xml:"xmlns:omgdi,attr"`
+	XmlnsBioc       string            `xml:"xmlns:bioc,attr,omitempty"`
+	TargetNamespace string            `xml:"targetNamespace,attr"`
+	ID              string            `xml:"id,attr"`
+	Collaboration   *XMLCollaboration `xml:"collaboration,omitempty"`
+	Processes       []XMLProcess      `xml:"process"`
+	BPMNDiagram     XMLBPMNDiagram    `xml:"bpmndi:BPMNDiagram"`
+}
+
+type XMLCollaboration struct {
+	ID           string           `xml:"id,attr"`
+	Name         string           `xml:"name,attr,omitempty"`
+	Participants []XMLParticipant `xml:"participant"`
+}
+
+type XMLParticipant struct {
+	ID         string `xml:"id,attr"`
+	Name       string `xml:"name,attr"`
+	ProcessRef string `xml:"processRef,attr"`
 }
 
 type XMLProcess struct {
@@ -115,11 +128,12 @@ type XMLBPMNPlane struct {
 }
 
 type XMLBPMNShape struct {
-	ID          string    `xml:"id,attr"`
-	BPMNElement string    `xml:"bpmnElement,attr"`
-	BiocStroke  string    `xml:"bioc:stroke,attr,omitempty"`
-	BiocFill    string    `xml:"bioc:fill,attr,omitempty"`
-	Bounds      XMLBounds `xml:"omgdc:Bounds"`
+	ID           string    `xml:"id,attr"`
+	BPMNElement  string    `xml:"bpmnElement,attr"`
+	IsHorizontal *bool     `xml:"isHorizontal,attr,omitempty"`
+	BiocStroke   string    `xml:"bioc:stroke,attr,omitempty"`
+	BiocFill     string    `xml:"bioc:fill,attr,omitempty"`
+	Bounds       XMLBounds `xml:"omgdc:Bounds"`
 }
 
 type XMLBounds struct {
@@ -140,27 +154,22 @@ type XMLWaypoint struct {
 	Y float64 `xml:"y,attr"`
 }
 
-// ToBPMNXML compiles the Workflow into a standard BPMN 2.0 XML with complete BPMNDI layout.
-func (w *Workflow) ToBPMNXML() ([]byte, error) {
-	if w.err != nil {
-		return nil, w.err
-	}
-
-	// 1. Collect all nodes and flows, ensuring auto-connected end events
+// prepareAutoEndEvents ensures all non-event sink nodes have an automatic end event.
+func prepareAutoEndEvents(inputNodes []map[string]interface{}, inputFlows []map[string]interface{}) ([]map[string]interface{}, []map[string]interface{}) {
 	sourceIDs := make(map[string]bool)
-	for _, f := range w.Flows {
+	for _, f := range inputFlows {
 		if src, ok := f["source"].(string); ok {
 			sourceIDs[src] = true
 		}
 	}
 
-	nodes := make([]map[string]interface{}, len(w.Nodes))
-	copy(nodes, w.Nodes)
+	nodes := make([]map[string]interface{}, len(inputNodes))
+	copy(nodes, inputNodes)
 
-	flows := make([]map[string]interface{}, len(w.Flows))
-	copy(flows, w.Flows)
+	flows := make([]map[string]interface{}, len(inputFlows))
+	copy(flows, inputFlows)
 
-	for _, node := range w.Nodes {
+	for _, node := range inputNodes {
 		nodeType, _ := node["type"].(string)
 		nodeID, _ := node["id"].(string)
 		if nodeType == "endEvent" || nodeType == "startEvent" {
@@ -181,43 +190,27 @@ func (w *Workflow) ToBPMNXML() ([]byte, error) {
 			})
 		}
 	}
+	return nodes, flows
+}
 
-	// 2. Compute Layout with LayoutOptions and Zero-Overlap Engine
-	layoutOpts := w.LayoutOpts
-	if layoutOpts.WorkflowID == "" {
-		layoutOpts.WorkflowID = w.ID
-	}
-	coords := computeWorkflowLayout(nodes, flows, layoutOpts)
-
-	if layoutOpts.Orientation == OrientationVertical {
-		for id, c := range coords {
-			cx := c.X + c.Width/2.0
-			cy := c.Y + c.Height/2.0
-			newCx := cy
-			newCy := cx
-			c.X = newCx - c.Width/2.0
-			c.Y = newCy - c.Height/2.0
-			coords[id] = c
-		}
-	}
-
-	// 3. Build XML Process
+// buildXMLProcess compiles nodes and flows into an XMLProcess struct.
+func buildXMLProcess(id, name string, nodes []map[string]interface{}, flows []map[string]interface{}) XMLProcess {
 	proc := XMLProcess{
-		ID:           w.ID,
-		Name:         w.Name,
+		ID:           id,
+		Name:         name,
 		IsExecutable: true,
 	}
 
-	getInAndOut := func(id string) ([]string, []string) {
+	getInAndOut := func(nodeID string) ([]string, []string) {
 		var in, out []string
 		for _, f := range flows {
 			fid, _ := f["id"].(string)
 			src, _ := f["source"].(string)
 			tgt, _ := f["target"].(string)
-			if src == id {
+			if src == nodeID {
 				out = append(out, fid)
 			}
-			if tgt == id {
+			if tgt == nodeID {
 				in = append(in, fid)
 			}
 		}
@@ -225,65 +218,64 @@ func (w *Workflow) ToBPMNXML() ([]byte, error) {
 	}
 
 	for _, n := range nodes {
-		id, _ := n["id"].(string)
-		name, _ := n["name"].(string)
+		nodeID, _ := n["id"].(string)
+		nodeName, _ := n["name"].(string)
 		nType, _ := n["type"].(string)
-		in, out := getInAndOut(id)
+		in, out := getInAndOut(nodeID)
 
 		switch nType {
 		case "startEvent":
 			proc.StartEvents = append(proc.StartEvents, XMLStartEvent{
-				ID:       id,
-				Name:     name,
+				ID:       nodeID,
+				Name:     nodeName,
 				Outgoing: out,
 			})
 		case "endEvent":
 			proc.EndEvents = append(proc.EndEvents, XMLEndEvent{
-				ID:       id,
-				Name:     name,
+				ID:       nodeID,
+				Name:     nodeName,
 				Incoming: in,
 			})
 		case "serviceTask", "aiTask", "aiServiceTask":
 			topic, _ := n["topic"].(string)
 			proc.ServiceTasks = append(proc.ServiceTasks, XMLServiceTask{
-				ID:       id,
-				Name:     name,
+				ID:       nodeID,
+				Name:     nodeName,
 				Topic:    topic,
 				Incoming: in,
 				Outgoing: out,
 			})
 		case "userTask":
 			proc.UserTasks = append(proc.UserTasks, XMLUserTask{
-				ID:       id,
-				Name:     name,
+				ID:       nodeID,
+				Name:     nodeName,
 				Incoming: in,
 				Outgoing: out,
 			})
 		case "exclusiveGateway":
 			proc.ExclusiveGateways = append(proc.ExclusiveGateways, XMLExclusiveGateway{
-				ID:       id,
-				Name:     name,
+				ID:       nodeID,
+				Name:     nodeName,
 				Incoming: in,
 				Outgoing: out,
 			})
 		case "parallelGateway":
 			proc.ParallelGateways = append(proc.ParallelGateways, XMLParallelGateway{
-				ID:       id,
-				Name:     name,
+				ID:       nodeID,
+				Name:     nodeName,
 				Incoming: in,
 				Outgoing: out,
 			})
 		case "eventBasedGateway":
 			proc.EventBasedGateways = append(proc.EventBasedGateways, XMLEventBasedGateway{
-				ID:       id,
-				Name:     name,
+				ID:       nodeID,
+				Name:     nodeName,
 				Incoming: in,
 				Outgoing: out,
 			})
 		}
 	}
 
-	// 4. Build Sequence Flows
 	for _, f := range flows {
 		fid, _ := f["id"].(string)
 		src, _ := f["source"].(string)
@@ -305,11 +297,13 @@ func (w *Workflow) ToBPMNXML() ([]byte, error) {
 		})
 	}
 
-	// 5. Build Diagram Interchange (Shapes and Edges)
-	plane := XMLBPMNPlane{
-		ID:          "BPMNPlane_1",
-		BPMNElement: w.ID,
-	}
+	return proc
+}
+
+// buildPlaneShapesAndEdges generates BPMNDI shapes and sequence flow edges.
+func buildPlaneShapesAndEdges(nodes []map[string]interface{}, flows []map[string]interface{}, coords map[string]Coords, nodeColors map[string][2]string, orientation LayoutOrientation) ([]XMLBPMNShape, []XMLBPMNEdge) {
+	var shapes []XMLBPMNShape
+	var edges []XMLBPMNEdge
 
 	for _, n := range nodes {
 		id, _ := n["id"].(string)
@@ -318,11 +312,11 @@ func (w *Workflow) ToBPMNXML() ([]byte, error) {
 			continue
 		}
 		var stroke, fill string
-		if colors, ok := w.NodeColors[id]; ok {
+		if colors, ok := nodeColors[id]; ok {
 			stroke = colors[0]
 			fill = colors[1]
 		}
-		plane.Shapes = append(plane.Shapes, XMLBPMNShape{
+		shapes = append(shapes, XMLBPMNShape{
 			ID:          fmt.Sprintf("%s_di", id),
 			BPMNElement: id,
 			BiocStroke:  stroke,
@@ -405,7 +399,7 @@ func (w *Workflow) ToBPMNXML() ([]byte, error) {
 			BPMNElement: fid,
 		}
 
-		if layoutOpts.Orientation == OrientationVertical {
+		if orientation == OrientationVertical {
 			if math.Abs(startWp.X-endWp.X) > 5.0 {
 				midY := (startWp.Y + endWp.Y) / 2.0
 				edge.Waypoints = []XMLWaypoint{
@@ -451,7 +445,46 @@ func (w *Workflow) ToBPMNXML() ([]byte, error) {
 			edge.Waypoints = []XMLWaypoint{startWp, endWp}
 		}
 
-		plane.Edges = append(plane.Edges, edge)
+		edges = append(edges, edge)
+	}
+
+	return shapes, edges
+}
+
+// ToBPMNXML compiles the Workflow into a standard BPMN 2.0 XML with complete BPMNDI layout.
+func (w *Workflow) ToBPMNXML() ([]byte, error) {
+	if w.err != nil {
+		return nil, w.err
+	}
+
+	nodes, flows := prepareAutoEndEvents(w.Nodes, w.Flows)
+
+	layoutOpts := w.LayoutOpts
+	if layoutOpts.WorkflowID == "" {
+		layoutOpts.WorkflowID = w.ID
+	}
+	coords := computeWorkflowLayout(nodes, flows, layoutOpts)
+
+	if layoutOpts.Orientation == OrientationVertical {
+		for id, c := range coords {
+			cx := c.X + c.Width/2.0
+			cy := c.Y + c.Height/2.0
+			newCx := cy
+			newCy := cx
+			c.X = newCx - c.Width/2.0
+			c.Y = newCy - c.Height/2.0
+			coords[id] = c
+		}
+	}
+
+	proc := buildXMLProcess(w.ID, w.Name, nodes, flows)
+	shapes, edges := buildPlaneShapesAndEdges(nodes, flows, coords, w.NodeColors, layoutOpts.Orientation)
+
+	plane := XMLBPMNPlane{
+		ID:          "BPMNPlane_1",
+		BPMNElement: w.ID,
+		Shapes:      shapes,
+		Edges:       edges,
 	}
 
 	var xmlnsBioc string
@@ -468,7 +501,7 @@ func (w *Workflow) ToBPMNXML() ([]byte, error) {
 		XmlnsBioc:       xmlnsBioc,
 		TargetNamespace: "http://bpmn.io/schema/bpmn",
 		ID:              "Definitions_1",
-		Process:         proc,
+		Processes:       []XMLProcess{proc},
 		BPMNDiagram: XMLBPMNDiagram{
 			ID:        "BPMNDiagram_1",
 			BPMNPlane: plane,
@@ -672,20 +705,16 @@ func TransposeBPMNXML(xmlBytes []byte) ([]byte, error) {
 	return []byte(xmlStr), nil
 }
 
-// computeWorkflowLayout calculates coordinates using LayoutOptions and Zero-Overlap collision resolution.
+// computeWorkflowLayout calculates coordinates using LayoutOptions, WCC decomposition, and Zero-Overlap collision resolution.
 func computeWorkflowLayout(nodes []map[string]interface{}, flows []map[string]interface{}, opts LayoutOptions) map[string]Coords {
-	if opts.Preset == "" || opts.Preset == LayoutAuto {
-		metrics := AnalyzeGraphComplexity(nodes, flows)
-		opts.Preset = AutoSelectLayoutPreset(nodes, flows)
-		if opts.CenterHubID == "" && opts.Preset == LayoutCenterHub {
-			opts.CenterHubID = metrics.DetectedHubID
-		}
-		LogAutoSelection(opts.WorkflowID, opts.Preset, metrics)
+	if len(nodes) == 0 {
+		return make(map[string]Coords)
 	}
 
-	if customStrategy, ok := GetLayoutStrategy(opts.Preset); ok && customStrategy != nil {
-		return customStrategy(nodes, flows, opts)
+	components := decomposeWCC(nodes, flows)
+	if len(components) > 1 {
+		return computeDisjointWorkflowLayout(components, opts)
 	}
 
-	return StrategyTiered(nodes, flows, opts)
+	return computeSingleComponentLayout(nodes, flows, opts)
 }
