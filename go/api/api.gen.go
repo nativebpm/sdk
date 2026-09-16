@@ -161,8 +161,11 @@ type TaskRecord struct {
 	Id              openapi_types.UUID      `json:"id"`
 
 	// InputSchema JSON schema definition of form widgets
-	InputSchema *string            `json:"input_schema,omitempty"`
-	InstanceId  openapi_types.UUID `json:"instance_id"`
+	InputSchema *string `json:"input_schema,omitempty"`
+
+	// FormId Form identifier or Camunda form key for dynamic schema rendering
+	FormId *string `json:"form_id,omitempty"`
+	InstanceId openapi_types.UUID `json:"instance_id"`
 	Name        string             `json:"name"`
 	Status      string             `json:"status"`
 }

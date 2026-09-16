@@ -899,6 +899,9 @@ components:
         input_schema:
           type: string
           description: JSON schema definition of form widgets
+        form_id:
+          type: string
+          description: Form identifier or Camunda form key for dynamic schema rendering
         created_at:
           type: string
           format: date-time
