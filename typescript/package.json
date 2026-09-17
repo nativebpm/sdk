@@ -8,9 +8,11 @@
   "scripts": {
     "build": "tsc",
     "prepublishOnly": "npm run build",
-    "test": "npm run build && node test.js && node test_builder.js && node test_dsl.js"
+    "test": "npm run build && node test.js && node test_builder.js && node test_dsl.js && node tests/run_all.js"
   },
-  "dependencies": {},
+  "dependencies": {
+    "zod": "^4.6.5"
+  },
   "devDependencies": {
     "@types/node": "^22.0.0",
     "typescript": "^5.7.0"

@@ -110,6 +110,49 @@ async function testBuilder() {
   assert.ok(branchAst.nodes.find(n => n.id === 'dev_handler'), "Should contain dev_handler");
   console.log("✓ When-Then-Otherwise branching validation passed");
 
+  console.log("Running TypeScript UserTask with Form and extractForms() test...");
+  const wfForm = new Workflow('ts-form-process', 'TS Form Process');
+  const mockZodSchema = {
+    type: 'object',
+    properties: {
+      amount: { type: 'number' },
+      currency: { type: 'string' }
+    },
+    required: ['amount', 'currency']
+  };
+
+  wfForm.startEvent('start')
+    .user('checkoutTask', 'Checkout Form', {
+      form: mockZodSchema,
+      formId: 'checkout_v1',
+      assignee: 'john_doe'
+    })
+    .user('reviewTask', 'Review Step', {
+      inputSchema: JSON.stringify({ type: 'object', properties: { approved: { type: 'boolean' } } }),
+      formId: 'review_v1'
+    })
+    .endEvent('end', 'Done');
+
+  const formAst = wfForm.toAST();
+  const checkoutNode = formAst.nodes.find(n => n.id === 'checkoutTask');
+  assert.ok(checkoutNode, "Should contain checkoutTask");
+  assert.strictEqual(checkoutNode.formId, 'checkout_v1', "checkoutTask should have formId");
+  assert.strictEqual(checkoutNode.assignee, 'john_doe', "checkoutTask should have assignee");
+  assert.ok(checkoutNode.inputSchema, "checkoutTask should have inputSchema");
+  const parsedInputSchema = JSON.parse(checkoutNode.inputSchema);
+  assert.strictEqual(parsedInputSchema.properties.amount.type, 'number');
+
+  const reviewNode = formAst.nodes.find(n => n.id === 'reviewTask');
+  assert.strictEqual(reviewNode.formId, 'review_v1', "reviewTask should have formId");
+
+  assert.strictEqual(typeof wfForm.extractForms, 'function', "extractForms should be a method on Workflow");
+  const extractedForms = wfForm.extractForms();
+  assert.ok(extractedForms['checkout_v1'], "extractForms should contain checkout_v1");
+  assert.strictEqual(extractedForms['checkout_v1'].properties.currency.type, 'string');
+  assert.ok(extractedForms['review_v1'], "extractForms should contain review_v1");
+  assert.strictEqual(extractedForms['review_v1'].properties.approved.type, 'boolean');
+  console.log("✓ UserTask with Form and extractForms() validation passed");
+
   console.log("All TypeScript workflow builder tests completed successfully!");
 }
 

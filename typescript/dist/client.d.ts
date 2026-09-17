@@ -24,12 +24,26 @@ export declare class DefinitionsService {
     private client;
     constructor(client: Client);
     list(): ListDefinitionsBuilder;
+    get(id: string): GetDefinitionBuilder;
+    delete(id: string): DeleteDefinitionBuilder;
     deploy(): DeployDefinitionBuilder;
 }
 export declare class ListDefinitionsBuilder {
     private client;
     constructor(client: Client);
     send(): Promise<ProcessDefinition[]>;
+}
+export declare class GetDefinitionBuilder {
+    private client;
+    private id;
+    constructor(client: Client, id: string);
+    send(): Promise<ProcessDefinition>;
+}
+export declare class DeleteDefinitionBuilder {
+    private client;
+    private id;
+    constructor(client: Client, id: string);
+    send(): Promise<void>;
 }
 export declare class DeployDefinitionBuilder {
     private client;
@@ -50,6 +64,7 @@ export declare class InstancesService {
     list(): ListInstancesBuilder;
     get(id: string): GetInstanceBuilder;
     start(processID: string): StartInstanceBuilder;
+    cancel(id: string): CancelInstanceBuilder;
     complete(id: string): CompleteInstanceTaskBuilder;
     resume(id: string): ResumeInstanceBuilder;
     history(id: string): GetInstanceHistoryBuilder;
@@ -65,6 +80,12 @@ export declare class ListInstancesBuilder {
     send(): Promise<ProcessInstance[]>;
 }
 export declare class GetInstanceBuilder {
+    private client;
+    private id;
+    constructor(client: Client, id: string);
+    send(): Promise<ProcessInstance>;
+}
+export declare class CancelInstanceBuilder {
     private client;
     private id;
     constructor(client: Client, id: string);
@@ -123,8 +144,10 @@ export declare class TasksService {
     private client;
     constructor(client: Client);
     list(): ListTasksBuilder;
+    get(id: string): GetTaskBuilder;
     claim(id: string): ClaimTaskBuilder;
     complete(id: string): CompleteTaskBuilder;
+    resolve(id: string): ResolveTaskBuilder;
 }
 export declare class ListTasksBuilder {
     private client;
@@ -137,6 +160,12 @@ export declare class ListTasksBuilder {
     withStatus(status: string): this;
     send(): Promise<TaskRecord[]>;
 }
+export declare class GetTaskBuilder {
+    private client;
+    private id;
+    constructor(client: Client, id: string);
+    send(): Promise<TaskRecord>;
+}
 export declare class ClaimTaskBuilder {
     private client;
     private id;
@@ -146,6 +175,15 @@ export declare class ClaimTaskBuilder {
     send(): Promise<TaskRecord>;
 }
 export declare class CompleteTaskBuilder {
+    private client;
+    private id;
+    private variables;
+    constructor(client: Client, id: string);
+    withVariable(name: string, value: any): this;
+    withVariables(variables: Record<string, any>): this;
+    send(): Promise<ProcessInstance>;
+}
+export declare class ResolveTaskBuilder {
     private client;
     private id;
     private variables;
@@ -221,4 +259,52 @@ export declare class ListWebhookDeliveriesBuilder {
     private id;
     constructor(client: Client, id: string);
     send(): Promise<WebhookDeliveryRecord[]>;
+}
+export interface TaskContext {
+    id: string;
+    topic: string;
+    definitionId?: string;
+    instanceId?: string;
+    stepId?: string;
+    variables: Record<string, any>;
+    timeoutMs?: number;
+}
+export type TaskHandler = (task: TaskContext) => Promise<Record<string, any> | void> | Record<string, any> | void;
+export declare class Worker {
+    private serverUrl;
+    private apiToken;
+    private workerId;
+    private maxConcurrency;
+    private pollIntervalMs;
+    private maxRetries;
+    private handlers;
+    private idempotencyCache;
+    private client;
+    private running;
+    private loopPromise?;
+    constructor(serverUrl: string, apiToken: string);
+    withWorkerId(id: string): this;
+    withMaxConcurrency(n: number): this;
+    withPollInterval(ms: number): this;
+    withRetries(n: number): this;
+    withTopic(topic: string, handler: TaskHandler): this;
+    getClient(): Client;
+    getWorkerId(): string;
+    getRegisteredTopics(): string[];
+    processTask(task: {
+        id: string;
+        topic?: string;
+        activity_id?: string;
+        name?: string;
+        instance_id?: string;
+        variables?: Record<string, any>;
+        draft_variables?: Record<string, any>;
+    }): Promise<{
+        status: "completed" | "incident";
+        result?: any;
+        error?: string;
+    }>;
+    pollOnce(): Promise<number>;
+    start(): Promise<void>;
+    stop(): Promise<void>;
 }

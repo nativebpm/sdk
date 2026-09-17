@@ -2,107 +2,154 @@
 
 # NativeBPM TypeScript SDK
 
-Official TypeScript Client SDK for NativeBPM Cloud-Native engine.
+Official TypeScript Client SDK for the NativeBPM Cloud-Native BPMN 2.0 / DMN 1.3 execution engine.
+
+Built for **Node.js 22+ (native TypeScript execution without compilation via `--experimental-strip-types`)**, Edge CDN runtimes (Cloudflare Workers / Pages), and modern browsers.
+
+---
+
+## Key Features
+
+- **Native Zod 4 Out-of-the-Box**: Re-exports `z`, `ZodError`, and `ZodType`. Define forms and process graphs in a single file (`*.flow.ts`).
+- **Automatic JSON Schema Draft 2020-12 Compilation**: Automatically compiles Zod schemas into JSON Schema Draft 2020-12 for Server-Driven UI (`<nativebpm-trigger>`, Vue, React, Capacitor).
+- **Three-Tier Architecture**:
+  1. *Level 1 (SSOT)*: OpenAPI 3.0 specification (`openapi.yaml`).
+  2. *Level 2 (Generated Transport)*: Strictly typed low-level fetch client.
+  3. *Level 3 (Fluent API Façade & Worker)*: High-level developer experience for deploying, starting, claiming, and running workers.
+- **Clean Code (Zero Parameter Properties)**: 100% compliant with Node 22+ native TypeScript type stripping (`node script.ts`).
+- **Standard OMG BPMN 2.0 XML Export**: Compile directly to BPMN 2.0 XML via `workflow.toBPMN()`.
+- **DMN 1.3 Decision Tables**: Built-in support for BusinessRuleTask and local rule evaluation.
+
+---
 
 ## Installation
 
-To install the package from the GitLab npm Package Registry:
-
-1. Configure your `.npmrc` file (replace `<your_gitlab_token>` if the repository or package registry requires private authentication, otherwise public access is open for reading):
-```text
-@nativebpm:registry=https://gitlab.com/api/v4/projects/nativebpm%2Fsdk/packages/npm/
-//gitlab.com/api/v4/projects/nativebpm%2Fsdk/packages/npm/:_authToken="your_gitlab_token"
-```
-
-2. Install the dependency:
 ```bash
 npm install @nativebpm/sdk
 ```
 
-For local development and compilation:
+---
 
-```bash
-npm install
-npm run build
+## 1. Single-File Workflow-as-Code & Schema-as-Code with Zod
+
+```typescript
+import { z, WorkflowBuilder } from "@nativebpm/sdk";
+
+// 1. Declare form schema using native Zod 4
+export const OrderFormSchema = z.object({
+  order_id: z.string().min(1, "Order ID is required"),
+  amount: z.number().positive("Amount must be positive"),
+  promo_code: z.string().optional(),
+});
+
+// 2. Build the BPMN process with fluent API
+export const orderWorkflow = new WorkflowBuilder("order_flow", "Order Process")
+  .start("start")
+  .userTask("fill_order", "Enter Order", {
+    form: OrderFormSchema,
+    formId: "order_form_v1",
+    candidateGroups: "sales",
+  })
+  .exclusiveGateway("check_amount", "Check Order Amount")
+    .when("amount > 100000").then("vip_review").userTask("vip_review", "VIP Review", { candidateGroups: "vip_managers" })
+    .else("auto_approve").serviceTask("auto_approve", "Auto Approval", "auto_approver")
+  .end("end", "Process Finished");
+
+// 3. Extract compiled JSON Schema Draft 2020-12 for Server-Driven UI (BDUI)
+const forms = orderWorkflow.extractForms();
+console.log(forms.order_form_v1);
+// Output: { $schema: "https://json-schema.org/draft/2020-12/schema", type: "object", ... }
+
+// 4. Export standard OMG BPMN 2.0 XML
+const bpmnXml = orderWorkflow.toBPMN();
 ```
 
-## Running Tests
+---
 
-To run the TypeScript unit tests locally:
+## 2. Fluent Client API
 
-```bash
-npm test
-```
-
-## Usage Example
-
-The TypeScript SDK provides a Fluent API client interface. It uses native `fetch` internally and is fully compatible with Node.js 18+, Edge environments, and browsers.
+The NativeBPM client provides a modular, fluent chain interface:
 
 ```typescript
 import { Client } from "@nativebpm/sdk";
+import { orderWorkflow } from "./order.flow.js";
 
-// Initialize the client
 const client = new Client("http://localhost:8080", "your-api-token");
 
-// 1. List definitions
-const definitions = await client.definitions().list().send();
-for (const d of definitions) {
-    console.log(`Definition: ${d.name} (ID: ${d.id})`);
-}
+// 1. Deploy workflow definition
+const definition = await client.definitions().deploy()
+  .withWorkflow(orderWorkflow)
+  .send();
 
 // 2. Start a new process instance
-const variables = { approvalRequired: true, department: "Finance" };
 const instance = await client.instances()
-    .start("purchase-requisition")
-    .businessKey("REQ-9901")
-    .variables(variables)
-    .send();
+  .start("order_flow")
+  .withBusinessKey("ORD-2026-001")
+  .withVariables({ amount: 1500, promo_code: "DISCOUNT10" })
+  .send();
 
-console.log(`Started process instance: ${instance.id}`);
+// 3. Query and claim human tasks
+const tasks = await client.tasks().list()
+  .withAssignee("sales_manager")
+  .withStatus("CREATED")
+  .send();
+
+if (tasks.length > 0) {
+  const task = tasks[0];
+  await client.tasks().claim(task.id).withAssignee("sales_manager").send();
+
+  // 4. Complete task with validated output variables
+  await client.tasks().complete(task.id)
+    .withVariables({ approved: true, comment: "Looks good" })
+    .send();
+}
 ```
 
-## Workflow-as-Code (Workflow definition in TypeScript)
+---
 
-You can describe your business processes directly in TypeScript code:
+## 3. Background Service Task Workers
+
+NativeBPM features a dedicated `Worker` class with mirroring Go syntax for executing external service tasks:
 
 ```typescript
-import { Workflow, v } from "@nativebpm/sdk";
+import { Worker } from "@nativebpm/sdk";
 
-// Define a process
-const workflow = new Workflow('awesome-ts-process', 'Awesome TS Process');
-workflow
-  .when(v('isPremium').eq(true))
-  .then(flow => {
-    flow.user('vipService', 'VIP Customer Support', { assignee: 'vip_manager' });
-  })
-  .else(flow => {
-    flow.service('standardNotify', 'Send Regular Notification', 'notification_topic');
+const worker = new Worker("http://localhost:8080", "your-api-token")
+  .withWorkerId("billing-worker-01")
+  .withMaxConcurrency(20)
+  .withTopic("payment_gateway", async (task) => {
+    console.log(`Processing task ${task.id} for instance ${task.instanceId}`);
+    console.log("Input variables:", task.variables);
+
+    if (task.variables.amount > 500000) {
+      // Throwing an Error automatically transitions the task/instance into an Incident
+      throw new Error("Credit limit exceeded");
+    }
+
+    // Return output variables to advance the process token
+    return {
+      payment_status: "PAID",
+      tx_id: `tx_${Date.now()}`,
+    };
   });
 
-// Deploy the process using the client
-const definition = await client.deploy(workflow);
+// Start background poll loop
+await worker.start();
 ```
 
+---
 
-## Developer Guide: Publishing to GitLab Package Registry
+## Running Tests
 
-### Automated Publishing via CI/CD
-This package is automatically built and published to the GitLab npm Package Registry whenever a git tag matching the pattern `sdk/typescript/v*` is pushed. For example:
+The SDK includes a comprehensive 6-pattern TDD test suite covering:
+1. Linear process with Zod validation (UserTask $\rightarrow$ ServiceTask).
+2. DMN Decision Tables (BusinessRuleTask).
+3. Conditional Branching (ExclusiveGateway When/Then/Else).
+4. Service Task Workers & Incident transitions.
+5. Boundary Timer Events & SLA escalation (`PT15M`).
+6. Server-Driven UI (BDUI) JSON Schema Draft 2020-12 export.
+
 ```bash
-git tag sdk/typescript/v1.0.0
-git push origin sdk/typescript/v1.0.0
+# Build and run all tests
+npm test
 ```
-
-### Manual Publishing
-To manually publish a release version:
-1. Increment the version in `package.json` or run `npm version`:
-   ```bash
-   npm version 1.0.0 --no-git-tag-version
-   ```
-2. Configure authentication and publish:
-   ```bash
-   npm config set @nativebpm:registry https://gitlab.com/api/v4/projects/nativebpm%2Fsdk/packages/npm/
-   npm config set -- //gitlab.com/api/v4/projects/nativebpm%2Fsdk/packages/npm/:_authToken your_personal_access_or_deploy_token
-   npm publish
-   ```
-

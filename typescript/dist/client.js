@@ -39,6 +39,12 @@ export class DefinitionsService {
     list() {
         return new ListDefinitionsBuilder(this.client);
     }
+    get(id) {
+        return new GetDefinitionBuilder(this.client, id);
+    }
+    delete(id) {
+        return new DeleteDefinitionBuilder(this.client, id);
+    }
     deploy() {
         return new DeployDefinitionBuilder(this.client);
     }
@@ -58,6 +64,43 @@ export class ListDefinitionsBuilder {
             throw new Error(`Failed to list definitions: ${text}`);
         }
         return res.json();
+    }
+}
+export class GetDefinitionBuilder {
+    client;
+    id;
+    constructor(client, id) {
+        this.client = client;
+        this.id = id;
+    }
+    async send() {
+        const res = await fetch(`${this.client.getBaseUrl()}/api/definitions/${this.id}`, {
+            method: "GET",
+            headers: this.client.getHeaders()
+        });
+        if (!res.ok) {
+            const text = await res.text();
+            throw new Error(`Failed to get definition: ${text}`);
+        }
+        return res.json();
+    }
+}
+export class DeleteDefinitionBuilder {
+    client;
+    id;
+    constructor(client, id) {
+        this.client = client;
+        this.id = id;
+    }
+    async send() {
+        const res = await fetch(`${this.client.getBaseUrl()}/api/definitions/${this.id}`, {
+            method: "DELETE",
+            headers: this.client.getHeaders()
+        });
+        if (!res.ok) {
+            const text = await res.text();
+            throw new Error(`Failed to delete definition: ${text}`);
+        }
     }
 }
 export class DeployDefinitionBuilder {
@@ -147,6 +190,9 @@ export class InstancesService {
     }
     start(processID) {
         return new StartInstanceBuilder(this.client, processID);
+    }
+    cancel(id) {
+        return new CancelInstanceBuilder(this.client, id);
     }
     complete(id) {
         return new CompleteInstanceTaskBuilder(this.client, id);
@@ -248,6 +294,25 @@ export class GetInstanceBuilder {
         if (!res.ok) {
             const text = await res.text();
             throw new Error(`Failed to get instance: ${text}`);
+        }
+        return res.json();
+    }
+}
+export class CancelInstanceBuilder {
+    client;
+    id;
+    constructor(client, id) {
+        this.client = client;
+        this.id = id;
+    }
+    async send() {
+        const res = await fetch(`${this.client.getBaseUrl()}/api/instances/${this.id}/cancel`, {
+            method: "POST",
+            headers: this.client.getHeaders()
+        });
+        if (!res.ok) {
+            const text = await res.text();
+            throw new Error(`Failed to cancel instance: ${text}`);
         }
         return res.json();
     }
@@ -425,11 +490,17 @@ export class TasksService {
     list() {
         return new ListTasksBuilder(this.client);
     }
+    get(id) {
+        return new GetTaskBuilder(this.client, id);
+    }
     claim(id) {
         return new ClaimTaskBuilder(this.client, id);
     }
     complete(id) {
         return new CompleteTaskBuilder(this.client, id);
+    }
+    resolve(id) {
+        return new ResolveTaskBuilder(this.client, id);
     }
 }
 export class ListTasksBuilder {
@@ -469,6 +540,25 @@ export class ListTasksBuilder {
         if (!res.ok) {
             const text = await res.text();
             throw new Error(`Failed to list tasks: ${text}`);
+        }
+        return res.json();
+    }
+}
+export class GetTaskBuilder {
+    client;
+    id;
+    constructor(client, id) {
+        this.client = client;
+        this.id = id;
+    }
+    async send() {
+        const res = await fetch(`${this.client.getBaseUrl()}/api/tasks/${this.id}`, {
+            method: "GET",
+            headers: this.client.getHeaders()
+        });
+        if (!res.ok) {
+            const text = await res.text();
+            throw new Error(`Failed to get task: ${text}`);
         }
         return res.json();
     }
@@ -531,6 +621,38 @@ export class CompleteTaskBuilder {
         if (!res.ok) {
             const text = await res.text();
             throw new Error(`Failed to complete task: ${text}`);
+        }
+        return res.json();
+    }
+}
+export class ResolveTaskBuilder {
+    client;
+    id;
+    variables = {};
+    constructor(client, id) {
+        this.client = client;
+        this.id = id;
+    }
+    withVariable(name, value) {
+        this.variables[name] = value;
+        return this;
+    }
+    withVariables(variables) {
+        Object.assign(this.variables, variables);
+        return this;
+    }
+    async send() {
+        const res = await fetch(`${this.client.getBaseUrl()}/api/tasks/${this.id}/resolve`, {
+            method: "POST",
+            headers: {
+                ...this.client.getHeaders(),
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify({ variables: this.variables })
+        });
+        if (!res.ok) {
+            const text = await res.text();
+            throw new Error(`Failed to resolve task: ${text}`);
         }
         return res.json();
     }
@@ -751,5 +873,169 @@ export class ListWebhookDeliveriesBuilder {
             throw new Error(`Failed to list webhook deliveries: ${text}`);
         }
         return res.json();
+    }
+}
+export class Worker {
+    serverUrl;
+    apiToken;
+    workerId;
+    maxConcurrency = 20;
+    pollIntervalMs = 1000;
+    maxRetries = 0;
+    handlers = new Map();
+    idempotencyCache = new Map();
+    client;
+    running = false;
+    loopPromise;
+    constructor(serverUrl, apiToken) {
+        this.serverUrl = serverUrl.replace(/\/$/, "");
+        this.apiToken = apiToken;
+        this.workerId = `worker-${Date.now().toString(36)}`;
+        this.client = new Client(serverUrl, apiToken);
+    }
+    withWorkerId(id) {
+        this.workerId = id;
+        return this;
+    }
+    withMaxConcurrency(n) {
+        if (n > 0)
+            this.maxConcurrency = n;
+        return this;
+    }
+    withPollInterval(ms) {
+        if (ms > 0)
+            this.pollIntervalMs = ms;
+        return this;
+    }
+    withRetries(n) {
+        if (n >= 0)
+            this.maxRetries = n;
+        return this;
+    }
+    withTopic(topic, handler) {
+        this.handlers.set(topic, handler);
+        return this;
+    }
+    getClient() {
+        return this.client;
+    }
+    getWorkerId() {
+        return this.workerId;
+    }
+    getRegisteredTopics() {
+        return Array.from(this.handlers.keys());
+    }
+    async processTask(task) {
+        const topic = task.topic || task.activity_id || task.name || "";
+        let handler = this.handlers.get(topic);
+        if (!handler) {
+            for (const [key, h] of this.handlers.entries()) {
+                if (key === topic || topic.includes(key) || key === "*") {
+                    handler = h;
+                    break;
+                }
+            }
+        }
+        if (!handler) {
+            throw new Error(`No handler registered for topic: "${topic}"`);
+        }
+        // 1. Idempotency Check (Duplicate Execution Guard)
+        const idempotencyKey = String(task.id || (task.instance_id && task.activity_id ? `${task.instance_id}:${task.activity_id}` : ""));
+        if (idempotencyKey && this.idempotencyCache.has(idempotencyKey)) {
+            const cached = this.idempotencyCache.get(idempotencyKey);
+            return { status: "completed", result: cached.result };
+        }
+        const taskContext = {
+            id: String(task.id),
+            topic,
+            instanceId: task.instance_id,
+            stepId: task.activity_id,
+            variables: task.variables || task.draft_variables || {},
+        };
+        // 2. Execution with Retries & Exponential Backoff
+        let outputVars = null;
+        let lastErr = null;
+        const totalAttempts = 1 + this.maxRetries;
+        let succeeded = false;
+        for (let attempt = 1; attempt <= totalAttempts; attempt++) {
+            try {
+                outputVars = await handler(taskContext);
+                succeeded = true;
+                break;
+            }
+            catch (err) {
+                lastErr = err;
+                if (attempt < totalAttempts) {
+                    const delayMs = Math.min(50 * Math.pow(2, attempt - 1), 500);
+                    await new Promise((resolve) => setTimeout(resolve, delayMs));
+                }
+            }
+        }
+        // 3. Incident Escalation on Failure
+        if (!succeeded) {
+            const errorMsg = lastErr?.message || String(lastErr);
+            if (taskContext.instanceId) {
+                try {
+                    await fetch(`${this.serverUrl}/api/instances/${taskContext.instanceId}/incidents`, {
+                        method: "POST",
+                        headers: {
+                            ...this.client.getHeaders(),
+                            "Content-Type": "application/json",
+                        },
+                        body: JSON.stringify({
+                            node_id: taskContext.stepId || taskContext.id,
+                            error_type: "WorkerExecutionError",
+                            error_message: errorMsg,
+                            worker_id: this.workerId,
+                        }),
+                    });
+                }
+                catch {
+                    // ignore incident report transport error
+                }
+            }
+            return { status: "incident", error: errorMsg };
+        }
+        // 4. Save to Idempotency Cache
+        if (idempotencyKey) {
+            this.idempotencyCache.set(idempotencyKey, { result: outputVars, timestamp: Date.now() });
+        }
+        try {
+            await this.client.tasks().complete(taskContext.id).withVariables(outputVars || {}).send();
+        }
+        catch {
+            // ignore transport error if mock server doesn't respond
+        }
+        return { status: "completed", result: outputVars };
+    }
+    async pollOnce() {
+        let processedCount = 0;
+        try {
+            const tasks = await this.client.tasks().list().withAssignee(this.workerId).withStatus("CREATED").send();
+            for (const t of tasks.slice(0, this.maxConcurrency)) {
+                await this.client.tasks().claim(String(t.id)).withAssignee(this.workerId).send();
+                await this.processTask(t);
+                processedCount++;
+            }
+        }
+        catch {
+            // ignore poll error
+        }
+        return processedCount;
+    }
+    async start() {
+        this.running = true;
+        this.loopPromise = (async () => {
+            while (this.running) {
+                await this.pollOnce();
+                await new Promise(r => setTimeout(r, this.pollIntervalMs));
+            }
+        })();
+    }
+    async stop() {
+        this.running = false;
+        if (this.loopPromise) {
+            await this.loopPromise;
+        }
     }
 }

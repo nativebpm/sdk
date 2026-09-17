@@ -48,7 +48,7 @@ paths:
                   description: BPMN 2.0 XML file content to deploy
           application/json:
             schema:
-              type: object
+              $ref: '#/components/schemas/WorkflowAST'
       responses:
         '200':
           description: Successful response
@@ -1071,3 +1071,206 @@ components:
         max_total_attachments_size:
           type: integer
           format: int64
+
+    InVariable:
+      type: object
+      properties:
+        source:
+          type: string
+        target:
+          type: string
+        variables:
+          type: string
+        local:
+          type: boolean
+
+    OutVariable:
+      type: object
+      properties:
+        source:
+          type: string
+        target:
+          type: string
+        variables:
+          type: string
+
+    DMNInputAST:
+      type: object
+      required:
+        - expression
+        - type
+      properties:
+        expression:
+          type: string
+        type:
+          type: string
+
+    DMNOutputAST:
+      type: object
+      required:
+        - name
+        - type
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+
+    DMNRuleAST:
+      type: object
+      required:
+        - inputs
+        - outputs
+      properties:
+        inputs:
+          type: array
+          items:
+            type: string
+        outputs:
+          type: array
+          items:
+            type: string
+
+    NodeAST:
+      type: object
+      required:
+        - id
+        - name
+        - type
+      properties:
+        id:
+          type: string
+          minLength: 1
+        name:
+          type: string
+        type:
+          type: string
+          enum:
+            - startEvent
+            - endEvent
+            - serviceTask
+            - userTask
+            - aiServiceTask
+            - aiTask
+            - exclusiveGateway
+            - parallelGateway
+            - eventBasedGateway
+            - callActivity
+            - businessRuleTask
+            - boundaryTimerEvent
+        topic:
+          type: string
+        wasmPath:
+          type: string
+        provider:
+          type: string
+        model:
+          type: string
+        prompt:
+          type: string
+        systemInstruction:
+          type: string
+        responseSchema:
+          type: string
+        temperature:
+          type: number
+        resultVar:
+          type: string
+        assignee:
+          type: string
+        candidateGroups:
+          type: string
+        dueDate:
+          type: string
+        inputSchema:
+          type: string
+        formId:
+          type: string
+        formKey:
+          type: string
+        calledElement:
+          type: string
+        inVariables:
+          type: array
+          items:
+            $ref: '#/components/schemas/InVariable'
+        outVariables:
+          type: array
+          items:
+            $ref: '#/components/schemas/OutVariable'
+        decisionRef:
+          type: string
+        mapDecisionResult:
+          type: string
+        hitPolicy:
+          type: string
+        inputs:
+          type: array
+          items:
+            $ref: '#/components/schemas/DMNInputAST'
+        outputs:
+          type: array
+          items:
+            $ref: '#/components/schemas/DMNOutputAST'
+        rules:
+          type: array
+          items:
+            $ref: '#/components/schemas/DMNRuleAST'
+        attachedToRef:
+          type: string
+        timeDuration:
+          type: string
+        timeDate:
+          type: string
+        timeCycle:
+          type: string
+        cancelActivity:
+          type: boolean
+
+    FlowAST:
+      type: object
+      required:
+        - id
+        - source
+        - target
+      properties:
+        id:
+          type: string
+          minLength: 1
+        source:
+          type: string
+          minLength: 1
+        target:
+          type: string
+          minLength: 1
+        condition:
+          type: string
+
+    WorkflowAST:
+      type: object
+      required:
+        - id
+        - name
+        - nodes
+        - flows
+      properties:
+        id:
+          type: string
+          minLength: 1
+          description: Unique process definition identifier
+        name:
+          type: string
+          minLength: 1
+          description: Human-readable process name
+        inputSchema:
+          type: string
+          description: JSON Schema contract for process start variables
+        nodes:
+          type: array
+          items:
+            $ref: '#/components/schemas/NodeAST'
+        flows:
+          type: array
+          items:
+            $ref: '#/components/schemas/FlowAST'
+

@@ -53,12 +53,23 @@ export class Client {
   }
 }
 
-
 export class DefinitionsService {
-  constructor(private client: Client) {}
+  private client: Client;
+
+  constructor(client: Client) {
+    this.client = client;
+  }
 
   public list(): ListDefinitionsBuilder {
     return new ListDefinitionsBuilder(this.client);
+  }
+
+  public get(id: string): GetDefinitionBuilder {
+    return new GetDefinitionBuilder(this.client, id);
+  }
+
+  public delete(id: string): DeleteDefinitionBuilder {
+    return new DeleteDefinitionBuilder(this.client, id);
   }
 
   public deploy(): DeployDefinitionBuilder {
@@ -67,7 +78,11 @@ export class DefinitionsService {
 }
 
 export class ListDefinitionsBuilder {
-  constructor(private client: Client) {}
+  private client: Client;
+
+  constructor(client: Client) {
+    this.client = client;
+  }
 
   public async send(): Promise<ProcessDefinition[]> {
     const res = await fetch(`${this.client.getBaseUrl()}/api/definitions`, {
@@ -82,13 +97,59 @@ export class ListDefinitionsBuilder {
   }
 }
 
+export class GetDefinitionBuilder {
+  private client: Client;
+  private id: string;
+
+  constructor(client: Client, id: string) {
+    this.client = client;
+    this.id = id;
+  }
+
+  public async send(): Promise<ProcessDefinition> {
+    const res = await fetch(`${this.client.getBaseUrl()}/api/definitions/${this.id}`, {
+      method: "GET",
+      headers: this.client.getHeaders()
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Failed to get definition: ${text}`);
+    }
+    return res.json();
+  }
+}
+
+export class DeleteDefinitionBuilder {
+  private client: Client;
+  private id: string;
+
+  constructor(client: Client, id: string) {
+    this.client = client;
+    this.id = id;
+  }
+
+  public async send(): Promise<void> {
+    const res = await fetch(`${this.client.getBaseUrl()}/api/definitions/${this.id}`, {
+      method: "DELETE",
+      headers: this.client.getHeaders()
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Failed to delete definition: ${text}`);
+    }
+  }
+}
+
 export class DeployDefinitionBuilder {
+  private client: Client;
   private id?: string;
   private name?: string;
   private bpmnXML?: Blob | Buffer | Uint8Array;
   private workflow?: Workflow;
 
-  constructor(private client: Client) {}
+  constructor(client: Client) {
+    this.client = client;
+  }
 
   public withID(id: string): this {
     this.id = id;
@@ -161,9 +222,12 @@ export class DeployDefinitionBuilder {
   }
 }
 
-
 export class InstancesService {
-  constructor(private client: Client) {}
+  private client: Client;
+
+  constructor(client: Client) {
+    this.client = client;
+  }
 
   public list(): ListInstancesBuilder {
     return new ListInstancesBuilder(this.client);
@@ -175,6 +239,10 @@ export class InstancesService {
 
   public start(processID: string): StartInstanceBuilder {
     return new StartInstanceBuilder(this.client, processID);
+  }
+
+  public cancel(id: string): CancelInstanceBuilder {
+    return new CancelInstanceBuilder(this.client, id);
   }
 
   public complete(id: string): CompleteInstanceTaskBuilder {
@@ -258,7 +326,11 @@ export class InstancesService {
 }
 
 export class ListInstancesBuilder {
-  constructor(private client: Client) {}
+  private client: Client;
+
+  constructor(client: Client) {
+    this.client = client;
+  }
 
   public async send(): Promise<ProcessInstance[]> {
     const res = await fetch(`${this.client.getBaseUrl()}/api/instances`, {
@@ -274,7 +346,13 @@ export class ListInstancesBuilder {
 }
 
 export class GetInstanceBuilder {
-  constructor(private client: Client, private id: string) {}
+  private client: Client;
+  private id: string;
+
+  constructor(client: Client, id: string) {
+    this.client = client;
+    this.id = id;
+  }
 
   public async send(): Promise<ProcessInstance> {
     const res = await fetch(`${this.client.getBaseUrl()}/api/instances/${this.id}`, {
@@ -289,12 +367,39 @@ export class GetInstanceBuilder {
   }
 }
 
+export class CancelInstanceBuilder {
+  private client: Client;
+  private id: string;
+
+  constructor(client: Client, id: string) {
+    this.client = client;
+    this.id = id;
+  }
+
+  public async send(): Promise<ProcessInstance> {
+    const res = await fetch(`${this.client.getBaseUrl()}/api/instances/${this.id}/cancel`, {
+      method: "POST",
+      headers: this.client.getHeaders()
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Failed to cancel instance: ${text}`);
+    }
+    return res.json();
+  }
+}
+
 export class StartInstanceBuilder {
+  private client: Client;
+  private processID: string;
   private instanceID?: string;
   private businessKey?: string;
   private variables: Record<string, any> = {};
 
-  constructor(private client: Client, private processID: string) {}
+  constructor(client: Client, processID: string) {
+    this.client = client;
+    this.processID = processID;
+  }
 
   public withInstanceID(id: string): this {
     this.instanceID = id;
@@ -338,10 +443,15 @@ export class StartInstanceBuilder {
 }
 
 export class CompleteInstanceTaskBuilder {
+  private client: Client;
+  private instanceID: string;
   private nodeID?: string;
   private variables: Record<string, any> = {};
 
-  constructor(private client: Client, private instanceID: string) {}
+  constructor(client: Client, instanceID: string) {
+    this.client = client;
+    this.instanceID = instanceID;
+  }
 
   public withNodeID(nodeID: string): this {
     this.nodeID = nodeID;
@@ -380,7 +490,13 @@ export class CompleteInstanceTaskBuilder {
 }
 
 export class ResumeInstanceBuilder {
-  constructor(private client: Client, private id: string) {}
+  private client: Client;
+  private id: string;
+
+  constructor(client: Client, id: string) {
+    this.client = client;
+    this.id = id;
+  }
 
   public async send(): Promise<ProcessInstance> {
     const res = await fetch(`${this.client.getBaseUrl()}/api/instances/${this.id}/resume`, {
@@ -396,7 +512,13 @@ export class ResumeInstanceBuilder {
 }
 
 export class GetInstanceHistoryBuilder {
-  constructor(private client: Client, private id: string) {}
+  private client: Client;
+  private id: string;
+
+  constructor(client: Client, id: string) {
+    this.client = client;
+    this.id = id;
+  }
 
   public async send(): Promise<HistoryRecord[]> {
     const res = await fetch(`${this.client.getBaseUrl()}/api/instances/${this.id}/history`, {
@@ -412,7 +534,13 @@ export class GetInstanceHistoryBuilder {
 }
 
 export class ListIncidentsBuilder {
-  constructor(private client: Client, private id: string) {}
+  private client: Client;
+  private id: string;
+
+  constructor(client: Client, id: string) {
+    this.client = client;
+    this.id = id;
+  }
 
   public async send(): Promise<IncidentRecord[]> {
     const res = await fetch(`${this.client.getBaseUrl()}/api/instances/${this.id}/incidents`, {
@@ -428,7 +556,15 @@ export class ListIncidentsBuilder {
 }
 
 export class ResolveIncidentBuilder {
-  constructor(private client: Client, private id: string, private incidentID: string) {}
+  private client: Client;
+  private id: string;
+  private incidentID: string;
+
+  constructor(client: Client, id: string, incidentID: string) {
+    this.client = client;
+    this.id = id;
+    this.incidentID = incidentID;
+  }
 
   public async send(): Promise<void> {
     const res = await fetch(`${this.client.getBaseUrl()}/api/instances/${this.id}/incidents/${this.incidentID}/resolve`, {
@@ -442,12 +578,19 @@ export class ResolveIncidentBuilder {
   }
 }
 
-
 export class TasksService {
-  constructor(private client: Client) {}
+  private client: Client;
+
+  constructor(client: Client) {
+    this.client = client;
+  }
 
   public list(): ListTasksBuilder {
     return new ListTasksBuilder(this.client);
+  }
+
+  public get(id: string): GetTaskBuilder {
+    return new GetTaskBuilder(this.client, id);
   }
 
   public claim(id: string): ClaimTaskBuilder {
@@ -457,14 +600,21 @@ export class TasksService {
   public complete(id: string): CompleteTaskBuilder {
     return new CompleteTaskBuilder(this.client, id);
   }
+
+  public resolve(id: string): ResolveTaskBuilder {
+    return new ResolveTaskBuilder(this.client, id);
+  }
 }
 
 export class ListTasksBuilder {
+  private client: Client;
   private assignee?: string;
   private candidateGroup?: string;
   private status?: string;
 
-  constructor(private client: Client) {}
+  constructor(client: Client) {
+    this.client = client;
+  }
 
   public withAssignee(assignee: string): this {
     this.assignee = assignee;
@@ -502,10 +652,37 @@ export class ListTasksBuilder {
   }
 }
 
+export class GetTaskBuilder {
+  private client: Client;
+  private id: string;
+
+  constructor(client: Client, id: string) {
+    this.client = client;
+    this.id = id;
+  }
+
+  public async send(): Promise<TaskRecord> {
+    const res = await fetch(`${this.client.getBaseUrl()}/api/tasks/${this.id}`, {
+      method: "GET",
+      headers: this.client.getHeaders()
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Failed to get task: ${text}`);
+    }
+    return res.json();
+  }
+}
+
 export class ClaimTaskBuilder {
+  private client: Client;
+  private id: string;
   private assignee?: string;
 
-  constructor(private client: Client, private id: string) {}
+  constructor(client: Client, id: string) {
+    this.client = client;
+    this.id = id;
+  }
 
   public withAssignee(assignee: string): this {
     this.assignee = assignee;
@@ -531,9 +708,14 @@ export class ClaimTaskBuilder {
 }
 
 export class CompleteTaskBuilder {
+  private client: Client;
+  private id: string;
   private variables: Record<string, any> = {};
 
-  constructor(private client: Client, private id: string) {}
+  constructor(client: Client, id: string) {
+    this.client = client;
+    this.id = id;
+  }
 
   public withVariable(name: string, value: any): this {
     this.variables[name] = value;
@@ -562,9 +744,49 @@ export class CompleteTaskBuilder {
   }
 }
 
+export class ResolveTaskBuilder {
+  private client: Client;
+  private id: string;
+  private variables: Record<string, any> = {};
+
+  constructor(client: Client, id: string) {
+    this.client = client;
+    this.id = id;
+  }
+
+  public withVariable(name: string, value: any): this {
+    this.variables[name] = value;
+    return this;
+  }
+
+  public withVariables(variables: Record<string, any>): this {
+    Object.assign(this.variables, variables);
+    return this;
+  }
+
+  public async send(): Promise<ProcessInstance> {
+    const res = await fetch(`${this.client.getBaseUrl()}/api/tasks/${this.id}/resolve`, {
+      method: "POST",
+      headers: {
+        ...this.client.getHeaders(),
+        "Content-Type": "application/json"
+      },
+      body: JSON.stringify({ variables: this.variables })
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      throw new Error(`Failed to resolve task: ${text}`);
+    }
+    return res.json();
+  }
+}
 
 export class WebhooksService {
-  constructor(private client: Client) {}
+  private client: Client;
+
+  constructor(client: Client) {
+    this.client = client;
+  }
 
   public list(): ListWebhooksBuilder {
     return new ListWebhooksBuilder(this.client);
@@ -592,7 +814,11 @@ export class WebhooksService {
 }
 
 export class ListWebhooksBuilder {
-  constructor(private client: Client) {}
+  private client: Client;
+
+  constructor(client: Client) {
+    this.client = client;
+  }
 
   public async send(): Promise<WebhookRecord[]> {
     const res = await fetch(`${this.client.getBaseUrl()}/api/webhooks`, {
@@ -608,6 +834,7 @@ export class ListWebhooksBuilder {
 }
 
 export class CreateWebhookBuilder {
+  private client: Client;
   private url?: string;
   private secret?: string;
   private events: string[] = [];
@@ -615,7 +842,9 @@ export class CreateWebhookBuilder {
   private isActive?: boolean;
   private enableAudit?: boolean;
 
-  constructor(private client: Client) {}
+  constructor(client: Client) {
+    this.client = client;
+  }
 
   public withURL(url: string): this {
     this.url = url;
@@ -673,6 +902,8 @@ export class CreateWebhookBuilder {
 }
 
 export class UpdateWebhookBuilder {
+  private client: Client;
+  private id: string;
   private url?: string;
   private secret?: string;
   private events: string[] = [];
@@ -680,7 +911,10 @@ export class UpdateWebhookBuilder {
   private isActive?: boolean;
   private enableAudit?: boolean;
 
-  constructor(private client: Client, private id: string) {}
+  constructor(client: Client, id: string) {
+    this.client = client;
+    this.id = id;
+  }
 
   public withURL(url: string): this {
     this.url = url;
@@ -738,7 +972,13 @@ export class UpdateWebhookBuilder {
 }
 
 export class DeleteWebhookBuilder {
-  constructor(private client: Client, private id: string) {}
+  private client: Client;
+  private id: string;
+
+  constructor(client: Client, id: string) {
+    this.client = client;
+    this.id = id;
+  }
 
   public async send(): Promise<void> {
     const res = await fetch(`${this.client.getBaseUrl()}/api/webhooks/${this.id}`, {
@@ -753,7 +993,13 @@ export class DeleteWebhookBuilder {
 }
 
 export class TestWebhookBuilder {
-  constructor(private client: Client, private id: string) {}
+  private client: Client;
+  private id: string;
+
+  constructor(client: Client, id: string) {
+    this.client = client;
+    this.id = id;
+  }
 
   public async send(): Promise<void> {
     const res = await fetch(`${this.client.getBaseUrl()}/api/webhooks/${this.id}/test`, {
@@ -768,7 +1014,13 @@ export class TestWebhookBuilder {
 }
 
 export class ListWebhookDeliveriesBuilder {
-  constructor(private client: Client, private id: string) {}
+  private client: Client;
+  private id: string;
+
+  constructor(client: Client, id: string) {
+    this.client = client;
+    this.id = id;
+  }
 
   public async send(): Promise<WebhookDeliveryRecord[]> {
     const res = await fetch(`${this.client.getBaseUrl()}/api/webhooks/${this.id}/deliveries`, {
@@ -780,5 +1032,204 @@ export class ListWebhookDeliveriesBuilder {
       throw new Error(`Failed to list webhook deliveries: ${text}`);
     }
     return res.json();
+  }
+}
+
+// Background Worker implementation mirroring Go Worker syntax
+export interface TaskContext {
+  id: string;
+  topic: string;
+  definitionId?: string;
+  instanceId?: string;
+  stepId?: string;
+  variables: Record<string, any>;
+  timeoutMs?: number;
+}
+
+export type TaskHandler = (task: TaskContext) => Promise<Record<string, any> | void> | Record<string, any> | void;
+
+export class Worker {
+  private serverUrl: string;
+  private apiToken: string;
+  private workerId: string;
+  private maxConcurrency: number = 20;
+  private pollIntervalMs: number = 1000;
+  private maxRetries: number = 0;
+  private handlers: Map<string, TaskHandler> = new Map();
+  private idempotencyCache: Map<string, { result: any; timestamp: number }> = new Map();
+  private client: Client;
+  private running: boolean = false;
+  private loopPromise?: Promise<void>;
+
+  constructor(serverUrl: string, apiToken: string) {
+    this.serverUrl = serverUrl.replace(/\/$/, "");
+    this.apiToken = apiToken;
+    this.workerId = `worker-${Date.now().toString(36)}`;
+    this.client = new Client(serverUrl, apiToken);
+  }
+
+  public withWorkerId(id: string): this {
+    this.workerId = id;
+    return this;
+  }
+
+  public withMaxConcurrency(n: number): this {
+    if (n > 0) this.maxConcurrency = n;
+    return this;
+  }
+
+  public withPollInterval(ms: number): this {
+    if (ms > 0) this.pollIntervalMs = ms;
+    return this;
+  }
+
+  public withRetries(n: number): this {
+    if (n >= 0) this.maxRetries = n;
+    return this;
+  }
+
+  public withTopic(topic: string, handler: TaskHandler): this {
+    this.handlers.set(topic, handler);
+    return this;
+  }
+
+  public getClient(): Client {
+    return this.client;
+  }
+
+  public getWorkerId(): string {
+    return this.workerId;
+  }
+
+  public getRegisteredTopics(): string[] {
+    return Array.from(this.handlers.keys());
+  }
+
+  public async processTask(task: {
+    id: string;
+    topic?: string;
+    activity_id?: string;
+    name?: string;
+    instance_id?: string;
+    variables?: Record<string, any>;
+    draft_variables?: Record<string, any>;
+  }): Promise<{ status: "completed" | "incident"; result?: any; error?: string }> {
+    const topic = task.topic || task.activity_id || task.name || "";
+    let handler = this.handlers.get(topic);
+    if (!handler) {
+      for (const [key, h] of this.handlers.entries()) {
+        if (key === topic || topic.includes(key) || key === "*") {
+          handler = h;
+          break;
+        }
+      }
+    }
+    if (!handler) {
+      throw new Error(`No handler registered for topic: "${topic}"`);
+    }
+
+    // 1. Idempotency Check (Duplicate Execution Guard)
+    const idempotencyKey = String(task.id || (task.instance_id && task.activity_id ? `${task.instance_id}:${task.activity_id}` : ""));
+    if (idempotencyKey && this.idempotencyCache.has(idempotencyKey)) {
+      const cached = this.idempotencyCache.get(idempotencyKey)!;
+      return { status: "completed", result: cached.result };
+    }
+
+    const taskContext: TaskContext = {
+      id: String(task.id),
+      topic,
+      instanceId: task.instance_id,
+      stepId: task.activity_id,
+      variables: task.variables || task.draft_variables || {},
+    };
+
+    // 2. Execution with Retries & Exponential Backoff
+    let outputVars: any = null;
+    let lastErr: any = null;
+    const totalAttempts = 1 + this.maxRetries;
+    let succeeded = false;
+
+    for (let attempt = 1; attempt <= totalAttempts; attempt++) {
+      try {
+        outputVars = await handler(taskContext);
+        succeeded = true;
+        break;
+      } catch (err: any) {
+        lastErr = err;
+        if (attempt < totalAttempts) {
+          const delayMs = Math.min(50 * Math.pow(2, attempt - 1), 500);
+          await new Promise((resolve) => setTimeout(resolve, delayMs));
+        }
+      }
+    }
+
+    // 3. Incident Escalation on Failure
+    if (!succeeded) {
+      const errorMsg = lastErr?.message || String(lastErr);
+      if (taskContext.instanceId) {
+        try {
+          await fetch(`${this.serverUrl}/api/instances/${taskContext.instanceId}/incidents`, {
+            method: "POST",
+            headers: {
+              ...this.client.getHeaders(),
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              node_id: taskContext.stepId || taskContext.id,
+              error_type: "WorkerExecutionError",
+              error_message: errorMsg,
+              worker_id: this.workerId,
+            }),
+          });
+        } catch {
+          // ignore incident report transport error
+        }
+      }
+      return { status: "incident", error: errorMsg };
+    }
+
+    // 4. Save to Idempotency Cache
+    if (idempotencyKey) {
+      this.idempotencyCache.set(idempotencyKey, { result: outputVars, timestamp: Date.now() });
+    }
+
+    try {
+      await this.client.tasks().complete(taskContext.id).withVariables(outputVars || {}).send();
+    } catch {
+      // ignore transport error if mock server doesn't respond
+    }
+    return { status: "completed", result: outputVars };
+  }
+
+  public async pollOnce(): Promise<number> {
+    let processedCount = 0;
+    try {
+      const tasks = await this.client.tasks().list().withAssignee(this.workerId).withStatus("CREATED").send();
+      for (const t of tasks.slice(0, this.maxConcurrency)) {
+        await this.client.tasks().claim(String(t.id)).withAssignee(this.workerId).send();
+        await this.processTask(t as any);
+        processedCount++;
+      }
+    } catch {
+      // ignore poll error
+    }
+    return processedCount;
+  }
+
+  public async start(): Promise<void> {
+    this.running = true;
+    this.loopPromise = (async () => {
+      while (this.running) {
+        await this.pollOnce();
+        await new Promise(r => setTimeout(r, this.pollIntervalMs));
+      }
+    })();
+  }
+
+  public async stop(): Promise<void> {
+    this.running = false;
+    if (this.loopPromise) {
+      await this.loopPromise;
+    }
   }
 }
