@@ -33,6 +33,7 @@ import com.google.gson.JsonDeserializationContext;
 import com.google.gson.JsonDeserializer;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonNull;
 import com.google.gson.JsonParseException;
 import com.google.gson.TypeAdapterFactory;
 import com.google.gson.reflect.TypeToken;
@@ -52,7 +53,7 @@ import com.nativebpm.client.JSON;
 /**
  * TaskRecord
  */
-@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", comments = "Generator version: 7.24.0-SNAPSHOT")
+@javax.annotation.Generated(value = "org.openapitools.codegen.languages.JavaClientCodegen", comments = "Generator version: 7.25.0")
 public class TaskRecord {
   public static final String SERIALIZED_NAME_ID = "id";
   @SerializedName(SERIALIZED_NAME_ID)
@@ -98,6 +99,11 @@ public class TaskRecord {
   @SerializedName(SERIALIZED_NAME_INPUT_SCHEMA)
   @javax.annotation.Nullable
   private String inputSchema;
+
+  public static final String SERIALIZED_NAME_FORM_ID = "form_id";
+  @SerializedName(SERIALIZED_NAME_FORM_ID)
+  @javax.annotation.Nullable
+  private String formId;
 
   public static final String SERIALIZED_NAME_CREATED_AT = "created_at";
   @SerializedName(SERIALIZED_NAME_CREATED_AT)
@@ -298,6 +304,25 @@ public class TaskRecord {
   }
 
 
+  public TaskRecord formId(@javax.annotation.Nullable String formId) {
+    this.formId = formId;
+    return this;
+  }
+
+  /**
+   * Form identifier or Camunda form key for dynamic schema rendering
+   * @return formId
+   */
+  @javax.annotation.Nullable
+  public String getFormId() {
+    return formId;
+  }
+
+  public void setFormId(@javax.annotation.Nullable String formId) {
+    this.formId = formId;
+  }
+
+
   public TaskRecord createdAt(@javax.annotation.Nonnull OffsetDateTime createdAt) {
     this.createdAt = createdAt;
     return this;
@@ -420,6 +445,7 @@ public class TaskRecord {
         Objects.equals(this.status, taskRecord.status) &&
         Objects.equals(this.dueDate, taskRecord.dueDate) &&
         Objects.equals(this.inputSchema, taskRecord.inputSchema) &&
+        Objects.equals(this.formId, taskRecord.formId) &&
         Objects.equals(this.createdAt, taskRecord.createdAt) &&
         Objects.equals(this.claimedAt, taskRecord.claimedAt) &&
         Objects.equals(this.completedAt, taskRecord.completedAt) &&
@@ -429,7 +455,7 @@ public class TaskRecord {
 
   @Override
   public int hashCode() {
-    return Objects.hash(id, instanceId, activityId, name, assignee, candidateGroups, status, dueDate, inputSchema, createdAt, claimedAt, completedAt, currentStep, draftVariables);
+    return Objects.hash(id, instanceId, activityId, name, assignee, candidateGroups, status, dueDate, inputSchema, formId, createdAt, claimedAt, completedAt, currentStep, draftVariables);
   }
 
   @Override
@@ -445,6 +471,7 @@ public class TaskRecord {
     sb.append("    status: ").append(toIndentedString(status)).append("\n");
     sb.append("    dueDate: ").append(toIndentedString(dueDate)).append("\n");
     sb.append("    inputSchema: ").append(toIndentedString(inputSchema)).append("\n");
+    sb.append("    formId: ").append(toIndentedString(formId)).append("\n");
     sb.append("    createdAt: ").append(toIndentedString(createdAt)).append("\n");
     sb.append("    claimedAt: ").append(toIndentedString(claimedAt)).append("\n");
     sb.append("    completedAt: ").append(toIndentedString(completedAt)).append("\n");
@@ -468,7 +495,7 @@ public class TaskRecord {
 
   static {
     // a set of all properties/fields (JSON key names)
-    openapiFields = new HashSet<String>(Arrays.asList("id", "instance_id", "activity_id", "name", "assignee", "candidate_groups", "status", "due_date", "input_schema", "created_at", "claimed_at", "completed_at", "current_step", "draft_variables"));
+    openapiFields = new HashSet<String>(Arrays.asList("id", "instance_id", "activity_id", "name", "assignee", "candidate_groups", "status", "due_date", "input_schema", "form_id", "created_at", "claimed_at", "completed_at", "current_step", "draft_variables"));
 
     // a set of required properties/fields (JSON key names)
     openapiRequiredFields = new HashSet<String>(Arrays.asList("id", "instance_id", "activity_id", "name", "assignee", "candidate_groups", "status", "created_at"));
@@ -525,6 +552,9 @@ public class TaskRecord {
       }
       if ((jsonObj.get("input_schema") != null && !jsonObj.get("input_schema").isJsonNull()) && !jsonObj.get("input_schema").isJsonPrimitive()) {
         throw new IllegalArgumentException(String.format(java.util.Locale.ROOT, "Expected the field `input_schema` to be a primitive type in the JSON string but got `%s`", jsonObj.get("input_schema").toString()));
+      }
+      if ((jsonObj.get("form_id") != null && !jsonObj.get("form_id").isJsonNull()) && !jsonObj.get("form_id").isJsonPrimitive()) {
+        throw new IllegalArgumentException(String.format(java.util.Locale.ROOT, "Expected the field `form_id` to be a primitive type in the JSON string but got `%s`", jsonObj.get("form_id").toString()));
       }
   }
 

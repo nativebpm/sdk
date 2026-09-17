@@ -15,6 +15,7 @@ Name | Type
 `status` | string
 `dueDate` | Date
 `inputSchema` | string
+`formId` | string
 `createdAt` | Date
 `claimedAt` | Date
 `completedAt` | Date
@@ -37,6 +38,7 @@ const example = {
   "status": CREATED,
   "dueDate": null,
   "inputSchema": null,
+  "formId": null,
   "createdAt": null,
   "claimedAt": null,
   "completedAt": null,

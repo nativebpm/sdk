@@ -327,7 +327,7 @@ No authorization required
 
 ## deleteWebhook
 
-> ResolveIncident200Response deleteWebhook(id)
+> DeleteWebhook200Response deleteWebhook(id)
 
 Delete webhook target
 
@@ -372,7 +372,7 @@ example().catch(console.error);
 
 ### Return type
 
-[**ResolveIncident200Response**](ResolveIncident200Response.md)
+[**DeleteWebhook200Response**](DeleteWebhook200Response.md)
 
 ### Authorization
 
@@ -1501,7 +1501,7 @@ No authorization required
 
 ## testWebhook
 
-> ResolveIncident200Response testWebhook(id)
+> TestWebhook200Response testWebhook(id)
 
 Test webhook target
 
@@ -1546,7 +1546,7 @@ example().catch(console.error);
 
 ### Return type
 
-[**ResolveIncident200Response**](ResolveIncident200Response.md)
+[**TestWebhook200Response**](TestWebhook200Response.md)
 
 ### Authorization
 

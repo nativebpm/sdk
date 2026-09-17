@@ -303,7 +303,7 @@ No authorization required
 
 <a id="deleteWebhook"></a>
 # **deleteWebhook**
-> ResolveIncident200Response deleteWebhook(id)
+> DeleteWebhook200Response deleteWebhook(id)
 
 Delete webhook target
 
@@ -326,7 +326,7 @@ public class Example {
     DefaultApi apiInstance = new DefaultApi(defaultClient);
     String id = "id_example"; // String | 
     try {
-      ResolveIncident200Response result = apiInstance.deleteWebhook(id);
+      DeleteWebhook200Response result = apiInstance.deleteWebhook(id);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling DefaultApi#deleteWebhook");
@@ -347,7 +347,7 @@ public class Example {
 
 ### Return type
 
-[**ResolveIncident200Response**](ResolveIncident200Response.md)
+[**DeleteWebhook200Response**](DeleteWebhook200Response.md)
 
 ### Authorization
 
@@ -1403,7 +1403,7 @@ No authorization required
 
 <a id="testWebhook"></a>
 # **testWebhook**
-> ResolveIncident200Response testWebhook(id)
+> TestWebhook200Response testWebhook(id)
 
 Test webhook target
 
@@ -1426,7 +1426,7 @@ public class Example {
     DefaultApi apiInstance = new DefaultApi(defaultClient);
     String id = "id_example"; // String | 
     try {
-      ResolveIncident200Response result = apiInstance.testWebhook(id);
+      TestWebhook200Response result = apiInstance.testWebhook(id);
       System.out.println(result);
     } catch (ApiException e) {
       System.err.println("Exception when calling DefaultApi#testWebhook");
@@ -1447,7 +1447,7 @@ public class Example {
 
 ### Return type
 
-[**ResolveIncident200Response**](ResolveIncident200Response.md)
+[**TestWebhook200Response**](TestWebhook200Response.md)
 
 ### Authorization
 

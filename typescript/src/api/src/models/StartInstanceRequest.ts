@@ -21,20 +21,14 @@ import { mapValues } from '../runtime';
 export interface StartInstanceRequest {
     /**
      * Optional user-generated UUID to enforce idempotency
-     * @type {string}
-     * @memberof StartInstanceRequest
      */
     instanceId?: string;
     /**
      * Business tracking keyword
-     * @type {string}
-     * @memberof StartInstanceRequest
      */
     businessKey?: string;
     /**
      * 
-     * @type {{ [key: string]: any; }}
-     * @memberof StartInstanceRequest
      */
     variables?: { [key: string]: any; };
 }

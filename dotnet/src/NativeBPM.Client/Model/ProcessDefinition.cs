@@ -116,12 +116,22 @@ namespace NativeBPM.Client.Model
     /// <summary>
     /// A Json converter for type <see cref="ProcessDefinition" />
     /// </summary>
-    public class ProcessDefinitionJsonConverter : JsonConverter<ProcessDefinition>
+    public partial class ProcessDefinitionJsonConverter : JsonConverter<ProcessDefinition>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProcessDefinitionJsonConverter" /> class.
+        /// </summary>
+        public ProcessDefinitionJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// The format to use to serialize DeployedAt
         /// </summary>
-        public static string DeployedAtFormat { get; set; } = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK";
+        public string DeployedAtFormat { get; private set; } = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK";
 
         /// <summary>
         /// Deserializes json to <see cref="ProcessDefinition" />

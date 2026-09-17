@@ -1,4 +1,4 @@
-# NativeBPM\Client\DefaultApi
+# NativeBPMClient\DefaultApi
 
 
 
@@ -34,7 +34,7 @@ All URIs are relative to http://localhost, except if the operation defines anoth
 ## `claimTask()`
 
 ```php
-claimTask($id, $claim_task_request): \NativeBPM\Client\Model\TaskRecord
+claimTask($id, $claim_task_request): \NativeBPMClient\Model\TaskRecord
 ```
 
 Claim human task
@@ -49,13 +49,13 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 
-$apiInstance = new NativeBPM\Client\Api\DefaultApi(
+$apiInstance = new NativeBPMClient\Api\DefaultApi(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
 );
 $id = 'id_example'; // string
-$claim_task_request = new \NativeBPM\Client\Model\ClaimTaskRequest(); // \NativeBPM\Client\Model\ClaimTaskRequest
+$claim_task_request = new \NativeBPMClient\Model\ClaimTaskRequest(); // \NativeBPMClient\Model\ClaimTaskRequest
 
 try {
     $result = $apiInstance->claimTask($id, $claim_task_request);
@@ -70,11 +70,11 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **id** | **string**|  | |
-| **claim_task_request** | [**\NativeBPM\Client\Model\ClaimTaskRequest**](../Model/ClaimTaskRequest.md)|  | |
+| **claim_task_request** | [**\NativeBPMClient\Model\ClaimTaskRequest**](../Model/ClaimTaskRequest.md)|  | |
 
 ### Return type
 
-[**\NativeBPM\Client\Model\TaskRecord**](../Model/TaskRecord.md)
+[**\NativeBPMClient\Model\TaskRecord**](../Model/TaskRecord.md)
 
 ### Authorization
 
@@ -92,7 +92,7 @@ No authorization required
 ## `completeInstanceTask()`
 
 ```php
-completeInstanceTask($id, $complete_instance_task_request): \NativeBPM\Client\Model\ProcessInstance
+completeInstanceTask($id, $complete_instance_task_request): \NativeBPMClient\Model\ProcessInstance
 ```
 
 Complete a wait state / task activity in process instance
@@ -107,13 +107,13 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 
-$apiInstance = new NativeBPM\Client\Api\DefaultApi(
+$apiInstance = new NativeBPMClient\Api\DefaultApi(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
 );
 $id = 'id_example'; // string
-$complete_instance_task_request = new \NativeBPM\Client\Model\CompleteInstanceTaskRequest(); // \NativeBPM\Client\Model\CompleteInstanceTaskRequest
+$complete_instance_task_request = new \NativeBPMClient\Model\CompleteInstanceTaskRequest(); // \NativeBPMClient\Model\CompleteInstanceTaskRequest
 
 try {
     $result = $apiInstance->completeInstanceTask($id, $complete_instance_task_request);
@@ -128,11 +128,11 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **id** | **string**|  | |
-| **complete_instance_task_request** | [**\NativeBPM\Client\Model\CompleteInstanceTaskRequest**](../Model/CompleteInstanceTaskRequest.md)|  | |
+| **complete_instance_task_request** | [**\NativeBPMClient\Model\CompleteInstanceTaskRequest**](../Model/CompleteInstanceTaskRequest.md)|  | |
 
 ### Return type
 
-[**\NativeBPM\Client\Model\ProcessInstance**](../Model/ProcessInstance.md)
+[**\NativeBPMClient\Model\ProcessInstance**](../Model/ProcessInstance.md)
 
 ### Authorization
 
@@ -150,7 +150,7 @@ No authorization required
 ## `completeTask()`
 
 ```php
-completeTask($id, $complete_task_request): \NativeBPM\Client\Model\ProcessInstance
+completeTask($id, $complete_task_request): \NativeBPMClient\Model\ProcessInstance
 ```
 
 Complete human task
@@ -165,13 +165,13 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 
-$apiInstance = new NativeBPM\Client\Api\DefaultApi(
+$apiInstance = new NativeBPMClient\Api\DefaultApi(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
 );
 $id = 'id_example'; // string
-$complete_task_request = new \NativeBPM\Client\Model\CompleteTaskRequest(); // \NativeBPM\Client\Model\CompleteTaskRequest
+$complete_task_request = new \NativeBPMClient\Model\CompleteTaskRequest(); // \NativeBPMClient\Model\CompleteTaskRequest
 
 try {
     $result = $apiInstance->completeTask($id, $complete_task_request);
@@ -186,11 +186,11 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **id** | **string**|  | |
-| **complete_task_request** | [**\NativeBPM\Client\Model\CompleteTaskRequest**](../Model/CompleteTaskRequest.md)|  | [optional] |
+| **complete_task_request** | [**\NativeBPMClient\Model\CompleteTaskRequest**](../Model/CompleteTaskRequest.md)|  | [optional] |
 
 ### Return type
 
-[**\NativeBPM\Client\Model\ProcessInstance**](../Model/ProcessInstance.md)
+[**\NativeBPMClient\Model\ProcessInstance**](../Model/ProcessInstance.md)
 
 ### Authorization
 
@@ -208,7 +208,7 @@ No authorization required
 ## `createWebhook()`
 
 ```php
-createWebhook($create_webhook_request): \NativeBPM\Client\Model\WebhookRecord
+createWebhook($create_webhook_request): \NativeBPMClient\Model\WebhookRecord
 ```
 
 Create webhook target
@@ -223,12 +223,12 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 
-$apiInstance = new NativeBPM\Client\Api\DefaultApi(
+$apiInstance = new NativeBPMClient\Api\DefaultApi(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
 );
-$create_webhook_request = new \NativeBPM\Client\Model\CreateWebhookRequest(); // \NativeBPM\Client\Model\CreateWebhookRequest
+$create_webhook_request = new \NativeBPMClient\Model\CreateWebhookRequest(); // \NativeBPMClient\Model\CreateWebhookRequest
 
 try {
     $result = $apiInstance->createWebhook($create_webhook_request);
@@ -242,11 +242,11 @@ try {
 
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
-| **create_webhook_request** | [**\NativeBPM\Client\Model\CreateWebhookRequest**](../Model/CreateWebhookRequest.md)|  | |
+| **create_webhook_request** | [**\NativeBPMClient\Model\CreateWebhookRequest**](../Model/CreateWebhookRequest.md)|  | |
 
 ### Return type
 
-[**\NativeBPM\Client\Model\WebhookRecord**](../Model/WebhookRecord.md)
+[**\NativeBPMClient\Model\WebhookRecord**](../Model/WebhookRecord.md)
 
 ### Authorization
 
@@ -264,7 +264,7 @@ No authorization required
 ## `deleteWebhook()`
 
 ```php
-deleteWebhook($id): \NativeBPM\Client\Model\ResolveIncident200Response
+deleteWebhook($id): \NativeBPMClient\Model\DeleteWebhook200Response
 ```
 
 Delete webhook target
@@ -279,7 +279,7 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 
-$apiInstance = new NativeBPM\Client\Api\DefaultApi(
+$apiInstance = new NativeBPMClient\Api\DefaultApi(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
@@ -302,7 +302,7 @@ try {
 
 ### Return type
 
-[**\NativeBPM\Client\Model\ResolveIncident200Response**](../Model/ResolveIncident200Response.md)
+[**\NativeBPMClient\Model\DeleteWebhook200Response**](../Model/DeleteWebhook200Response.md)
 
 ### Authorization
 
@@ -320,7 +320,7 @@ No authorization required
 ## `deployDefinition()`
 
 ```php
-deployDefinition($file): \NativeBPM\Client\Model\ProcessDefinition
+deployDefinition($file): \NativeBPMClient\Model\ProcessDefinition
 ```
 
 Deploy process definition
@@ -335,7 +335,7 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 
-$apiInstance = new NativeBPM\Client\Api\DefaultApi(
+$apiInstance = new NativeBPMClient\Api\DefaultApi(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
@@ -358,7 +358,7 @@ try {
 
 ### Return type
 
-[**\NativeBPM\Client\Model\ProcessDefinition**](../Model/ProcessDefinition.md)
+[**\NativeBPMClient\Model\ProcessDefinition**](../Model/ProcessDefinition.md)
 
 ### Authorization
 
@@ -376,7 +376,7 @@ No authorization required
 ## `getInstance()`
 
 ```php
-getInstance($id): \NativeBPM\Client\Model\ProcessInstance
+getInstance($id): \NativeBPMClient\Model\ProcessInstance
 ```
 
 Get process instance
@@ -391,7 +391,7 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 
-$apiInstance = new NativeBPM\Client\Api\DefaultApi(
+$apiInstance = new NativeBPMClient\Api\DefaultApi(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
@@ -414,7 +414,7 @@ try {
 
 ### Return type
 
-[**\NativeBPM\Client\Model\ProcessInstance**](../Model/ProcessInstance.md)
+[**\NativeBPMClient\Model\ProcessInstance**](../Model/ProcessInstance.md)
 
 ### Authorization
 
@@ -432,7 +432,7 @@ No authorization required
 ## `getInstanceHistory()`
 
 ```php
-getInstanceHistory($id): \NativeBPM\Client\Model\HistoryRecord[]
+getInstanceHistory($id): \NativeBPMClient\Model\HistoryRecord[]
 ```
 
 Get process instance execution history
@@ -447,7 +447,7 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 
-$apiInstance = new NativeBPM\Client\Api\DefaultApi(
+$apiInstance = new NativeBPMClient\Api\DefaultApi(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
@@ -470,7 +470,7 @@ try {
 
 ### Return type
 
-[**\NativeBPM\Client\Model\HistoryRecord[]**](../Model/HistoryRecord.md)
+[**\NativeBPMClient\Model\HistoryRecord[]**](../Model/HistoryRecord.md)
 
 ### Authorization
 
@@ -488,7 +488,7 @@ No authorization required
 ## `getInstanceVisualization()`
 
 ```php
-getInstanceVisualization($id): \NativeBPM\Client\Model\VisualizationData
+getInstanceVisualization($id): \NativeBPMClient\Model\VisualizationData
 ```
 
 Get process instance visualization data
@@ -503,7 +503,7 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 
-$apiInstance = new NativeBPM\Client\Api\DefaultApi(
+$apiInstance = new NativeBPMClient\Api\DefaultApi(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
@@ -526,7 +526,7 @@ try {
 
 ### Return type
 
-[**\NativeBPM\Client\Model\VisualizationData**](../Model/VisualizationData.md)
+[**\NativeBPMClient\Model\VisualizationData**](../Model/VisualizationData.md)
 
 ### Authorization
 
@@ -559,7 +559,7 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 
-$apiInstance = new NativeBPM\Client\Api\DefaultApi(
+$apiInstance = new NativeBPMClient\Api\DefaultApi(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
@@ -602,7 +602,7 @@ No authorization required
 ## `getSMTPConfig()`
 
 ```php
-getSMTPConfig(): \NativeBPM\Client\Model\SMTPConfig
+getSMTPConfig(): \NativeBPMClient\Model\SMTPConfig
 ```
 
 Get SMTP configuration
@@ -617,7 +617,7 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 
-$apiInstance = new NativeBPM\Client\Api\DefaultApi(
+$apiInstance = new NativeBPMClient\Api\DefaultApi(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
@@ -637,7 +637,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**\NativeBPM\Client\Model\SMTPConfig**](../Model/SMTPConfig.md)
+[**\NativeBPMClient\Model\SMTPConfig**](../Model/SMTPConfig.md)
 
 ### Authorization
 
@@ -670,7 +670,7 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 
-$apiInstance = new NativeBPM\Client\Api\DefaultApi(
+$apiInstance = new NativeBPMClient\Api\DefaultApi(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
@@ -711,7 +711,7 @@ No authorization required
 ## `listDefinitions()`
 
 ```php
-listDefinitions(): \NativeBPM\Client\Model\ProcessDefinition[]
+listDefinitions(): \NativeBPMClient\Model\ProcessDefinition[]
 ```
 
 List process definitions
@@ -726,7 +726,7 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 
-$apiInstance = new NativeBPM\Client\Api\DefaultApi(
+$apiInstance = new NativeBPMClient\Api\DefaultApi(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
@@ -746,7 +746,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**\NativeBPM\Client\Model\ProcessDefinition[]**](../Model/ProcessDefinition.md)
+[**\NativeBPMClient\Model\ProcessDefinition[]**](../Model/ProcessDefinition.md)
 
 ### Authorization
 
@@ -764,7 +764,7 @@ No authorization required
 ## `listIncidents()`
 
 ```php
-listIncidents($id): \NativeBPM\Client\Model\IncidentRecord[]
+listIncidents($id): \NativeBPMClient\Model\IncidentRecord[]
 ```
 
 List incidents for process instance
@@ -779,7 +779,7 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 
-$apiInstance = new NativeBPM\Client\Api\DefaultApi(
+$apiInstance = new NativeBPMClient\Api\DefaultApi(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
@@ -802,7 +802,7 @@ try {
 
 ### Return type
 
-[**\NativeBPM\Client\Model\IncidentRecord[]**](../Model/IncidentRecord.md)
+[**\NativeBPMClient\Model\IncidentRecord[]**](../Model/IncidentRecord.md)
 
 ### Authorization
 
@@ -820,7 +820,7 @@ No authorization required
 ## `listInstances()`
 
 ```php
-listInstances(): \NativeBPM\Client\Model\ProcessInstance[]
+listInstances(): \NativeBPMClient\Model\ProcessInstance[]
 ```
 
 List process instances
@@ -835,7 +835,7 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 
-$apiInstance = new NativeBPM\Client\Api\DefaultApi(
+$apiInstance = new NativeBPMClient\Api\DefaultApi(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
@@ -855,7 +855,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**\NativeBPM\Client\Model\ProcessInstance[]**](../Model/ProcessInstance.md)
+[**\NativeBPMClient\Model\ProcessInstance[]**](../Model/ProcessInstance.md)
 
 ### Authorization
 
@@ -873,7 +873,7 @@ No authorization required
 ## `listTasks()`
 
 ```php
-listTasks($assignee, $candidate_group, $status): \NativeBPM\Client\Model\TaskRecord[]
+listTasks($assignee, $candidate_group, $status): \NativeBPMClient\Model\TaskRecord[]
 ```
 
 List human/user tasks
@@ -888,7 +888,7 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 
-$apiInstance = new NativeBPM\Client\Api\DefaultApi(
+$apiInstance = new NativeBPMClient\Api\DefaultApi(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
@@ -915,7 +915,7 @@ try {
 
 ### Return type
 
-[**\NativeBPM\Client\Model\TaskRecord[]**](../Model/TaskRecord.md)
+[**\NativeBPMClient\Model\TaskRecord[]**](../Model/TaskRecord.md)
 
 ### Authorization
 
@@ -933,7 +933,7 @@ No authorization required
 ## `listWebhookDeliveries()`
 
 ```php
-listWebhookDeliveries($id): \NativeBPM\Client\Model\WebhookDeliveryRecord[]
+listWebhookDeliveries($id): \NativeBPMClient\Model\WebhookDeliveryRecord[]
 ```
 
 List deliveries for webhook
@@ -948,7 +948,7 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 
-$apiInstance = new NativeBPM\Client\Api\DefaultApi(
+$apiInstance = new NativeBPMClient\Api\DefaultApi(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
@@ -971,7 +971,7 @@ try {
 
 ### Return type
 
-[**\NativeBPM\Client\Model\WebhookDeliveryRecord[]**](../Model/WebhookDeliveryRecord.md)
+[**\NativeBPMClient\Model\WebhookDeliveryRecord[]**](../Model/WebhookDeliveryRecord.md)
 
 ### Authorization
 
@@ -989,7 +989,7 @@ No authorization required
 ## `listWebhooks()`
 
 ```php
-listWebhooks(): \NativeBPM\Client\Model\WebhookRecord[]
+listWebhooks(): \NativeBPMClient\Model\WebhookRecord[]
 ```
 
 List configured outgoing webhooks
@@ -1004,7 +1004,7 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 
-$apiInstance = new NativeBPM\Client\Api\DefaultApi(
+$apiInstance = new NativeBPMClient\Api\DefaultApi(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
@@ -1024,7 +1024,7 @@ This endpoint does not need any parameter.
 
 ### Return type
 
-[**\NativeBPM\Client\Model\WebhookRecord[]**](../Model/WebhookRecord.md)
+[**\NativeBPMClient\Model\WebhookRecord[]**](../Model/WebhookRecord.md)
 
 ### Authorization
 
@@ -1042,7 +1042,7 @@ No authorization required
 ## `resolveIncident()`
 
 ```php
-resolveIncident($id, $incident_id): \NativeBPM\Client\Model\ResolveIncident200Response
+resolveIncident($id, $incident_id): \NativeBPMClient\Model\ResolveIncident200Response
 ```
 
 Resolve process incident
@@ -1057,7 +1057,7 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 
-$apiInstance = new NativeBPM\Client\Api\DefaultApi(
+$apiInstance = new NativeBPMClient\Api\DefaultApi(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
@@ -1082,7 +1082,7 @@ try {
 
 ### Return type
 
-[**\NativeBPM\Client\Model\ResolveIncident200Response**](../Model/ResolveIncident200Response.md)
+[**\NativeBPMClient\Model\ResolveIncident200Response**](../Model/ResolveIncident200Response.md)
 
 ### Authorization
 
@@ -1100,7 +1100,7 @@ No authorization required
 ## `resumeInstance()`
 
 ```php
-resumeInstance($id): \NativeBPM\Client\Model\ProcessInstance
+resumeInstance($id): \NativeBPMClient\Model\ProcessInstance
 ```
 
 Resume process instance
@@ -1115,7 +1115,7 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 
-$apiInstance = new NativeBPM\Client\Api\DefaultApi(
+$apiInstance = new NativeBPMClient\Api\DefaultApi(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
@@ -1138,7 +1138,7 @@ try {
 
 ### Return type
 
-[**\NativeBPM\Client\Model\ProcessInstance**](../Model/ProcessInstance.md)
+[**\NativeBPMClient\Model\ProcessInstance**](../Model/ProcessInstance.md)
 
 ### Authorization
 
@@ -1156,7 +1156,7 @@ No authorization required
 ## `startInstance()`
 
 ```php
-startInstance($id, $start_instance_request): \NativeBPM\Client\Model\ProcessInstance
+startInstance($id, $start_instance_request): \NativeBPMClient\Model\ProcessInstance
 ```
 
 Start process instance
@@ -1171,13 +1171,13 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 
-$apiInstance = new NativeBPM\Client\Api\DefaultApi(
+$apiInstance = new NativeBPMClient\Api\DefaultApi(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
 );
 $id = 'id_example'; // string | The process definition ID (e.g., matching the BPMN process element ID)
-$start_instance_request = new \NativeBPM\Client\Model\StartInstanceRequest(); // \NativeBPM\Client\Model\StartInstanceRequest
+$start_instance_request = new \NativeBPMClient\Model\StartInstanceRequest(); // \NativeBPMClient\Model\StartInstanceRequest
 
 try {
     $result = $apiInstance->startInstance($id, $start_instance_request);
@@ -1192,11 +1192,11 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **id** | **string**| The process definition ID (e.g., matching the BPMN process element ID) | |
-| **start_instance_request** | [**\NativeBPM\Client\Model\StartInstanceRequest**](../Model/StartInstanceRequest.md)|  | [optional] |
+| **start_instance_request** | [**\NativeBPMClient\Model\StartInstanceRequest**](../Model/StartInstanceRequest.md)|  | [optional] |
 
 ### Return type
 
-[**\NativeBPM\Client\Model\ProcessInstance**](../Model/ProcessInstance.md)
+[**\NativeBPMClient\Model\ProcessInstance**](../Model/ProcessInstance.md)
 
 ### Authorization
 
@@ -1214,7 +1214,7 @@ No authorization required
 ## `testWebhook()`
 
 ```php
-testWebhook($id): \NativeBPM\Client\Model\ResolveIncident200Response
+testWebhook($id): \NativeBPMClient\Model\TestWebhook200Response
 ```
 
 Test webhook target
@@ -1229,7 +1229,7 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 
-$apiInstance = new NativeBPM\Client\Api\DefaultApi(
+$apiInstance = new NativeBPMClient\Api\DefaultApi(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
@@ -1252,7 +1252,7 @@ try {
 
 ### Return type
 
-[**\NativeBPM\Client\Model\ResolveIncident200Response**](../Model/ResolveIncident200Response.md)
+[**\NativeBPMClient\Model\TestWebhook200Response**](../Model/TestWebhook200Response.md)
 
 ### Authorization
 
@@ -1270,7 +1270,7 @@ No authorization required
 ## `updateWebhook()`
 
 ```php
-updateWebhook($id, $create_webhook_request): \NativeBPM\Client\Model\WebhookRecord
+updateWebhook($id, $create_webhook_request): \NativeBPMClient\Model\WebhookRecord
 ```
 
 Update webhook target
@@ -1285,13 +1285,13 @@ require_once(__DIR__ . '/vendor/autoload.php');
 
 
 
-$apiInstance = new NativeBPM\Client\Api\DefaultApi(
+$apiInstance = new NativeBPMClient\Api\DefaultApi(
     // If you want use custom http client, pass your client which implements `GuzzleHttp\ClientInterface`.
     // This is optional, `GuzzleHttp\Client` will be used as default.
     new GuzzleHttp\Client()
 );
 $id = 'id_example'; // string
-$create_webhook_request = new \NativeBPM\Client\Model\CreateWebhookRequest(); // \NativeBPM\Client\Model\CreateWebhookRequest
+$create_webhook_request = new \NativeBPMClient\Model\CreateWebhookRequest(); // \NativeBPMClient\Model\CreateWebhookRequest
 
 try {
     $result = $apiInstance->updateWebhook($id, $create_webhook_request);
@@ -1306,11 +1306,11 @@ try {
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
 | **id** | **string**|  | |
-| **create_webhook_request** | [**\NativeBPM\Client\Model\CreateWebhookRequest**](../Model/CreateWebhookRequest.md)|  | |
+| **create_webhook_request** | [**\NativeBPMClient\Model\CreateWebhookRequest**](../Model/CreateWebhookRequest.md)|  | |
 
 ### Return type
 
-[**\NativeBPM\Client\Model\WebhookRecord**](../Model/WebhookRecord.md)
+[**\NativeBPMClient\Model\WebhookRecord**](../Model/WebhookRecord.md)
 
 ### Authorization
 

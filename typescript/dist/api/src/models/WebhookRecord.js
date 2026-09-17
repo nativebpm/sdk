@@ -18,6 +18,7 @@ exports.WebhookRecordFromJSON = WebhookRecordFromJSON;
 exports.WebhookRecordFromJSONTyped = WebhookRecordFromJSONTyped;
 exports.WebhookRecordToJSON = WebhookRecordToJSON;
 exports.WebhookRecordToJSONTyped = WebhookRecordToJSONTyped;
+const runtime_1 = require("../runtime");
 /**
  * Check if a given object implements the WebhookRecord interface.
  */
@@ -57,7 +58,7 @@ function WebhookRecordFromJSONTyped(json, ignoreDiscriminator) {
         'isActive': json['is_active'],
         'enableAudit': json['enable_audit'],
         'status': json['status'],
-        'createdAt': (new Date(json['created_at'])),
+        'createdAt': (json['created_at'] == null ? json['created_at'] : (0, runtime_1.parseDateTime)(json['created_at'])),
     };
 }
 function WebhookRecordToJSON(json) {
@@ -77,6 +78,6 @@ function WebhookRecordToJSONTyped(value, ignoreDiscriminator = false) {
         'is_active': value['isActive'],
         'enable_audit': value['enableAudit'],
         'status': value['status'],
-        'created_at': value['createdAt'].toISOString(),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : (0, runtime_1.serializeDateTime)(value['createdAt']),
     };
 }

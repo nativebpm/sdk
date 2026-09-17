@@ -17,86 +17,62 @@
 export interface TaskRecord {
     /**
      *
-     * @type {string}
-     * @memberof TaskRecord
      */
     id: string;
     /**
      *
-     * @type {string}
-     * @memberof TaskRecord
      */
     instanceId: string;
     /**
      *
-     * @type {string}
-     * @memberof TaskRecord
      */
     activityId: string;
     /**
      *
-     * @type {string}
-     * @memberof TaskRecord
      */
     name: string;
     /**
      *
-     * @type {string}
-     * @memberof TaskRecord
      */
     assignee: string;
     /**
      *
-     * @type {string}
-     * @memberof TaskRecord
      */
     candidateGroups: string;
     /**
      *
-     * @type {string}
-     * @memberof TaskRecord
      */
     status: string;
     /**
      *
-     * @type {Date}
-     * @memberof TaskRecord
      */
     dueDate?: Date;
     /**
      * JSON schema definition of form widgets
-     * @type {string}
-     * @memberof TaskRecord
      */
     inputSchema?: string;
     /**
+     * Form identifier or Camunda form key for dynamic schema rendering
+     */
+    formId?: string;
+    /**
      *
-     * @type {Date}
-     * @memberof TaskRecord
      */
     createdAt: Date;
     /**
      *
-     * @type {Date}
-     * @memberof TaskRecord
      */
     claimedAt?: Date;
     /**
      *
-     * @type {Date}
-     * @memberof TaskRecord
      */
     completedAt?: Date;
     /**
      *
-     * @type {number}
-     * @memberof TaskRecord
      */
     currentStep?: number;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof TaskRecord
      */
     draftVariables?: {
         [key: string]: any;

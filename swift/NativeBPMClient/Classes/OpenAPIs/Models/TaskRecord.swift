@@ -22,13 +22,15 @@ public struct TaskRecord: Codable, JSONEncodable, Hashable {
     public var dueDate: Date?
     /** JSON schema definition of form widgets */
     public var inputSchema: String?
+    /** Form identifier or Camunda form key for dynamic schema rendering */
+    public var formId: String?
     public var createdAt: Date
     public var claimedAt: Date?
     public var completedAt: Date?
     public var currentStep: Int?
     public var draftVariables: [String: AnyCodable]?
 
-    public init(id: UUID, instanceId: UUID, activityId: String, name: String, assignee: String, candidateGroups: String, status: String, dueDate: Date? = nil, inputSchema: String? = nil, createdAt: Date, claimedAt: Date? = nil, completedAt: Date? = nil, currentStep: Int? = nil, draftVariables: [String: AnyCodable]? = nil) {
+    public init(id: UUID, instanceId: UUID, activityId: String, name: String, assignee: String, candidateGroups: String, status: String, dueDate: Date? = nil, inputSchema: String? = nil, formId: String? = nil, createdAt: Date, claimedAt: Date? = nil, completedAt: Date? = nil, currentStep: Int? = nil, draftVariables: [String: AnyCodable]? = nil) {
         self.id = id
         self.instanceId = instanceId
         self.activityId = activityId
@@ -38,6 +40,7 @@ public struct TaskRecord: Codable, JSONEncodable, Hashable {
         self.status = status
         self.dueDate = dueDate
         self.inputSchema = inputSchema
+        self.formId = formId
         self.createdAt = createdAt
         self.claimedAt = claimedAt
         self.completedAt = completedAt
@@ -55,6 +58,7 @@ public struct TaskRecord: Codable, JSONEncodable, Hashable {
         case status
         case dueDate = "due_date"
         case inputSchema = "input_schema"
+        case formId = "form_id"
         case createdAt = "created_at"
         case claimedAt = "claimed_at"
         case completedAt = "completed_at"
@@ -75,6 +79,7 @@ public struct TaskRecord: Codable, JSONEncodable, Hashable {
         try container.encode(status, forKey: .status)
         try container.encodeIfPresent(dueDate, forKey: .dueDate)
         try container.encodeIfPresent(inputSchema, forKey: .inputSchema)
+        try container.encodeIfPresent(formId, forKey: .formId)
         try container.encode(createdAt, forKey: .createdAt)
         try container.encodeIfPresent(claimedAt, forKey: .claimedAt)
         try container.encodeIfPresent(completedAt, forKey: .completedAt)

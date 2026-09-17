@@ -12,6 +12,7 @@ Name | Type | Description | Notes
 **status** | **String** |  | 
 **dueDate** | **Date** |  | [optional] 
 **inputSchema** | **String** | JSON schema definition of form widgets | [optional] 
+**formId** | **String** | Form identifier or Camunda form key for dynamic schema rendering | [optional] 
 **createdAt** | **Date** |  | 
 **claimedAt** | **Date** |  | [optional] 
 **completedAt** | **Date** |  | [optional] 

@@ -112,6 +112,8 @@ namespace NativeBPM.Client.Client
                 return boolean
                     ? "true"
                     : "false";
+            if (obj is NodeAST.TypeEnum nodeASTTypeEnum)
+                return NodeAST.TypeEnumToJsonValue(nodeASTTypeEnum);
             if (obj is ICollection collection)
             {
                 List<string?> entries = new();

@@ -21,62 +21,42 @@ import { mapValues } from '../runtime';
 export interface SMTPConfig {
     /**
      * 
-     * @type {string}
-     * @memberof SMTPConfig
      */
     host?: string;
     /**
      * 
-     * @type {number}
-     * @memberof SMTPConfig
      */
     port?: number;
     /**
      * 
-     * @type {string}
-     * @memberof SMTPConfig
      */
     username?: string;
     /**
      * 
-     * @type {string}
-     * @memberof SMTPConfig
      */
     password?: string;
     /**
      * 
-     * @type {string}
-     * @memberof SMTPConfig
      */
     from?: string;
     /**
      * 
-     * @type {string}
-     * @memberof SMTPConfig
      */
     fromName?: string;
     /**
      * 
-     * @type {boolean}
-     * @memberof SMTPConfig
      */
     useSsl?: boolean;
     /**
      * 
-     * @type {number}
-     * @memberof SMTPConfig
      */
     maxHtmlSize?: number;
     /**
      * 
-     * @type {number}
-     * @memberof SMTPConfig
      */
     maxAttachmentSize?: number;
     /**
      * 
-     * @type {number}
-     * @memberof SMTPConfig
      */
     maxTotalAttachmentsSize?: number;
 }

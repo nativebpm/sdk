@@ -31,6 +31,8 @@ import com.nativebpm.client.models.ClaimTaskRequest
 import com.nativebpm.client.models.CompleteInstanceTaskRequest
 import com.nativebpm.client.models.CompleteTaskRequest
 import com.nativebpm.client.models.CreateWebhookRequest
+import com.nativebpm.client.models.DeleteWebhook200Response
+import com.nativebpm.client.models.DeployDefinition403Response
 import com.nativebpm.client.models.HistoryRecord
 import com.nativebpm.client.models.IncidentRecord
 import com.nativebpm.client.models.ListDefinitions401Response
@@ -40,6 +42,7 @@ import com.nativebpm.client.models.ResolveIncident200Response
 import com.nativebpm.client.models.SMTPConfig
 import com.nativebpm.client.models.StartInstanceRequest
 import com.nativebpm.client.models.TaskRecord
+import com.nativebpm.client.models.TestWebhook200Response
 import com.nativebpm.client.models.VisualizationData
 import com.nativebpm.client.models.WebhookDeliveryRecord
 import com.nativebpm.client.models.WebhookRecord
@@ -378,7 +381,7 @@ open class DefaultApi(basePath: kotlin.String = defaultBasePath, client: Call.Fa
      * Delete webhook target
      * Delete a webhook configuration.
      * @param id 
-     * @return ResolveIncident200Response
+     * @return DeleteWebhook200Response
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -387,11 +390,11 @@ open class DefaultApi(basePath: kotlin.String = defaultBasePath, client: Call.Fa
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    fun deleteWebhook(id: kotlin.String) : ResolveIncident200Response {
+    fun deleteWebhook(id: kotlin.String) : DeleteWebhook200Response {
         val localVarResponse = deleteWebhookWithHttpInfo(id = id)
 
         return when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as ResolveIncident200Response
+            ResponseType.Success -> (localVarResponse as Success<*>).data as DeleteWebhook200Response
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -410,16 +413,16 @@ open class DefaultApi(basePath: kotlin.String = defaultBasePath, client: Call.Fa
      * Delete webhook target
      * Delete a webhook configuration.
      * @param id 
-     * @return ApiResponse<ResolveIncident200Response?>
+     * @return ApiResponse<DeleteWebhook200Response?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    fun deleteWebhookWithHttpInfo(id: kotlin.String) : ApiResponse<ResolveIncident200Response?> {
+    fun deleteWebhookWithHttpInfo(id: kotlin.String) : ApiResponse<DeleteWebhook200Response?> {
         val localVariableConfig = deleteWebhookRequestConfig(id = id)
 
-        return request<Unit, ResolveIncident200Response>(
+        return request<Unit, DeleteWebhook200Response>(
             localVariableConfig
         )
     }
@@ -1658,7 +1661,7 @@ open class DefaultApi(basePath: kotlin.String = defaultBasePath, client: Call.Fa
      * Test webhook target
      * Send a test ping event delivery to verification URL.
      * @param id 
-     * @return ResolveIncident200Response
+     * @return TestWebhook200Response
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      * @throws UnsupportedOperationException If the API returns an informational or redirection response
@@ -1667,11 +1670,11 @@ open class DefaultApi(basePath: kotlin.String = defaultBasePath, client: Call.Fa
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class, UnsupportedOperationException::class, ClientException::class, ServerException::class)
-    fun testWebhook(id: kotlin.String) : ResolveIncident200Response {
+    fun testWebhook(id: kotlin.String) : TestWebhook200Response {
         val localVarResponse = testWebhookWithHttpInfo(id = id)
 
         return when (localVarResponse.responseType) {
-            ResponseType.Success -> (localVarResponse as Success<*>).data as ResolveIncident200Response
+            ResponseType.Success -> (localVarResponse as Success<*>).data as TestWebhook200Response
             ResponseType.Informational -> throw UnsupportedOperationException("Client does not support Informational responses.")
             ResponseType.Redirection -> throw UnsupportedOperationException("Client does not support Redirection responses.")
             ResponseType.ClientError -> {
@@ -1690,16 +1693,16 @@ open class DefaultApi(basePath: kotlin.String = defaultBasePath, client: Call.Fa
      * Test webhook target
      * Send a test ping event delivery to verification URL.
      * @param id 
-     * @return ApiResponse<ResolveIncident200Response?>
+     * @return ApiResponse<TestWebhook200Response?>
      * @throws IllegalStateException If the request is not correctly configured
      * @throws IOException Rethrows the OkHttp execute method exception
      */
     @Suppress("UNCHECKED_CAST")
     @Throws(IllegalStateException::class, IOException::class)
-    fun testWebhookWithHttpInfo(id: kotlin.String) : ApiResponse<ResolveIncident200Response?> {
+    fun testWebhookWithHttpInfo(id: kotlin.String) : ApiResponse<TestWebhook200Response?> {
         val localVariableConfig = testWebhookRequestConfig(id = id)
 
-        return request<Unit, ResolveIncident200Response>(
+        return request<Unit, TestWebhook200Response>(
             localVariableConfig
         )
     }

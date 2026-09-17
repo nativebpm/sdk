@@ -34,18 +34,29 @@ part 'model/claim_task_request.dart';
 part 'model/complete_instance_task_request.dart';
 part 'model/complete_task_request.dart';
 part 'model/create_webhook_request.dart';
+part 'model/dmn_input_ast.dart';
+part 'model/dmn_output_ast.dart';
+part 'model/dmn_rule_ast.dart';
+part 'model/delete_webhook200_response.dart';
+part 'model/deploy_definition403_response.dart';
+part 'model/flow_ast.dart';
 part 'model/history_record.dart';
+part 'model/in_variable.dart';
 part 'model/incident_record.dart';
 part 'model/list_definitions401_response.dart';
+part 'model/node_ast.dart';
+part 'model/out_variable.dart';
 part 'model/process_definition.dart';
 part 'model/process_instance.dart';
 part 'model/resolve_incident200_response.dart';
 part 'model/smtp_config.dart';
 part 'model/start_instance_request.dart';
 part 'model/task_record.dart';
+part 'model/test_webhook200_response.dart';
 part 'model/visualization_data.dart';
 part 'model/webhook_delivery_record.dart';
 part 'model/webhook_record.dart';
+part 'model/workflow_ast.dart';
 
 
 /// An [ApiClient] instance that uses the default values obtained from

@@ -23,7 +23,7 @@ use tokio_util::codec::{BytesCodec, FramedRead};
 pub enum ClaimTaskError {
     Status400(),
     Status401(models::ListDefinitions401Response),
-    Status403(models::ListDefinitions401Response),
+    Status403(models::DeployDefinition403Response),
     Status404(),
     Status500(),
     UnknownValue(serde_json::Value),
@@ -35,7 +35,7 @@ pub enum ClaimTaskError {
 pub enum CompleteInstanceTaskError {
     Status400(),
     Status401(models::ListDefinitions401Response),
-    Status403(models::ListDefinitions401Response),
+    Status403(models::DeployDefinition403Response),
     Status500(),
     UnknownValue(serde_json::Value),
 }
@@ -46,7 +46,7 @@ pub enum CompleteInstanceTaskError {
 pub enum CompleteTaskError {
     Status400(),
     Status401(models::ListDefinitions401Response),
-    Status403(models::ListDefinitions401Response),
+    Status403(models::DeployDefinition403Response),
     Status404(),
     Status500(),
     UnknownValue(serde_json::Value),
@@ -58,7 +58,7 @@ pub enum CompleteTaskError {
 pub enum CreateWebhookError {
     Status400(),
     Status401(models::ListDefinitions401Response),
-    Status403(models::ListDefinitions401Response),
+    Status403(models::DeployDefinition403Response),
     Status500(),
     UnknownValue(serde_json::Value),
 }
@@ -68,7 +68,7 @@ pub enum CreateWebhookError {
 #[serde(untagged)]
 pub enum DeleteWebhookError {
     Status401(models::ListDefinitions401Response),
-    Status403(models::ListDefinitions401Response),
+    Status403(models::DeployDefinition403Response),
     Status404(),
     Status500(),
     UnknownValue(serde_json::Value),
@@ -80,7 +80,7 @@ pub enum DeleteWebhookError {
 pub enum DeployDefinitionError {
     Status400(),
     Status401(models::ListDefinitions401Response),
-    Status403(models::ListDefinitions401Response),
+    Status403(models::DeployDefinition403Response),
     Status500(),
     UnknownValue(serde_json::Value),
 }
@@ -129,7 +129,7 @@ pub enum GetInstanceVisualizationWidgetError {
 #[serde(untagged)]
 pub enum GetSmtpConfigError {
     Status401(models::ListDefinitions401Response),
-    Status403(models::ListDefinitions401Response),
+    Status403(models::DeployDefinition403Response),
     Status404(),
     Status500(),
     UnknownValue(serde_json::Value),
@@ -140,7 +140,7 @@ pub enum GetSmtpConfigError {
 #[serde(untagged)]
 pub enum GetUserGroupsError {
     Status401(models::ListDefinitions401Response),
-    Status403(models::ListDefinitions401Response),
+    Status403(models::DeployDefinition403Response),
     Status500(),
     UnknownValue(serde_json::Value),
 }
@@ -187,7 +187,7 @@ pub enum ListTasksError {
 #[serde(untagged)]
 pub enum ListWebhookDeliveriesError {
     Status401(models::ListDefinitions401Response),
-    Status403(models::ListDefinitions401Response),
+    Status403(models::DeployDefinition403Response),
     Status404(),
     Status500(),
     UnknownValue(serde_json::Value),
@@ -198,7 +198,7 @@ pub enum ListWebhookDeliveriesError {
 #[serde(untagged)]
 pub enum ListWebhooksError {
     Status401(models::ListDefinitions401Response),
-    Status403(models::ListDefinitions401Response),
+    Status403(models::DeployDefinition403Response),
     Status500(),
     UnknownValue(serde_json::Value),
 }
@@ -208,7 +208,7 @@ pub enum ListWebhooksError {
 #[serde(untagged)]
 pub enum ResolveIncidentError {
     Status401(models::ListDefinitions401Response),
-    Status403(models::ListDefinitions401Response),
+    Status403(models::DeployDefinition403Response),
     Status500(),
     UnknownValue(serde_json::Value),
 }
@@ -218,7 +218,7 @@ pub enum ResolveIncidentError {
 #[serde(untagged)]
 pub enum ResumeInstanceError {
     Status401(models::ListDefinitions401Response),
-    Status403(models::ListDefinitions401Response),
+    Status403(models::DeployDefinition403Response),
     Status500(),
     UnknownValue(serde_json::Value),
 }
@@ -229,7 +229,7 @@ pub enum ResumeInstanceError {
 pub enum StartInstanceError {
     Status400(),
     Status401(models::ListDefinitions401Response),
-    Status403(models::ListDefinitions401Response),
+    Status403(models::DeployDefinition403Response),
     Status500(),
     UnknownValue(serde_json::Value),
 }
@@ -239,7 +239,7 @@ pub enum StartInstanceError {
 #[serde(untagged)]
 pub enum TestWebhookError {
     Status401(models::ListDefinitions401Response),
-    Status403(models::ListDefinitions401Response),
+    Status403(models::DeployDefinition403Response),
     Status404(),
     Status500(),
     UnknownValue(serde_json::Value),
@@ -250,7 +250,7 @@ pub enum TestWebhookError {
 #[serde(untagged)]
 pub enum UpdateWebhookError {
     Status401(models::ListDefinitions401Response),
-    Status403(models::ListDefinitions401Response),
+    Status403(models::DeployDefinition403Response),
     Status404(),
     Status500(),
     UnknownValue(serde_json::Value),
@@ -413,7 +413,7 @@ pub async fn create_webhook(configuration: &configuration::Configuration, create
 }
 
 /// Delete a webhook configuration.
-pub async fn delete_webhook(configuration: &configuration::Configuration, id: &str) -> Result<models::ResolveIncident200Response, Error<DeleteWebhookError>> {
+pub async fn delete_webhook(configuration: &configuration::Configuration, id: &str) -> Result<models::DeleteWebhook200Response, Error<DeleteWebhookError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
 
@@ -439,8 +439,8 @@ pub async fn delete_webhook(configuration: &configuration::Configuration, id: &s
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ResolveIncident200Response`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ResolveIncident200Response`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::DeleteWebhook200Response`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::DeleteWebhook200Response`")))),
         }
     } else {
         let content = resp.text().await?;
@@ -1061,7 +1061,7 @@ pub async fn start_instance(configuration: &configuration::Configuration, id: &s
 }
 
 /// Send a test ping event delivery to verification URL.
-pub async fn test_webhook(configuration: &configuration::Configuration, id: &str) -> Result<models::ResolveIncident200Response, Error<TestWebhookError>> {
+pub async fn test_webhook(configuration: &configuration::Configuration, id: &str) -> Result<models::TestWebhook200Response, Error<TestWebhookError>> {
     // add a prefix to parameters to efficiently prevent name collisions
     let p_path_id = id;
 
@@ -1087,8 +1087,8 @@ pub async fn test_webhook(configuration: &configuration::Configuration, id: &str
         let content = resp.text().await?;
         match content_type {
             ContentType::Json => serde_json::from_str(&content).map_err(Error::from),
-            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::ResolveIncident200Response`"))),
-            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::ResolveIncident200Response`")))),
+            ContentType::Text => return Err(Error::from(serde_json::Error::custom("Received `text/plain` content type response that cannot be converted to `models::TestWebhook200Response`"))),
+            ContentType::Unsupported(unknown_type) => return Err(Error::from(serde_json::Error::custom(format!("Received `{unknown_type}` content type response that cannot be converted to `models::TestWebhook200Response`")))),
         }
     } else {
         let content = resp.text().await?;

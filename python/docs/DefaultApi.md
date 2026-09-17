@@ -330,7 +330,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **delete_webhook**
-> ResolveIncident200Response delete_webhook(id)
+> DeleteWebhook200Response delete_webhook(id)
 
 Delete webhook target
 
@@ -341,7 +341,7 @@ Delete a webhook configuration.
 
 ```python
 import nativebpm_client
-from nativebpm_client.models.resolve_incident200_response import ResolveIncident200Response
+from nativebpm_client.models.delete_webhook200_response import DeleteWebhook200Response
 from nativebpm_client.rest import ApiException
 from pprint import pprint
 
@@ -378,7 +378,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**ResolveIncident200Response**](ResolveIncident200Response.md)
+[**DeleteWebhook200Response**](DeleteWebhook200Response.md)
 
 ### Authorization
 
@@ -1531,7 +1531,7 @@ No authorization required
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to Model list]](../README.md#documentation-for-models) [[Back to README]](../README.md)
 
 # **test_webhook**
-> ResolveIncident200Response test_webhook(id)
+> TestWebhook200Response test_webhook(id)
 
 Test webhook target
 
@@ -1542,7 +1542,7 @@ Send a test ping event delivery to verification URL.
 
 ```python
 import nativebpm_client
-from nativebpm_client.models.resolve_incident200_response import ResolveIncident200Response
+from nativebpm_client.models.test_webhook200_response import TestWebhook200Response
 from nativebpm_client.rest import ApiException
 from pprint import pprint
 
@@ -1579,7 +1579,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**ResolveIncident200Response**](ResolveIncident200Response.md)
+[**TestWebhook200Response**](TestWebhook200Response.md)
 
 ### Authorization
 

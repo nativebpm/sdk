@@ -14,6 +14,7 @@
 | **createdAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  |
 | **dueDate** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
 | **inputSchema** | **kotlin.String** | JSON schema definition of form widgets |  [optional] |
+| **formId** | **kotlin.String** | Form identifier or Camunda form key for dynamic schema rendering |  [optional] |
 | **claimedAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
 | **completedAt** | [**java.time.OffsetDateTime**](java.time.OffsetDateTime.md) |  |  [optional] |
 | **currentStep** | **kotlin.Int** |  |  [optional] |

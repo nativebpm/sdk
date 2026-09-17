@@ -84,8 +84,18 @@ namespace NativeBPM.Client.Model
     /// <summary>
     /// A Json converter for type <see cref="ListDefinitions401Response" />
     /// </summary>
-    public class ListDefinitions401ResponseJsonConverter : JsonConverter<ListDefinitions401Response>
+    public partial class ListDefinitions401ResponseJsonConverter : JsonConverter<ListDefinitions401Response>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ListDefinitions401ResponseJsonConverter" /> class.
+        /// </summary>
+        public ListDefinitions401ResponseJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// Deserializes json to <see cref="ListDefinitions401Response" />
         /// </summary>

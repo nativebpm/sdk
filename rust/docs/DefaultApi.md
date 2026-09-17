@@ -155,7 +155,7 @@ No authorization required
 
 ## delete_webhook
 
-> models::ResolveIncident200Response delete_webhook(id)
+> models::DeleteWebhook200Response delete_webhook(id)
 Delete webhook target
 
 Delete a webhook configuration.
@@ -169,7 +169,7 @@ Name | Type | Description  | Required | Notes
 
 ### Return type
 
-[**models::ResolveIncident200Response**](resolveIncident_200_response.md)
+[**models::DeleteWebhook200Response**](deleteWebhook_200_response.md)
 
 ### Authorization
 
@@ -658,7 +658,7 @@ No authorization required
 
 ## test_webhook
 
-> models::ResolveIncident200Response test_webhook(id)
+> models::TestWebhook200Response test_webhook(id)
 Test webhook target
 
 Send a test ping event delivery to verification URL.
@@ -672,7 +672,7 @@ Name | Type | Description  | Required | Notes
 
 ### Return type
 
-[**models::ResolveIncident200Response**](resolveIncident_200_response.md)
+[**models::TestWebhook200Response**](testWebhook_200_response.md)
 
 ### Authorization
 

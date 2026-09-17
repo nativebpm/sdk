@@ -40,6 +40,7 @@ import com.squareup.moshi.JsonClass
  * @param createdAt 
  * @param dueDate 
  * @param inputSchema JSON schema definition of form widgets
+ * @param formId Form identifier or Camunda form key for dynamic schema rendering
  * @param claimedAt 
  * @param completedAt 
  * @param currentStep 
@@ -79,6 +80,10 @@ data class TaskRecord (
     /* JSON schema definition of form widgets */
     @Json(name = "input_schema")
     val inputSchema: kotlin.String? = null,
+
+    /* Form identifier or Camunda form key for dynamic schema rendering */
+    @Json(name = "form_id")
+    val formId: kotlin.String? = null,
 
     @Json(name = "claimed_at")
     val claimedAt: java.time.OffsetDateTime? = null,

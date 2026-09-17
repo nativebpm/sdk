@@ -32,18 +32,29 @@ __all__ = [
     "CompleteInstanceTaskRequest",
     "CompleteTaskRequest",
     "CreateWebhookRequest",
+    "DMNInputAST",
+    "DMNOutputAST",
+    "DMNRuleAST",
+    "DeleteWebhook200Response",
+    "DeployDefinition403Response",
+    "FlowAST",
     "HistoryRecord",
+    "InVariable",
     "IncidentRecord",
     "ListDefinitions401Response",
+    "NodeAST",
+    "OutVariable",
     "ProcessDefinition",
     "ProcessInstance",
     "ResolveIncident200Response",
     "SMTPConfig",
     "StartInstanceRequest",
     "TaskRecord",
+    "TestWebhook200Response",
     "VisualizationData",
     "WebhookDeliveryRecord",
     "WebhookRecord",
+    "WorkflowAST",
 ]
 
 # import apis into sdk package
@@ -65,16 +76,27 @@ from nativebpm_client.models.claim_task_request import ClaimTaskRequest as Claim
 from nativebpm_client.models.complete_instance_task_request import CompleteInstanceTaskRequest as CompleteInstanceTaskRequest
 from nativebpm_client.models.complete_task_request import CompleteTaskRequest as CompleteTaskRequest
 from nativebpm_client.models.create_webhook_request import CreateWebhookRequest as CreateWebhookRequest
+from nativebpm_client.models.dmn_input_ast import DMNInputAST as DMNInputAST
+from nativebpm_client.models.dmn_output_ast import DMNOutputAST as DMNOutputAST
+from nativebpm_client.models.dmn_rule_ast import DMNRuleAST as DMNRuleAST
+from nativebpm_client.models.delete_webhook200_response import DeleteWebhook200Response as DeleteWebhook200Response
+from nativebpm_client.models.deploy_definition403_response import DeployDefinition403Response as DeployDefinition403Response
+from nativebpm_client.models.flow_ast import FlowAST as FlowAST
 from nativebpm_client.models.history_record import HistoryRecord as HistoryRecord
+from nativebpm_client.models.in_variable import InVariable as InVariable
 from nativebpm_client.models.incident_record import IncidentRecord as IncidentRecord
 from nativebpm_client.models.list_definitions401_response import ListDefinitions401Response as ListDefinitions401Response
+from nativebpm_client.models.node_ast import NodeAST as NodeAST
+from nativebpm_client.models.out_variable import OutVariable as OutVariable
 from nativebpm_client.models.process_definition import ProcessDefinition as ProcessDefinition
 from nativebpm_client.models.process_instance import ProcessInstance as ProcessInstance
 from nativebpm_client.models.resolve_incident200_response import ResolveIncident200Response as ResolveIncident200Response
 from nativebpm_client.models.smtp_config import SMTPConfig as SMTPConfig
 from nativebpm_client.models.start_instance_request import StartInstanceRequest as StartInstanceRequest
 from nativebpm_client.models.task_record import TaskRecord as TaskRecord
+from nativebpm_client.models.test_webhook200_response import TestWebhook200Response as TestWebhook200Response
 from nativebpm_client.models.visualization_data import VisualizationData as VisualizationData
 from nativebpm_client.models.webhook_delivery_record import WebhookDeliveryRecord as WebhookDeliveryRecord
 from nativebpm_client.models.webhook_record import WebhookRecord as WebhookRecord
+from nativebpm_client.models.workflow_ast import WorkflowAST as WorkflowAST
 

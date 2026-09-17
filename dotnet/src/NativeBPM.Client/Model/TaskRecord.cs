@@ -43,12 +43,13 @@ namespace NativeBPM.Client.Model
         /// <param name="createdAt">createdAt</param>
         /// <param name="dueDate">dueDate</param>
         /// <param name="inputSchema">JSON schema definition of form widgets</param>
+        /// <param name="formId">Form identifier or Camunda form key for dynamic schema rendering</param>
         /// <param name="claimedAt">claimedAt</param>
         /// <param name="completedAt">completedAt</param>
         /// <param name="currentStep">currentStep</param>
         /// <param name="draftVariables">draftVariables</param>
         [JsonConstructor]
-        public TaskRecord(Guid id, Guid instanceId, string activityId, string name, string assignee, string candidateGroups, string status, DateTime createdAt, Option<DateTime?> dueDate = default, Option<string?> inputSchema = default, Option<DateTime?> claimedAt = default, Option<DateTime?> completedAt = default, Option<int?> currentStep = default, Option<Dictionary<string, Object>?> draftVariables = default)
+        public TaskRecord(Guid id, Guid instanceId, string activityId, string name, string assignee, string candidateGroups, string status, DateTime createdAt, Option<DateTime?> dueDate = default, Option<string?> inputSchema = default, Option<string?> formId = default, Option<DateTime?> claimedAt = default, Option<DateTime?> completedAt = default, Option<int?> currentStep = default, Option<Dictionary<string, Object>?> draftVariables = default)
         {
             Id = id;
             InstanceId = instanceId;
@@ -60,6 +61,7 @@ namespace NativeBPM.Client.Model
             CreatedAt = createdAt;
             DueDateOption = dueDate;
             InputSchemaOption = inputSchema;
+            FormIdOption = formId;
             ClaimedAtOption = claimedAt;
             CompletedAtOption = completedAt;
             CurrentStepOption = currentStep;
@@ -146,6 +148,20 @@ namespace NativeBPM.Client.Model
         public string? InputSchema { get { return this.InputSchemaOption.Value; } set { this.InputSchemaOption = new(value); } }
 
         /// <summary>
+        /// Used to track the state of FormId
+        /// </summary>
+        [JsonIgnore]
+        [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
+        public Option<string?> FormIdOption { get; private set; }
+
+        /// <summary>
+        /// Form identifier or Camunda form key for dynamic schema rendering
+        /// </summary>
+        /// <value>Form identifier or Camunda form key for dynamic schema rendering</value>
+        [JsonPropertyName("form_id")]
+        public string? FormId { get { return this.FormIdOption.Value; } set { this.FormIdOption = new(value); } }
+
+        /// <summary>
         /// Used to track the state of ClaimedAt
         /// </summary>
         [JsonIgnore]
@@ -215,6 +231,7 @@ namespace NativeBPM.Client.Model
             sb.Append("  CreatedAt: ").Append(CreatedAt).Append("\n");
             sb.Append("  DueDate: ").Append(DueDate).Append("\n");
             sb.Append("  InputSchema: ").Append(InputSchema).Append("\n");
+            sb.Append("  FormId: ").Append(FormId).Append("\n");
             sb.Append("  ClaimedAt: ").Append(ClaimedAt).Append("\n");
             sb.Append("  CompletedAt: ").Append(CompletedAt).Append("\n");
             sb.Append("  CurrentStep: ").Append(CurrentStep).Append("\n");
@@ -237,27 +254,37 @@ namespace NativeBPM.Client.Model
     /// <summary>
     /// A Json converter for type <see cref="TaskRecord" />
     /// </summary>
-    public class TaskRecordJsonConverter : JsonConverter<TaskRecord>
+    public partial class TaskRecordJsonConverter : JsonConverter<TaskRecord>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="TaskRecordJsonConverter" /> class.
+        /// </summary>
+        public TaskRecordJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// The format to use to serialize CreatedAt
         /// </summary>
-        public static string CreatedAtFormat { get; set; } = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK";
+        public string CreatedAtFormat { get; private set; } = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK";
 
         /// <summary>
         /// The format to use to serialize DueDate
         /// </summary>
-        public static string DueDateFormat { get; set; } = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK";
+        public string DueDateFormat { get; private set; } = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK";
 
         /// <summary>
         /// The format to use to serialize ClaimedAt
         /// </summary>
-        public static string ClaimedAtFormat { get; set; } = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK";
+        public string ClaimedAtFormat { get; private set; } = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK";
 
         /// <summary>
         /// The format to use to serialize CompletedAt
         /// </summary>
-        public static string CompletedAtFormat { get; set; } = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK";
+        public string CompletedAtFormat { get; private set; } = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK";
 
         /// <summary>
         /// Deserializes json to <see cref="TaskRecord" />
@@ -286,6 +313,7 @@ namespace NativeBPM.Client.Model
             Option<DateTime?> createdAt = default;
             Option<DateTime?> dueDate = default;
             Option<string?> inputSchema = default;
+            Option<string?> formId = default;
             Option<DateTime?> claimedAt = default;
             Option<DateTime?> completedAt = default;
             Option<int?> currentStep = default;
@@ -335,6 +363,9 @@ namespace NativeBPM.Client.Model
                             break;
                         case "input_schema":
                             inputSchema = new Option<string?>(utf8JsonReader.GetString()!);
+                            break;
+                        case "form_id":
+                            formId = new Option<string?>(utf8JsonReader.GetString()!);
                             break;
                         case "claimed_at":
                             claimedAt = new Option<DateTime?>(JsonSerializer.Deserialize<DateTime>(ref utf8JsonReader, jsonSerializerOptions));
@@ -408,6 +439,9 @@ namespace NativeBPM.Client.Model
             if (inputSchema.IsSet && inputSchema.Value == null)
                 throw new ArgumentNullException(nameof(inputSchema), "Property is not nullable for class TaskRecord.");
 
+            if (formId.IsSet && formId.Value == null)
+                throw new ArgumentNullException(nameof(formId), "Property is not nullable for class TaskRecord.");
+
             if (claimedAt.IsSet && claimedAt.Value == null)
                 throw new ArgumentNullException(nameof(claimedAt), "Property is not nullable for class TaskRecord.");
 
@@ -420,7 +454,7 @@ namespace NativeBPM.Client.Model
             if (draftVariables.IsSet && draftVariables.Value == null)
                 throw new ArgumentNullException(nameof(draftVariables), "Property is not nullable for class TaskRecord.");
 
-            return new TaskRecord(id.Value!.Value!, instanceId.Value!.Value!, activityId.Value!, name.Value!, assignee.Value!, candidateGroups.Value!, status.Value!, createdAt.Value!.Value!, dueDate, inputSchema, claimedAt, completedAt, currentStep, draftVariables);
+            return new TaskRecord(id.Value!.Value!, instanceId.Value!.Value!, activityId.Value!, name.Value!, assignee.Value!, candidateGroups.Value!, status.Value!, createdAt.Value!.Value!, dueDate, inputSchema, formId, claimedAt, completedAt, currentStep, draftVariables);
         }
 
         /// <summary>
@@ -465,6 +499,9 @@ namespace NativeBPM.Client.Model
             if (taskRecord.InputSchemaOption.IsSet && taskRecord.InputSchema == null)
                 throw new ArgumentNullException(nameof(taskRecord.InputSchema), "Property is required for class TaskRecord.");
 
+            if (taskRecord.FormIdOption.IsSet && taskRecord.FormId == null)
+                throw new ArgumentNullException(nameof(taskRecord.FormId), "Property is required for class TaskRecord.");
+
             if (taskRecord.DraftVariablesOption.IsSet && taskRecord.DraftVariables == null)
                 throw new ArgumentNullException(nameof(taskRecord.DraftVariables), "Property is required for class TaskRecord.");
 
@@ -489,6 +526,9 @@ namespace NativeBPM.Client.Model
 
             if (taskRecord.InputSchemaOption.IsSet)
                 writer.WriteString("input_schema", taskRecord.InputSchema);
+
+            if (taskRecord.FormIdOption.IsSet)
+                writer.WriteString("form_id", taskRecord.FormId);
 
             if (taskRecord.ClaimedAtOption.IsSet)
                 writer.WriteString("claimed_at", taskRecord.ClaimedAtOption.Value!.Value.ToString(ClaimedAtFormat));

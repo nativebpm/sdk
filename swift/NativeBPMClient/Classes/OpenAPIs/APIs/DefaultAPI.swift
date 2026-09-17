@@ -175,10 +175,10 @@ open class DefaultAPI {
      Delete webhook target
      
      - parameter id: (path)  
-     - returns: ResolveIncident200Response
+     - returns: DeleteWebhook200Response
      */
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    open class func deleteWebhook(id: String) async throws -> ResolveIncident200Response {
+    open class func deleteWebhook(id: String) async throws -> DeleteWebhook200Response {
         return try await deleteWebhookWithRequestBuilder(id: id).execute().body
     }
 
@@ -187,9 +187,9 @@ open class DefaultAPI {
      - DELETE /api/webhooks/{id}
      - Delete a webhook configuration.
      - parameter id: (path)  
-     - returns: RequestBuilder<ResolveIncident200Response> 
+     - returns: RequestBuilder<DeleteWebhook200Response> 
      */
-    open class func deleteWebhookWithRequestBuilder(id: String) -> RequestBuilder<ResolveIncident200Response> {
+    open class func deleteWebhookWithRequestBuilder(id: String) -> RequestBuilder<DeleteWebhook200Response> {
         var localVariablePath = "/api/webhooks/{id}"
         let idPreEscape = "\(APIHelper.mapValueToPathItem(id))"
         let idPostEscape = idPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -205,7 +205,7 @@ open class DefaultAPI {
 
         let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
 
-        let localVariableRequestBuilder: RequestBuilder<ResolveIncident200Response>.Type = NativeBPMClientAPI.requestBuilderFactory.getBuilder()
+        let localVariableRequestBuilder: RequestBuilder<DeleteWebhook200Response>.Type = NativeBPMClientAPI.requestBuilderFactory.getBuilder()
 
         return localVariableRequestBuilder.init(method: "DELETE", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: false)
     }
@@ -847,10 +847,10 @@ open class DefaultAPI {
      Test webhook target
      
      - parameter id: (path)  
-     - returns: ResolveIncident200Response
+     - returns: TestWebhook200Response
      */
     @available(macOS 10.15, iOS 13.0, tvOS 13.0, watchOS 6.0, *)
-    open class func testWebhook(id: String) async throws -> ResolveIncident200Response {
+    open class func testWebhook(id: String) async throws -> TestWebhook200Response {
         return try await testWebhookWithRequestBuilder(id: id).execute().body
     }
 
@@ -859,9 +859,9 @@ open class DefaultAPI {
      - POST /api/webhooks/{id}/test
      - Send a test ping event delivery to verification URL.
      - parameter id: (path)  
-     - returns: RequestBuilder<ResolveIncident200Response> 
+     - returns: RequestBuilder<TestWebhook200Response> 
      */
-    open class func testWebhookWithRequestBuilder(id: String) -> RequestBuilder<ResolveIncident200Response> {
+    open class func testWebhookWithRequestBuilder(id: String) -> RequestBuilder<TestWebhook200Response> {
         var localVariablePath = "/api/webhooks/{id}/test"
         let idPreEscape = "\(APIHelper.mapValueToPathItem(id))"
         let idPostEscape = idPreEscape.addingPercentEncoding(withAllowedCharacters: .urlPathAllowed) ?? ""
@@ -877,7 +877,7 @@ open class DefaultAPI {
 
         let localVariableHeaderParameters = APIHelper.rejectNilHeaders(localVariableNillableHeaders)
 
-        let localVariableRequestBuilder: RequestBuilder<ResolveIncident200Response>.Type = NativeBPMClientAPI.requestBuilderFactory.getBuilder()
+        let localVariableRequestBuilder: RequestBuilder<TestWebhook200Response>.Type = NativeBPMClientAPI.requestBuilderFactory.getBuilder()
 
         return localVariableRequestBuilder.init(method: "POST", URLString: (localVariableUrlComponents?.string ?? localVariableURLString), parameters: localVariableParameters, headers: localVariableHeaderParameters, requiresAuthentication: false)
     }

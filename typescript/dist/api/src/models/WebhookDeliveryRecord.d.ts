@@ -17,74 +17,50 @@
 export interface WebhookDeliveryRecord {
     /**
      *
-     * @type {string}
-     * @memberof WebhookDeliveryRecord
      */
     id: string;
     /**
      *
-     * @type {string}
-     * @memberof WebhookDeliveryRecord
      */
     webhookId: string;
     /**
      *
-     * @type {string}
-     * @memberof WebhookDeliveryRecord
      */
     tenantId: string;
     /**
      *
-     * @type {string}
-     * @memberof WebhookDeliveryRecord
      */
     eventType: string;
     /**
      *
-     * @type {string}
-     * @memberof WebhookDeliveryRecord
      */
     payload: string;
     /**
      *
-     * @type {string}
-     * @memberof WebhookDeliveryRecord
      */
     status: string;
     /**
      *
-     * @type {number}
-     * @memberof WebhookDeliveryRecord
      */
     responseCode?: number;
     /**
      *
-     * @type {string}
-     * @memberof WebhookDeliveryRecord
      */
     responseBody?: string;
     /**
      *
-     * @type {number}
-     * @memberof WebhookDeliveryRecord
      */
     attempts: number;
     /**
      *
-     * @type {Date}
-     * @memberof WebhookDeliveryRecord
      */
     nextRetry?: Date;
     /**
      *
-     * @type {Date}
-     * @memberof WebhookDeliveryRecord
      */
     createdAt: Date;
     /**
      *
-     * @type {Date}
-     * @memberof WebhookDeliveryRecord
      */
     processedAt?: Date;
 }

@@ -204,22 +204,32 @@ namespace NativeBPM.Client.Model
     /// <summary>
     /// A Json converter for type <see cref="WebhookDeliveryRecord" />
     /// </summary>
-    public class WebhookDeliveryRecordJsonConverter : JsonConverter<WebhookDeliveryRecord>
+    public partial class WebhookDeliveryRecordJsonConverter : JsonConverter<WebhookDeliveryRecord>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WebhookDeliveryRecordJsonConverter" /> class.
+        /// </summary>
+        public WebhookDeliveryRecordJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// The format to use to serialize CreatedAt
         /// </summary>
-        public static string CreatedAtFormat { get; set; } = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK";
+        public string CreatedAtFormat { get; private set; } = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK";
 
         /// <summary>
         /// The format to use to serialize NextRetry
         /// </summary>
-        public static string NextRetryFormat { get; set; } = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK";
+        public string NextRetryFormat { get; private set; } = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK";
 
         /// <summary>
         /// The format to use to serialize ProcessedAt
         /// </summary>
-        public static string ProcessedAtFormat { get; set; } = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK";
+        public string ProcessedAtFormat { get; private set; } = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK";
 
         /// <summary>
         /// Deserializes json to <see cref="WebhookDeliveryRecord" />

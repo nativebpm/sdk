@@ -22,6 +22,7 @@ class TaskRecord {
     required this.status,
     this.dueDate,
     this.inputSchema,
+    this.formId,
     required this.createdAt,
     this.claimedAt,
     this.completedAt,
@@ -59,6 +60,15 @@ class TaskRecord {
   /// Consider adding a "default:" property in the specification file to hide this note.
   ///
   String? inputSchema;
+
+  /// Form identifier or Camunda form key for dynamic schema rendering
+  ///
+  /// Please note: This property should have been non-nullable! Since the specification file
+  /// does not include a default value (using the "default:" property), however, the generated
+  /// source code must fall back to having a nullable type.
+  /// Consider adding a "default:" property in the specification file to hide this note.
+  ///
+  String? formId;
 
   DateTime createdAt;
 
@@ -99,6 +109,7 @@ class TaskRecord {
     other.status == status &&
     other.dueDate == dueDate &&
     other.inputSchema == inputSchema &&
+    other.formId == formId &&
     other.createdAt == createdAt &&
     other.claimedAt == claimedAt &&
     other.completedAt == completedAt &&
@@ -117,6 +128,7 @@ class TaskRecord {
     (status.hashCode) +
     (dueDate == null ? 0 : dueDate!.hashCode) +
     (inputSchema == null ? 0 : inputSchema!.hashCode) +
+    (formId == null ? 0 : formId!.hashCode) +
     (createdAt.hashCode) +
     (claimedAt == null ? 0 : claimedAt!.hashCode) +
     (completedAt == null ? 0 : completedAt!.hashCode) +
@@ -124,7 +136,7 @@ class TaskRecord {
     (draftVariables.hashCode);
 
   @override
-  String toString() => 'TaskRecord[id=$id, instanceId=$instanceId, activityId=$activityId, name=$name, assignee=$assignee, candidateGroups=$candidateGroups, status=$status, dueDate=$dueDate, inputSchema=$inputSchema, createdAt=$createdAt, claimedAt=$claimedAt, completedAt=$completedAt, currentStep=$currentStep, draftVariables=$draftVariables]';
+  String toString() => 'TaskRecord[id=$id, instanceId=$instanceId, activityId=$activityId, name=$name, assignee=$assignee, candidateGroups=$candidateGroups, status=$status, dueDate=$dueDate, inputSchema=$inputSchema, formId=$formId, createdAt=$createdAt, claimedAt=$claimedAt, completedAt=$completedAt, currentStep=$currentStep, draftVariables=$draftVariables]';
 
   Map<String, dynamic> toJson() {
     final json = <String, dynamic>{};
@@ -144,6 +156,11 @@ class TaskRecord {
       json[r'input_schema'] = this.inputSchema;
     } else {
       json[r'input_schema'] = null;
+    }
+    if (this.formId != null) {
+      json[r'form_id'] = this.formId;
+    } else {
+      json[r'form_id'] = null;
     }
       json[r'created_at'] = this.createdAt.toUtc().toIso8601String();
     if (this.claimedAt != null) {
@@ -205,6 +222,7 @@ class TaskRecord {
         status: mapValueOfType<String>(json, r'status')!,
         dueDate: mapDateTime(json, r'due_date', r''),
         inputSchema: mapValueOfType<String>(json, r'input_schema'),
+        formId: mapValueOfType<String>(json, r'form_id'),
         createdAt: mapDateTime(json, r'created_at', r'')!,
         claimedAt: mapDateTime(json, r'claimed_at', r''),
         completedAt: mapDateTime(json, r'completed_at', r''),

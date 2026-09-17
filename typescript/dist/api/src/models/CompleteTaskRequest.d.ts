@@ -17,8 +17,6 @@
 export interface CompleteTaskRequest {
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof CompleteTaskRequest
      */
     variables?: {
         [key: string]: any;

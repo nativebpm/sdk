@@ -38,12 +38,13 @@ class TaskRecord(BaseModel):
     status: StrictStr = Field(json_schema_extra={"examples": ["CREATED"]})
     due_date: Optional[datetime] = None
     input_schema: Optional[StrictStr] = Field(default=None, description="JSON schema definition of form widgets")
+    form_id: Optional[StrictStr] = Field(default=None, description="Form identifier or Camunda form key for dynamic schema rendering")
     created_at: datetime
     claimed_at: Optional[datetime] = None
     completed_at: Optional[datetime] = None
     current_step: Optional[StrictInt] = None
     draft_variables: Optional[Dict[str, Any]] = None
-    __properties: ClassVar[List[str]] = ["id", "instance_id", "activity_id", "name", "assignee", "candidate_groups", "status", "due_date", "input_schema", "created_at", "claimed_at", "completed_at", "current_step", "draft_variables"]
+    __properties: ClassVar[List[str]] = ["id", "instance_id", "activity_id", "name", "assignee", "candidate_groups", "status", "due_date", "input_schema", "form_id", "created_at", "claimed_at", "completed_at", "current_step", "draft_variables"]
 
     model_config = ConfigDict(
         validate_by_name=True,
@@ -105,6 +106,7 @@ class TaskRecord(BaseModel):
             "status": obj.get("status"),
             "due_date": obj.get("due_date"),
             "input_schema": obj.get("input_schema"),
+            "form_id": obj.get("form_id"),
             "created_at": obj.get("created_at"),
             "claimed_at": obj.get("claimed_at"),
             "completed_at": obj.get("completed_at"),

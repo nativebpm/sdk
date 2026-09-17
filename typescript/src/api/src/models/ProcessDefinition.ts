@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
  * 
  * @export
@@ -21,32 +21,22 @@ import { mapValues } from '../runtime';
 export interface ProcessDefinition {
     /**
      * MD5/SHA256 content hash of the process XML schema definition
-     * @type {string}
-     * @memberof ProcessDefinition
      */
     hash: string;
     /**
      * Unique process definition identifier
-     * @type {string}
-     * @memberof ProcessDefinition
      */
     id: string;
     /**
      * Friendly name of the process
-     * @type {string}
-     * @memberof ProcessDefinition
      */
     name: string;
     /**
      * Base64-encoded raw BPMN 2.0 XML schema data
-     * @type {string}
-     * @memberof ProcessDefinition
      */
     xmlData: string;
     /**
      * 
-     * @type {Date}
-     * @memberof ProcessDefinition
      */
     deployedAt: Date;
 }
@@ -58,8 +48,8 @@ export function instanceOfProcessDefinition(value: object): value is ProcessDefi
     if (!('hash' in value) || value['hash'] === undefined) return false;
     if (!('id' in value) || value['id'] === undefined) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
-    if ((!('xmlData' in value) && !('xml_data' in value)) || (value['xmlData'] === undefined && value['xml_data'] === undefined)) return false;
-    if ((!('deployedAt' in value) && !('deployed_at' in value)) || (value['deployedAt'] === undefined && value['deployed_at'] === undefined)) return false;
+    if ((!('xmlData' in (value as Record<string, any>)) && !('xml_data' in (value as Record<string, any>))) || ((value as Record<string, any>)['xmlData'] === undefined && (value as Record<string, any>)['xml_data'] === undefined)) return false;
+    if ((!('deployedAt' in (value as Record<string, any>)) && !('deployed_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['deployedAt'] === undefined && (value as Record<string, any>)['deployed_at'] === undefined)) return false;
     return true;
 }
 
@@ -77,7 +67,7 @@ export function ProcessDefinitionFromJSONTyped(json: any, ignoreDiscriminator: b
         'id': json['id'],
         'name': json['name'],
         'xmlData': json['xml_data'],
-        'deployedAt': (new Date(json['deployed_at'])),
+        'deployedAt': (json['deployed_at'] == null ? json['deployed_at'] : parseDateTime(json['deployed_at'])),
     };
 }
 
@@ -96,7 +86,7 @@ export function ProcessDefinitionToJSONTyped(value?: ProcessDefinition | null, i
         'id': value['id'],
         'name': value['name'],
         'xml_data': value['xmlData'],
-        'deployed_at': value['deployedAt'].toISOString(),
+        'deployed_at': value['deployedAt'] == null ? value['deployedAt'] : serializeDateTime(value['deployedAt']),
     };
 }
 

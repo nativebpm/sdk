@@ -17,14 +17,10 @@
 export interface CompleteInstanceTaskRequest {
     /**
      * BPMN task element identifier
-     * @type {string}
-     * @memberof CompleteInstanceTaskRequest
      */
     nodeId: string;
     /**
      *
-     * @type {{ [key: string]: any; }}
-     * @memberof CompleteInstanceTaskRequest
      */
     variables?: {
         [key: string]: any;

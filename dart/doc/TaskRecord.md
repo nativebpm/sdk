@@ -17,6 +17,7 @@ Name | Type | Description | Notes
 **status** | **String** |  | 
 **dueDate** | [**DateTime**](DateTime.md) |  | [optional] 
 **inputSchema** | **String** | JSON schema definition of form widgets | [optional] 
+**formId** | **String** | Form identifier or Camunda form key for dynamic schema rendering | [optional] 
 **createdAt** | [**DateTime**](DateTime.md) |  | 
 **claimedAt** | [**DateTime**](DateTime.md) |  | [optional] 
 **completedAt** | [**DateTime**](DateTime.md) |  | [optional] 

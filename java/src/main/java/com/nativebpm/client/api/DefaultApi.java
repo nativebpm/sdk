@@ -31,6 +31,8 @@ import com.nativebpm.client.model.ClaimTaskRequest;
 import com.nativebpm.client.model.CompleteInstanceTaskRequest;
 import com.nativebpm.client.model.CompleteTaskRequest;
 import com.nativebpm.client.model.CreateWebhookRequest;
+import com.nativebpm.client.model.DeleteWebhook200Response;
+import com.nativebpm.client.model.DeployDefinition403Response;
 import java.io.File;
 import com.nativebpm.client.model.HistoryRecord;
 import com.nativebpm.client.model.IncidentRecord;
@@ -41,6 +43,7 @@ import com.nativebpm.client.model.ResolveIncident200Response;
 import com.nativebpm.client.model.SMTPConfig;
 import com.nativebpm.client.model.StartInstanceRequest;
 import com.nativebpm.client.model.TaskRecord;
+import com.nativebpm.client.model.TestWebhook200Response;
 import com.nativebpm.client.model.VisualizationData;
 import com.nativebpm.client.model.WebhookDeliveryRecord;
 import com.nativebpm.client.model.WebhookRecord;
@@ -770,7 +773,7 @@ public class DefaultApi {
      * Delete webhook target
      * Delete a webhook configuration.
      * @param id  (required)
-     * @return ResolveIncident200Response
+     * @return DeleteWebhook200Response
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table border="1">
@@ -783,8 +786,8 @@ public class DefaultApi {
         <tr><td> 500 </td><td> Internal Server Error - database failure or execution crash </td><td>  -  </td></tr>
      </table>
      */
-    public ResolveIncident200Response deleteWebhook(@javax.annotation.Nonnull String id) throws ApiException {
-        ApiResponse<ResolveIncident200Response> localVarResp = deleteWebhookWithHttpInfo(id);
+    public DeleteWebhook200Response deleteWebhook(@javax.annotation.Nonnull String id) throws ApiException {
+        ApiResponse<DeleteWebhook200Response> localVarResp = deleteWebhookWithHttpInfo(id);
         return localVarResp.getData();
     }
 
@@ -792,7 +795,7 @@ public class DefaultApi {
      * Delete webhook target
      * Delete a webhook configuration.
      * @param id  (required)
-     * @return ApiResponse&lt;ResolveIncident200Response&gt;
+     * @return ApiResponse&lt;DeleteWebhook200Response&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table border="1">
@@ -805,9 +808,9 @@ public class DefaultApi {
         <tr><td> 500 </td><td> Internal Server Error - database failure or execution crash </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<ResolveIncident200Response> deleteWebhookWithHttpInfo(@javax.annotation.Nonnull String id) throws ApiException {
+    public ApiResponse<DeleteWebhook200Response> deleteWebhookWithHttpInfo(@javax.annotation.Nonnull String id) throws ApiException {
         okhttp3.Call localVarCall = deleteWebhookValidateBeforeCall(id, null);
-        Type localVarReturnType = new TypeToken<ResolveIncident200Response>(){}.getType();
+        Type localVarReturnType = new TypeToken<DeleteWebhook200Response>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
 
@@ -829,10 +832,10 @@ public class DefaultApi {
         <tr><td> 500 </td><td> Internal Server Error - database failure or execution crash </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call deleteWebhookAsync(@javax.annotation.Nonnull String id, final ApiCallback<ResolveIncident200Response> _callback) throws ApiException {
+    public okhttp3.Call deleteWebhookAsync(@javax.annotation.Nonnull String id, final ApiCallback<DeleteWebhook200Response> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = deleteWebhookValidateBeforeCall(id, _callback);
-        Type localVarReturnType = new TypeToken<ResolveIncident200Response>(){}.getType();
+        Type localVarReturnType = new TypeToken<DeleteWebhook200Response>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
     }
@@ -3135,7 +3138,7 @@ public class DefaultApi {
      * Test webhook target
      * Send a test ping event delivery to verification URL.
      * @param id  (required)
-     * @return ResolveIncident200Response
+     * @return TestWebhook200Response
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table border="1">
@@ -3148,8 +3151,8 @@ public class DefaultApi {
         <tr><td> 500 </td><td> Internal Server Error - database failure or execution crash </td><td>  -  </td></tr>
      </table>
      */
-    public ResolveIncident200Response testWebhook(@javax.annotation.Nonnull String id) throws ApiException {
-        ApiResponse<ResolveIncident200Response> localVarResp = testWebhookWithHttpInfo(id);
+    public TestWebhook200Response testWebhook(@javax.annotation.Nonnull String id) throws ApiException {
+        ApiResponse<TestWebhook200Response> localVarResp = testWebhookWithHttpInfo(id);
         return localVarResp.getData();
     }
 
@@ -3157,7 +3160,7 @@ public class DefaultApi {
      * Test webhook target
      * Send a test ping event delivery to verification URL.
      * @param id  (required)
-     * @return ApiResponse&lt;ResolveIncident200Response&gt;
+     * @return ApiResponse&lt;TestWebhook200Response&gt;
      * @throws ApiException If fail to call the API, e.g. server error or cannot deserialize the response body
      * @http.response.details
      <table border="1">
@@ -3170,9 +3173,9 @@ public class DefaultApi {
         <tr><td> 500 </td><td> Internal Server Error - database failure or execution crash </td><td>  -  </td></tr>
      </table>
      */
-    public ApiResponse<ResolveIncident200Response> testWebhookWithHttpInfo(@javax.annotation.Nonnull String id) throws ApiException {
+    public ApiResponse<TestWebhook200Response> testWebhookWithHttpInfo(@javax.annotation.Nonnull String id) throws ApiException {
         okhttp3.Call localVarCall = testWebhookValidateBeforeCall(id, null);
-        Type localVarReturnType = new TypeToken<ResolveIncident200Response>(){}.getType();
+        Type localVarReturnType = new TypeToken<TestWebhook200Response>(){}.getType();
         return localVarApiClient.execute(localVarCall, localVarReturnType);
     }
 
@@ -3194,10 +3197,10 @@ public class DefaultApi {
         <tr><td> 500 </td><td> Internal Server Error - database failure or execution crash </td><td>  -  </td></tr>
      </table>
      */
-    public okhttp3.Call testWebhookAsync(@javax.annotation.Nonnull String id, final ApiCallback<ResolveIncident200Response> _callback) throws ApiException {
+    public okhttp3.Call testWebhookAsync(@javax.annotation.Nonnull String id, final ApiCallback<TestWebhook200Response> _callback) throws ApiException {
 
         okhttp3.Call localVarCall = testWebhookValidateBeforeCall(id, _callback);
-        Type localVarReturnType = new TypeToken<ResolveIncident200Response>(){}.getType();
+        Type localVarReturnType = new TypeToken<TestWebhook200Response>(){}.getType();
         localVarApiClient.executeAsync(localVarCall, localVarReturnType, _callback);
         return localVarCall;
     }

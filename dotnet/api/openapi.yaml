@@ -45,7 +45,7 @@ paths:
               $ref: "#/components/schemas/deployDefinition_request"
           application/json:
             schema:
-              type: object
+              $ref: "#/components/schemas/WorkflowAST"
         required: true
       responses:
         "200":
@@ -67,7 +67,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/listDefinitions_401_response"
+                $ref: "#/components/schemas/deployDefinition_403_response"
           description: Forbidden - insufficient operator permissions or role level
         "500":
           description: Internal Server Error - database failure or execution crash
@@ -111,7 +111,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/listDefinitions_401_response"
+                $ref: "#/components/schemas/deployDefinition_403_response"
           description: Forbidden - insufficient operator permissions or role level
         "500":
           description: Internal Server Error - database failure or execution crash
@@ -345,7 +345,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/listDefinitions_401_response"
+                $ref: "#/components/schemas/deployDefinition_403_response"
           description: Forbidden - insufficient operator permissions or role level
         "500":
           description: Internal Server Error - database failure or execution crash
@@ -380,7 +380,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/listDefinitions_401_response"
+                $ref: "#/components/schemas/deployDefinition_403_response"
           description: Forbidden - insufficient operator permissions or role level
         "500":
           description: Internal Server Error - database failure or execution crash
@@ -422,7 +422,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/listDefinitions_401_response"
+                $ref: "#/components/schemas/deployDefinition_403_response"
           description: Forbidden - insufficient operator permissions or role level
         "500":
           description: Internal Server Error - database failure or execution crash
@@ -514,7 +514,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/listDefinitions_401_response"
+                $ref: "#/components/schemas/deployDefinition_403_response"
           description: Forbidden - insufficient operator permissions or role level
         "404":
           description: Task not found
@@ -558,7 +558,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/listDefinitions_401_response"
+                $ref: "#/components/schemas/deployDefinition_403_response"
           description: Forbidden - insufficient operator permissions or role level
         "404":
           description: Task not found
@@ -589,7 +589,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/listDefinitions_401_response"
+                $ref: "#/components/schemas/deployDefinition_403_response"
           description: Forbidden - insufficient operator permissions or role level
         "500":
           description: Internal Server Error - database failure or execution crash
@@ -623,7 +623,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/listDefinitions_401_response"
+                $ref: "#/components/schemas/deployDefinition_403_response"
           description: Forbidden - insufficient operator permissions or role level
         "500":
           description: Internal Server Error - database failure or execution crash
@@ -645,7 +645,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/resolveIncident_200_response"
+                $ref: "#/components/schemas/deleteWebhook_200_response"
           description: Webhook deleted successfully
         "401":
           content:
@@ -658,7 +658,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/listDefinitions_401_response"
+                $ref: "#/components/schemas/deployDefinition_403_response"
           description: Forbidden - insufficient operator permissions or role level
         "404":
           description: Webhook not found
@@ -700,7 +700,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/listDefinitions_401_response"
+                $ref: "#/components/schemas/deployDefinition_403_response"
           description: Forbidden - insufficient operator permissions or role level
         "404":
           description: Webhook not found
@@ -724,7 +724,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/resolveIncident_200_response"
+                $ref: "#/components/schemas/testWebhook_200_response"
           description: Test ping sent successfully
         "401":
           content:
@@ -737,7 +737,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/listDefinitions_401_response"
+                $ref: "#/components/schemas/deployDefinition_403_response"
           description: Forbidden - insufficient operator permissions or role level
         "404":
           description: Webhook not found
@@ -777,7 +777,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/listDefinitions_401_response"
+                $ref: "#/components/schemas/deployDefinition_403_response"
           description: Forbidden - insufficient operator permissions or role level
         "404":
           description: Webhook not found
@@ -817,7 +817,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/listDefinitions_401_response"
+                $ref: "#/components/schemas/deployDefinition_403_response"
           description: Forbidden - insufficient operator permissions or role level
         "500":
           description: Internal Server Error - database failure or execution crash
@@ -845,7 +845,7 @@ paths:
           content:
             application/json:
               schema:
-                $ref: "#/components/schemas/listDefinitions_401_response"
+                $ref: "#/components/schemas/deployDefinition_403_response"
           description: Forbidden - insufficient operator permissions or role level
         "404":
           description: SMTP config not found
@@ -864,7 +864,7 @@ components:
       content:
         application/json:
           schema:
-            $ref: "#/components/schemas/listDefinitions_401_response"
+            $ref: "#/components/schemas/deployDefinition_403_response"
       description: Forbidden - insufficient operator permissions or role level
     "500InternalError":
       description: Internal Server Error - database failure or execution crash
@@ -1107,6 +1107,7 @@ components:
         status: CREATED
         due_date: 2000-01-23T04:56:07.000+00:00
         input_schema: input_schema
+        form_id: form_id
         created_at: 2000-01-23T04:56:07.000+00:00
         claimed_at: 2000-01-23T04:56:07.000+00:00
         completed_at: 2000-01-23T04:56:07.000+00:00
@@ -1136,6 +1137,9 @@ components:
           type: string
         input_schema:
           description: JSON schema definition of form widgets
+          type: string
+        form_id:
+          description: Form identifier or Camunda form key for dynamic schema rendering
           type: string
         created_at:
           format: date-time
@@ -1365,6 +1369,200 @@ components:
           format: int64
           type: integer
       type: object
+    InVariable:
+      properties:
+        source:
+          type: string
+        target:
+          type: string
+        variables:
+          type: string
+        local:
+          type: boolean
+      type: object
+    OutVariable:
+      properties:
+        source:
+          type: string
+        target:
+          type: string
+        variables:
+          type: string
+      type: object
+    DMNInputAST:
+      properties:
+        expression:
+          type: string
+        type:
+          type: string
+      required:
+      - expression
+      - type
+      type: object
+    DMNOutputAST:
+      properties:
+        name:
+          type: string
+        type:
+          type: string
+      required:
+      - name
+      - type
+      type: object
+    DMNRuleAST:
+      properties:
+        inputs:
+          items:
+            type: string
+          type: array
+        outputs:
+          items:
+            type: string
+          type: array
+      required:
+      - inputs
+      - outputs
+      type: object
+    NodeAST:
+      properties:
+        id:
+          minLength: 1
+          type: string
+        name:
+          type: string
+        type:
+          enum:
+          - startEvent
+          - endEvent
+          - serviceTask
+          - userTask
+          - aiServiceTask
+          - aiTask
+          - exclusiveGateway
+          - parallelGateway
+          - eventBasedGateway
+          - callActivity
+          - businessRuleTask
+          - boundaryTimerEvent
+          type: string
+        topic:
+          type: string
+        wasmPath:
+          type: string
+        provider:
+          type: string
+        model:
+          type: string
+        prompt:
+          type: string
+        systemInstruction:
+          type: string
+        responseSchema:
+          type: string
+        temperature:
+          type: number
+        resultVar:
+          type: string
+        assignee:
+          type: string
+        candidateGroups:
+          type: string
+        dueDate:
+          type: string
+        inputSchema:
+          type: string
+        formId:
+          type: string
+        formKey:
+          type: string
+        calledElement:
+          type: string
+        inVariables:
+          items:
+            $ref: "#/components/schemas/InVariable"
+          type: array
+        outVariables:
+          items:
+            $ref: "#/components/schemas/OutVariable"
+          type: array
+        decisionRef:
+          type: string
+        mapDecisionResult:
+          type: string
+        hitPolicy:
+          type: string
+        inputs:
+          items:
+            $ref: "#/components/schemas/DMNInputAST"
+          type: array
+        outputs:
+          items:
+            $ref: "#/components/schemas/DMNOutputAST"
+          type: array
+        rules:
+          items:
+            $ref: "#/components/schemas/DMNRuleAST"
+          type: array
+        attachedToRef:
+          type: string
+        timeDuration:
+          type: string
+        timeDate:
+          type: string
+        timeCycle:
+          type: string
+        cancelActivity:
+          type: boolean
+      required:
+      - id
+      - name
+      - type
+      type: object
+    FlowAST:
+      properties:
+        id:
+          minLength: 1
+          type: string
+        source:
+          minLength: 1
+          type: string
+        target:
+          minLength: 1
+          type: string
+        condition:
+          type: string
+      required:
+      - id
+      - source
+      - target
+      type: object
+    WorkflowAST:
+      properties:
+        id:
+          description: Unique process definition identifier
+          minLength: 1
+          type: string
+        name:
+          description: Human-readable process name
+          minLength: 1
+          type: string
+        inputSchema:
+          description: JSON Schema contract for process start variables
+          type: string
+        nodes:
+          items:
+            $ref: "#/components/schemas/NodeAST"
+          type: array
+        flows:
+          items:
+            $ref: "#/components/schemas/FlowAST"
+          type: array
+      required:
+      - flows
+      - id
+      - name
+      - nodes
+      type: object
     listDefinitions_401_response:
       example:
         error: Unauthorized
@@ -1378,6 +1576,14 @@ components:
         file:
           description: BPMN 2.0 XML file content to deploy
           format: binary
+          type: string
+      type: object
+    deployDefinition_403_response:
+      example:
+        error: Forbidden - Insufficient permissions
+      properties:
+        error:
+          example: Forbidden - Insufficient permissions
           type: string
       type: object
     resolveIncident_200_response:
@@ -1400,5 +1606,21 @@ components:
         variables:
           additionalProperties: true
           type: object
+      type: object
+    deleteWebhook_200_response:
+      example:
+        status: deleted
+      properties:
+        status:
+          example: deleted
+          type: string
+      type: object
+    testWebhook_200_response:
+      example:
+        status: success
+      properties:
+        status:
+          example: success
+          type: string
       type: object
 

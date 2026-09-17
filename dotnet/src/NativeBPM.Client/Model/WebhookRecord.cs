@@ -171,12 +171,22 @@ namespace NativeBPM.Client.Model
     /// <summary>
     /// A Json converter for type <see cref="WebhookRecord" />
     /// </summary>
-    public class WebhookRecordJsonConverter : JsonConverter<WebhookRecord>
+    public partial class WebhookRecordJsonConverter : JsonConverter<WebhookRecord>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="WebhookRecordJsonConverter" /> class.
+        /// </summary>
+        public WebhookRecordJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// The format to use to serialize CreatedAt
         /// </summary>
-        public static string CreatedAtFormat { get; set; } = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK";
+        public string CreatedAtFormat { get; private set; } = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK";
 
         /// <summary>
         /// Deserializes json to <see cref="WebhookRecord" />

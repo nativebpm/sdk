@@ -22,6 +22,7 @@ from nativebpm_client.models.claim_task_request import ClaimTaskRequest
 from nativebpm_client.models.complete_instance_task_request import CompleteInstanceTaskRequest
 from nativebpm_client.models.complete_task_request import CompleteTaskRequest
 from nativebpm_client.models.create_webhook_request import CreateWebhookRequest
+from nativebpm_client.models.delete_webhook200_response import DeleteWebhook200Response
 from nativebpm_client.models.history_record import HistoryRecord
 from nativebpm_client.models.incident_record import IncidentRecord
 from nativebpm_client.models.process_definition import ProcessDefinition
@@ -30,6 +31,7 @@ from nativebpm_client.models.resolve_incident200_response import ResolveIncident
 from nativebpm_client.models.smtp_config import SMTPConfig
 from nativebpm_client.models.start_instance_request import StartInstanceRequest
 from nativebpm_client.models.task_record import TaskRecord
+from nativebpm_client.models.test_webhook200_response import TestWebhook200Response
 from nativebpm_client.models.visualization_data import VisualizationData
 from nativebpm_client.models.webhook_delivery_record import WebhookDeliveryRecord
 from nativebpm_client.models.webhook_record import WebhookRecord
@@ -113,7 +115,7 @@ class DefaultApi:
             '200': "TaskRecord",
             '400': None,
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '404': None,
             '500': None,
         }
@@ -189,7 +191,7 @@ class DefaultApi:
             '200': "TaskRecord",
             '400': None,
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '404': None,
             '500': None,
         }
@@ -265,7 +267,7 @@ class DefaultApi:
             '200': "TaskRecord",
             '400': None,
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '404': None,
             '500': None,
         }
@@ -416,7 +418,7 @@ class DefaultApi:
             '200': "ProcessInstance",
             '400': None,
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '500': None,
         }
         response_data = self.api_client.call_api(
@@ -491,7 +493,7 @@ class DefaultApi:
             '200': "ProcessInstance",
             '400': None,
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '500': None,
         }
         response_data = self.api_client.call_api(
@@ -566,7 +568,7 @@ class DefaultApi:
             '200': "ProcessInstance",
             '400': None,
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '500': None,
         }
         response_data = self.api_client.call_api(
@@ -716,7 +718,7 @@ class DefaultApi:
             '200': "ProcessInstance",
             '400': None,
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '404': None,
             '500': None,
         }
@@ -792,7 +794,7 @@ class DefaultApi:
             '200': "ProcessInstance",
             '400': None,
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '404': None,
             '500': None,
         }
@@ -868,7 +870,7 @@ class DefaultApi:
             '200': "ProcessInstance",
             '400': None,
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '404': None,
             '500': None,
         }
@@ -1015,7 +1017,7 @@ class DefaultApi:
             '200': "WebhookRecord",
             '400': None,
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '500': None,
         }
         response_data = self.api_client.call_api(
@@ -1086,7 +1088,7 @@ class DefaultApi:
             '200': "WebhookRecord",
             '400': None,
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '500': None,
         }
         response_data = self.api_client.call_api(
@@ -1157,7 +1159,7 @@ class DefaultApi:
             '200': "WebhookRecord",
             '400': None,
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '500': None,
         }
         response_data = self.api_client.call_api(
@@ -1259,7 +1261,7 @@ class DefaultApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ResolveIncident200Response:
+    ) -> DeleteWebhook200Response:
         """Delete webhook target
 
         Delete a webhook configuration.
@@ -1297,9 +1299,9 @@ class DefaultApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "ResolveIncident200Response",
+            '200': "DeleteWebhook200Response",
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '404': None,
             '500': None,
         }
@@ -1330,7 +1332,7 @@ class DefaultApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[ResolveIncident200Response]:
+    ) -> ApiResponse[DeleteWebhook200Response]:
         """Delete webhook target
 
         Delete a webhook configuration.
@@ -1368,9 +1370,9 @@ class DefaultApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "ResolveIncident200Response",
+            '200': "DeleteWebhook200Response",
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '404': None,
             '500': None,
         }
@@ -1439,9 +1441,9 @@ class DefaultApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "ResolveIncident200Response",
+            '200': "DeleteWebhook200Response",
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '404': None,
             '500': None,
         }
@@ -1572,7 +1574,7 @@ class DefaultApi:
             '200': "ProcessDefinition",
             '400': None,
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '500': None,
         }
         response_data = self.api_client.call_api(
@@ -1643,7 +1645,7 @@ class DefaultApi:
             '200': "ProcessDefinition",
             '400': None,
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '500': None,
         }
         response_data = self.api_client.call_api(
@@ -1714,7 +1716,7 @@ class DefaultApi:
             '200': "ProcessDefinition",
             '400': None,
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '500': None,
         }
         response_data = self.api_client.call_api(
@@ -2944,7 +2946,7 @@ class DefaultApi:
         _response_types_map: Dict[str, Optional[str]] = {
             '200': "SMTPConfig",
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '404': None,
             '500': None,
         }
@@ -3011,7 +3013,7 @@ class DefaultApi:
         _response_types_map: Dict[str, Optional[str]] = {
             '200': "SMTPConfig",
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '404': None,
             '500': None,
         }
@@ -3078,7 +3080,7 @@ class DefaultApi:
         _response_types_map: Dict[str, Optional[str]] = {
             '200': "SMTPConfig",
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '404': None,
             '500': None,
         }
@@ -3205,7 +3207,7 @@ class DefaultApi:
         _response_types_map: Dict[str, Optional[str]] = {
             '200': "List[str]",
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '500': None,
         }
         response_data = self.api_client.call_api(
@@ -3275,7 +3277,7 @@ class DefaultApi:
         _response_types_map: Dict[str, Optional[str]] = {
             '200': "List[str]",
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '500': None,
         }
         response_data = self.api_client.call_api(
@@ -3345,7 +3347,7 @@ class DefaultApi:
         _response_types_map: Dict[str, Optional[str]] = {
             '200': "List[str]",
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '500': None,
         }
         response_data = self.api_client.call_api(
@@ -4547,7 +4549,7 @@ class DefaultApi:
         _response_types_map: Dict[str, Optional[str]] = {
             '200': "List[WebhookDeliveryRecord]",
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '404': None,
             '500': None,
         }
@@ -4618,7 +4620,7 @@ class DefaultApi:
         _response_types_map: Dict[str, Optional[str]] = {
             '200': "List[WebhookDeliveryRecord]",
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '404': None,
             '500': None,
         }
@@ -4689,7 +4691,7 @@ class DefaultApi:
         _response_types_map: Dict[str, Optional[str]] = {
             '200': "List[WebhookDeliveryRecord]",
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '404': None,
             '500': None,
         }
@@ -4815,7 +4817,7 @@ class DefaultApi:
         _response_types_map: Dict[str, Optional[str]] = {
             '200': "List[WebhookRecord]",
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '500': None,
         }
         response_data = self.api_client.call_api(
@@ -4881,7 +4883,7 @@ class DefaultApi:
         _response_types_map: Dict[str, Optional[str]] = {
             '200': "List[WebhookRecord]",
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '500': None,
         }
         response_data = self.api_client.call_api(
@@ -4947,7 +4949,7 @@ class DefaultApi:
         _response_types_map: Dict[str, Optional[str]] = {
             '200': "List[WebhookRecord]",
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '500': None,
         }
         response_data = self.api_client.call_api(
@@ -5077,7 +5079,7 @@ class DefaultApi:
         _response_types_map: Dict[str, Optional[str]] = {
             '200': "ResolveIncident200Response",
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '500': None,
         }
         response_data = self.api_client.call_api(
@@ -5151,7 +5153,7 @@ class DefaultApi:
         _response_types_map: Dict[str, Optional[str]] = {
             '200': "ResolveIncident200Response",
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '500': None,
         }
         response_data = self.api_client.call_api(
@@ -5225,7 +5227,7 @@ class DefaultApi:
         _response_types_map: Dict[str, Optional[str]] = {
             '200': "ResolveIncident200Response",
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '500': None,
         }
         response_data = self.api_client.call_api(
@@ -5357,7 +5359,7 @@ class DefaultApi:
         _response_types_map: Dict[str, Optional[str]] = {
             '200': "ProcessInstance",
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '500': None,
         }
         response_data = self.api_client.call_api(
@@ -5427,7 +5429,7 @@ class DefaultApi:
         _response_types_map: Dict[str, Optional[str]] = {
             '200': "ProcessInstance",
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '500': None,
         }
         response_data = self.api_client.call_api(
@@ -5497,7 +5499,7 @@ class DefaultApi:
         _response_types_map: Dict[str, Optional[str]] = {
             '200': "ProcessInstance",
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '500': None,
         }
         response_data = self.api_client.call_api(
@@ -5631,7 +5633,7 @@ class DefaultApi:
             '200': "ProcessInstance",
             '400': None,
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '500': None,
         }
         response_data = self.api_client.call_api(
@@ -5706,7 +5708,7 @@ class DefaultApi:
             '200': "ProcessInstance",
             '400': None,
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '500': None,
         }
         response_data = self.api_client.call_api(
@@ -5781,7 +5783,7 @@ class DefaultApi:
             '200': "ProcessInstance",
             '400': None,
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '500': None,
         }
         response_data = self.api_client.call_api(
@@ -5886,7 +5888,7 @@ class DefaultApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ResolveIncident200Response:
+    ) -> TestWebhook200Response:
         """Test webhook target
 
         Send a test ping event delivery to verification URL.
@@ -5924,9 +5926,9 @@ class DefaultApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "ResolveIncident200Response",
+            '200': "TestWebhook200Response",
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '404': None,
             '500': None,
         }
@@ -5957,7 +5959,7 @@ class DefaultApi:
         _content_type: Optional[StrictStr] = None,
         _headers: Optional[Dict[StrictStr, Any]] = None,
         _host_index: Annotated[StrictInt, Field(ge=0, le=0)] = 0,
-    ) -> ApiResponse[ResolveIncident200Response]:
+    ) -> ApiResponse[TestWebhook200Response]:
         """Test webhook target
 
         Send a test ping event delivery to verification URL.
@@ -5995,9 +5997,9 @@ class DefaultApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "ResolveIncident200Response",
+            '200': "TestWebhook200Response",
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '404': None,
             '500': None,
         }
@@ -6066,9 +6068,9 @@ class DefaultApi:
         )
 
         _response_types_map: Dict[str, Optional[str]] = {
-            '200': "ResolveIncident200Response",
+            '200': "TestWebhook200Response",
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '404': None,
             '500': None,
         }
@@ -6202,7 +6204,7 @@ class DefaultApi:
         _response_types_map: Dict[str, Optional[str]] = {
             '200': "WebhookRecord",
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '404': None,
             '500': None,
         }
@@ -6277,7 +6279,7 @@ class DefaultApi:
         _response_types_map: Dict[str, Optional[str]] = {
             '200': "WebhookRecord",
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '404': None,
             '500': None,
         }
@@ -6352,7 +6354,7 @@ class DefaultApi:
         _response_types_map: Dict[str, Optional[str]] = {
             '200': "WebhookRecord",
             '401': "ListDefinitions401Response",
-            '403': "ListDefinitions401Response",
+            '403': "DeployDefinition403Response",
             '404': None,
             '500': None,
         }

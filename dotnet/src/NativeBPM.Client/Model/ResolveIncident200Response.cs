@@ -84,8 +84,18 @@ namespace NativeBPM.Client.Model
     /// <summary>
     /// A Json converter for type <see cref="ResolveIncident200Response" />
     /// </summary>
-    public class ResolveIncident200ResponseJsonConverter : JsonConverter<ResolveIncident200Response>
+    public partial class ResolveIncident200ResponseJsonConverter : JsonConverter<ResolveIncident200Response>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ResolveIncident200ResponseJsonConverter" /> class.
+        /// </summary>
+        public ResolveIncident200ResponseJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// Deserializes json to <see cref="ResolveIncident200Response" />
         /// </summary>

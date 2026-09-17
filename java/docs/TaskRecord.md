@@ -16,6 +16,7 @@
 |**status** | **String** |  |  |
 |**dueDate** | **OffsetDateTime** |  |  [optional] |
 |**inputSchema** | **String** | JSON schema definition of form widgets |  [optional] |
+|**formId** | **String** | Form identifier or Camunda form key for dynamic schema rendering |  [optional] |
 |**createdAt** | **OffsetDateTime** |  |  |
 |**claimedAt** | **OffsetDateTime** |  |  [optional] |
 |**completedAt** | **OffsetDateTime** |  |  [optional] |

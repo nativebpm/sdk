@@ -17,62 +17,42 @@
 export interface WebhookRecord {
     /**
      *
-     * @type {string}
-     * @memberof WebhookRecord
      */
     id: string;
     /**
      *
-     * @type {string}
-     * @memberof WebhookRecord
      */
     tenantId: string;
     /**
      *
-     * @type {string}
-     * @memberof WebhookRecord
      */
     url: string;
     /**
      *
-     * @type {string}
-     * @memberof WebhookRecord
      */
     secret?: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof WebhookRecord
      */
     events: Array<string>;
     /**
      *
-     * @type {string}
-     * @memberof WebhookRecord
      */
     processId?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof WebhookRecord
      */
     isActive: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof WebhookRecord
      */
     enableAudit: boolean;
     /**
      *
-     * @type {string}
-     * @memberof WebhookRecord
      */
     status: string;
     /**
      *
-     * @type {Date}
-     * @memberof WebhookRecord
      */
     createdAt: Date;
 }

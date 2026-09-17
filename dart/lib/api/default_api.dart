@@ -302,7 +302,7 @@ class DefaultApi {
   /// Parameters:
   ///
   /// * [String] id (required):
-  Future<ResolveIncident200Response?> deleteWebhook(String id, { Future<void>? abortTrigger, }) async {
+  Future<DeleteWebhook200Response?> deleteWebhook(String id, { Future<void>? abortTrigger, }) async {
     final response = await deleteWebhookWithHttpInfo(id, abortTrigger: abortTrigger,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -311,7 +311,7 @@ class DefaultApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResolveIncident200Response',) as ResolveIncident200Response;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'DeleteWebhook200Response',) as DeleteWebhook200Response;
     
     }
     return null;
@@ -1327,7 +1327,7 @@ class DefaultApi {
   /// Parameters:
   ///
   /// * [String] id (required):
-  Future<ResolveIncident200Response?> testWebhook(String id, { Future<void>? abortTrigger, }) async {
+  Future<TestWebhook200Response?> testWebhook(String id, { Future<void>? abortTrigger, }) async {
     final response = await testWebhookWithHttpInfo(id, abortTrigger: abortTrigger,);
     if (response.statusCode >= HttpStatus.badRequest) {
       throw ApiException(response.statusCode, await _decodeBodyBytes(response));
@@ -1336,7 +1336,7 @@ class DefaultApi {
     // At the time of writing this, `dart:convert` will throw an "Unexpected end of input"
     // FormatException when trying to decode an empty string.
     if (response.body.isNotEmpty && response.statusCode != HttpStatus.noContent) {
-      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'ResolveIncident200Response',) as ResolveIncident200Response;
+      return await apiClient.deserializeAsync(await _decodeBodyBytes(response), 'TestWebhook200Response',) as TestWebhook200Response;
     
     }
     return null;

@@ -13,6 +13,7 @@ Name | Type | Description | Notes
 **status** | **String** |  | 
 **due_date** | Option<**chrono::DateTime<chrono::FixedOffset>**> |  | [optional]
 **input_schema** | Option<**String**> | JSON schema definition of form widgets | [optional]
+**form_id** | Option<**String**> | Form identifier or Camunda form key for dynamic schema rendering | [optional]
 **created_at** | **chrono::DateTime<chrono::FixedOffset>** |  | 
 **claimed_at** | Option<**chrono::DateTime<chrono::FixedOffset>**> |  | [optional]
 **completed_at** | Option<**chrono::DateTime<chrono::FixedOffset>**> |  | [optional]

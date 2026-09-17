@@ -93,8 +93,18 @@ namespace NativeBPM.Client.Model
     /// <summary>
     /// A Json converter for type <see cref="CompleteInstanceTaskRequest" />
     /// </summary>
-    public class CompleteInstanceTaskRequestJsonConverter : JsonConverter<CompleteInstanceTaskRequest>
+    public partial class CompleteInstanceTaskRequestJsonConverter : JsonConverter<CompleteInstanceTaskRequest>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="CompleteInstanceTaskRequestJsonConverter" /> class.
+        /// </summary>
+        public CompleteInstanceTaskRequestJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// Deserializes json to <see cref="CompleteInstanceTaskRequest" />
         /// </summary>

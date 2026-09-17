@@ -18,6 +18,7 @@ exports.TaskRecordFromJSON = TaskRecordFromJSON;
 exports.TaskRecordFromJSONTyped = TaskRecordFromJSONTyped;
 exports.TaskRecordToJSON = TaskRecordToJSON;
 exports.TaskRecordToJSONTyped = TaskRecordToJSONTyped;
+const runtime_1 = require("../runtime");
 /**
  * Check if a given object implements the TaskRecord interface.
  */
@@ -55,11 +56,12 @@ function TaskRecordFromJSONTyped(json, ignoreDiscriminator) {
         'assignee': json['assignee'],
         'candidateGroups': json['candidate_groups'],
         'status': json['status'],
-        'dueDate': json['due_date'] == null ? undefined : (new Date(json['due_date'])),
+        'dueDate': json['due_date'] == null ? undefined : ((0, runtime_1.parseDateTime)(json['due_date'])),
         'inputSchema': json['input_schema'] == null ? undefined : json['input_schema'],
-        'createdAt': (new Date(json['created_at'])),
-        'claimedAt': json['claimed_at'] == null ? undefined : (new Date(json['claimed_at'])),
-        'completedAt': json['completed_at'] == null ? undefined : (new Date(json['completed_at'])),
+        'formId': json['form_id'] == null ? undefined : json['form_id'],
+        'createdAt': (json['created_at'] == null ? json['created_at'] : (0, runtime_1.parseDateTime)(json['created_at'])),
+        'claimedAt': json['claimed_at'] == null ? undefined : ((0, runtime_1.parseDateTime)(json['claimed_at'])),
+        'completedAt': json['completed_at'] == null ? undefined : ((0, runtime_1.parseDateTime)(json['completed_at'])),
         'currentStep': json['current_step'] == null ? undefined : json['current_step'],
         'draftVariables': json['draft_variables'] == null ? undefined : json['draft_variables'],
     };
@@ -79,11 +81,12 @@ function TaskRecordToJSONTyped(value, ignoreDiscriminator = false) {
         'assignee': value['assignee'],
         'candidate_groups': value['candidateGroups'],
         'status': value['status'],
-        'due_date': value['dueDate'] == null ? value['dueDate'] : value['dueDate'].toISOString(),
+        'due_date': value['dueDate'] == null ? value['dueDate'] : (0, runtime_1.serializeDateTime)(value['dueDate']),
         'input_schema': value['inputSchema'],
-        'created_at': value['createdAt'].toISOString(),
-        'claimed_at': value['claimedAt'] == null ? value['claimedAt'] : value['claimedAt'].toISOString(),
-        'completed_at': value['completedAt'] == null ? value['completedAt'] : value['completedAt'].toISOString(),
+        'form_id': value['formId'],
+        'created_at': value['createdAt'] == null ? value['createdAt'] : (0, runtime_1.serializeDateTime)(value['createdAt']),
+        'claimed_at': value['claimedAt'] == null ? value['claimedAt'] : (0, runtime_1.serializeDateTime)(value['claimedAt']),
+        'completed_at': value['completedAt'] == null ? value['completedAt'] : (0, runtime_1.serializeDateTime)(value['completedAt']),
         'current_step': value['currentStep'],
         'draft_variables': value['draftVariables'],
     };

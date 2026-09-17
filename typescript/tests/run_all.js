@@ -12,6 +12,7 @@ const testFiles = [
   'case6_bdui_export.test.ts',
   'case7_edge_cases_and_risks.test.ts',
   'case8_zod_openapi_ast.test.ts',
+  'case9_polyglot_360_generation.test.ts',
 ].map(f => join(__dirname, f));
 
 console.log('================================================================');

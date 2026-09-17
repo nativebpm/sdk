@@ -17,38 +17,26 @@
 export interface CreateWebhookRequest {
     /**
      *
-     * @type {string}
-     * @memberof CreateWebhookRequest
      */
     url: string;
     /**
      *
-     * @type {string}
-     * @memberof CreateWebhookRequest
      */
     secret?: string;
     /**
      *
-     * @type {Array<string>}
-     * @memberof CreateWebhookRequest
      */
     events: Array<string>;
     /**
      *
-     * @type {string}
-     * @memberof CreateWebhookRequest
      */
     processId?: string;
     /**
      *
-     * @type {boolean}
-     * @memberof CreateWebhookRequest
      */
     isActive?: boolean;
     /**
      *
-     * @type {boolean}
-     * @memberof CreateWebhookRequest
      */
     enableAudit?: boolean;
 }

@@ -2,7 +2,7 @@
 
 NativeBPM Engine REST API
 - API version: 1.0.0
-  - Generator version: 7.24.0-SNAPSHOT
+  - Generator version: 7.25.0
 
 REST API for managing, executing, and monitoring workflows, human tasks, incidents, and outgoing webhooks inside the NativeBPM Cloud-Native engine.
 
@@ -151,18 +151,29 @@ Class | Method | HTTP request | Description
  - [CompleteInstanceTaskRequest](docs/CompleteInstanceTaskRequest.md)
  - [CompleteTaskRequest](docs/CompleteTaskRequest.md)
  - [CreateWebhookRequest](docs/CreateWebhookRequest.md)
+ - [DMNInputAST](docs/DMNInputAST.md)
+ - [DMNOutputAST](docs/DMNOutputAST.md)
+ - [DMNRuleAST](docs/DMNRuleAST.md)
+ - [DeleteWebhook200Response](docs/DeleteWebhook200Response.md)
+ - [DeployDefinition403Response](docs/DeployDefinition403Response.md)
+ - [FlowAST](docs/FlowAST.md)
  - [HistoryRecord](docs/HistoryRecord.md)
+ - [InVariable](docs/InVariable.md)
  - [IncidentRecord](docs/IncidentRecord.md)
  - [ListDefinitions401Response](docs/ListDefinitions401Response.md)
+ - [NodeAST](docs/NodeAST.md)
+ - [OutVariable](docs/OutVariable.md)
  - [ProcessDefinition](docs/ProcessDefinition.md)
  - [ProcessInstance](docs/ProcessInstance.md)
  - [ResolveIncident200Response](docs/ResolveIncident200Response.md)
  - [SMTPConfig](docs/SMTPConfig.md)
  - [StartInstanceRequest](docs/StartInstanceRequest.md)
  - [TaskRecord](docs/TaskRecord.md)
+ - [TestWebhook200Response](docs/TestWebhook200Response.md)
  - [VisualizationData](docs/VisualizationData.md)
  - [WebhookDeliveryRecord](docs/WebhookDeliveryRecord.md)
  - [WebhookRecord](docs/WebhookRecord.md)
+ - [WorkflowAST](docs/WorkflowAST.md)
 
 
 <a id="documentation-for-authorization"></a>

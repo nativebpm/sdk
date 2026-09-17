@@ -14,6 +14,7 @@ Name | Type | Description | Notes
 **CreatedAt** | **DateTime** |  | 
 **DueDate** | **DateTime** |  | [optional] 
 **InputSchema** | **string** | JSON schema definition of form widgets | [optional] 
+**FormId** | **string** | Form identifier or Camunda form key for dynamic schema rendering | [optional] 
 **ClaimedAt** | **DateTime** |  | [optional] 
 **CompletedAt** | **DateTime** |  | [optional] 
 **CurrentStep** | **int** |  | [optional] 

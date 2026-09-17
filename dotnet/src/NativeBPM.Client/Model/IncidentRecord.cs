@@ -162,17 +162,27 @@ namespace NativeBPM.Client.Model
     /// <summary>
     /// A Json converter for type <see cref="IncidentRecord" />
     /// </summary>
-    public class IncidentRecordJsonConverter : JsonConverter<IncidentRecord>
+    public partial class IncidentRecordJsonConverter : JsonConverter<IncidentRecord>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="IncidentRecordJsonConverter" /> class.
+        /// </summary>
+        public IncidentRecordJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// The format to use to serialize CreatedAt
         /// </summary>
-        public static string CreatedAtFormat { get; set; } = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK";
+        public string CreatedAtFormat { get; private set; } = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK";
 
         /// <summary>
         /// The format to use to serialize ResolvedAt
         /// </summary>
-        public static string ResolvedAtFormat { get; set; } = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK";
+        public string ResolvedAtFormat { get; private set; } = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK";
 
         /// <summary>
         /// Deserializes json to <see cref="IncidentRecord" />

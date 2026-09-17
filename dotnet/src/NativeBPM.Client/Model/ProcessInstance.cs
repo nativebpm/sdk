@@ -149,12 +149,22 @@ namespace NativeBPM.Client.Model
     /// <summary>
     /// A Json converter for type <see cref="ProcessInstance" />
     /// </summary>
-    public class ProcessInstanceJsonConverter : JsonConverter<ProcessInstance>
+    public partial class ProcessInstanceJsonConverter : JsonConverter<ProcessInstance>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="ProcessInstanceJsonConverter" /> class.
+        /// </summary>
+        public ProcessInstanceJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// The format to use to serialize UpdatedAt
         /// </summary>
-        public static string UpdatedAtFormat { get; set; } = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK";
+        public string UpdatedAtFormat { get; private set; } = "yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'fffffffK";
 
         /// <summary>
         /// Deserializes json to <see cref="ProcessInstance" />

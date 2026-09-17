@@ -17,50 +17,34 @@
 export interface HistoryRecord {
     /**
      *
-     * @type {string}
-     * @memberof HistoryRecord
      */
     id: string;
     /**
      *
-     * @type {string}
-     * @memberof HistoryRecord
      */
     instanceId: string;
     /**
      *
-     * @type {string}
-     * @memberof HistoryRecord
      */
     nodeId: string;
     /**
      *
-     * @type {string}
-     * @memberof HistoryRecord
      */
     nodeName: string;
     /**
      *
-     * @type {string}
-     * @memberof HistoryRecord
      */
     nodeType: string;
     /**
      *
-     * @type {string}
-     * @memberof HistoryRecord
      */
     action: string;
     /**
      * JSON encoded payload variables associated with this transition
-     * @type {object}
-     * @memberof HistoryRecord
      */
     variables?: object;
     /**
      *
-     * @type {Date}
-     * @memberof HistoryRecord
      */
     timestamp: Date;
 }

@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues } from '../runtime';
+import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
 /**
  * 
  * @export
@@ -21,62 +21,42 @@ import { mapValues } from '../runtime';
 export interface WebhookRecord {
     /**
      * 
-     * @type {string}
-     * @memberof WebhookRecord
      */
     id: string;
     /**
      * 
-     * @type {string}
-     * @memberof WebhookRecord
      */
     tenantId: string;
     /**
      * 
-     * @type {string}
-     * @memberof WebhookRecord
      */
     url: string;
     /**
      * 
-     * @type {string}
-     * @memberof WebhookRecord
      */
     secret?: string;
     /**
      * 
-     * @type {Array<string>}
-     * @memberof WebhookRecord
      */
     events: Array<string>;
     /**
      * 
-     * @type {string}
-     * @memberof WebhookRecord
      */
     processId?: string;
     /**
      * 
-     * @type {boolean}
-     * @memberof WebhookRecord
      */
     isActive: boolean;
     /**
      * 
-     * @type {boolean}
-     * @memberof WebhookRecord
      */
     enableAudit: boolean;
     /**
      * 
-     * @type {string}
-     * @memberof WebhookRecord
      */
     status: string;
     /**
      * 
-     * @type {Date}
-     * @memberof WebhookRecord
      */
     createdAt: Date;
 }
@@ -86,13 +66,13 @@ export interface WebhookRecord {
  */
 export function instanceOfWebhookRecord(value: object): value is WebhookRecord {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if ((!('tenantId' in value) && !('tenant_id' in value)) || (value['tenantId'] === undefined && value['tenant_id'] === undefined)) return false;
+    if ((!('tenantId' in (value as Record<string, any>)) && !('tenant_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['tenantId'] === undefined && (value as Record<string, any>)['tenant_id'] === undefined)) return false;
     if (!('url' in value) || value['url'] === undefined) return false;
     if (!('events' in value) || value['events'] === undefined) return false;
-    if ((!('isActive' in value) && !('is_active' in value)) || (value['isActive'] === undefined && value['is_active'] === undefined)) return false;
-    if ((!('enableAudit' in value) && !('enable_audit' in value)) || (value['enableAudit'] === undefined && value['enable_audit'] === undefined)) return false;
+    if ((!('isActive' in (value as Record<string, any>)) && !('is_active' in (value as Record<string, any>))) || ((value as Record<string, any>)['isActive'] === undefined && (value as Record<string, any>)['is_active'] === undefined)) return false;
+    if ((!('enableAudit' in (value as Record<string, any>)) && !('enable_audit' in (value as Record<string, any>))) || ((value as Record<string, any>)['enableAudit'] === undefined && (value as Record<string, any>)['enable_audit'] === undefined)) return false;
     if (!('status' in value) || value['status'] === undefined) return false;
-    if ((!('createdAt' in value) && !('created_at' in value)) || (value['createdAt'] === undefined && value['created_at'] === undefined)) return false;
+    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
     return true;
 }
 
@@ -115,7 +95,7 @@ export function WebhookRecordFromJSONTyped(json: any, ignoreDiscriminator: boole
         'isActive': json['is_active'],
         'enableAudit': json['enable_audit'],
         'status': json['status'],
-        'createdAt': (new Date(json['created_at'])),
+        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
     };
 }
 
@@ -139,7 +119,7 @@ export function WebhookRecordToJSONTyped(value?: WebhookRecord | null, ignoreDis
         'is_active': value['isActive'],
         'enable_audit': value['enableAudit'],
         'status': value['status'],
-        'created_at': value['createdAt'].toISOString(),
+        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
     };
 }
 

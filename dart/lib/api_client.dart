@@ -191,12 +191,30 @@ class ApiClient {
           return CompleteTaskRequest.fromJson(value);
         case 'CreateWebhookRequest':
           return CreateWebhookRequest.fromJson(value);
+        case 'DMNInputAST':
+          return DMNInputAST.fromJson(value);
+        case 'DMNOutputAST':
+          return DMNOutputAST.fromJson(value);
+        case 'DMNRuleAST':
+          return DMNRuleAST.fromJson(value);
+        case 'DeleteWebhook200Response':
+          return DeleteWebhook200Response.fromJson(value);
+        case 'DeployDefinition403Response':
+          return DeployDefinition403Response.fromJson(value);
+        case 'FlowAST':
+          return FlowAST.fromJson(value);
         case 'HistoryRecord':
           return HistoryRecord.fromJson(value);
+        case 'InVariable':
+          return InVariable.fromJson(value);
         case 'IncidentRecord':
           return IncidentRecord.fromJson(value);
         case 'ListDefinitions401Response':
           return ListDefinitions401Response.fromJson(value);
+        case 'NodeAST':
+          return NodeAST.fromJson(value);
+        case 'OutVariable':
+          return OutVariable.fromJson(value);
         case 'ProcessDefinition':
           return ProcessDefinition.fromJson(value);
         case 'ProcessInstance':
@@ -209,12 +227,16 @@ class ApiClient {
           return StartInstanceRequest.fromJson(value);
         case 'TaskRecord':
           return TaskRecord.fromJson(value);
+        case 'TestWebhook200Response':
+          return TestWebhook200Response.fromJson(value);
         case 'VisualizationData':
           return VisualizationData.fromJson(value);
         case 'WebhookDeliveryRecord':
           return WebhookDeliveryRecord.fromJson(value);
         case 'WebhookRecord':
           return WebhookRecord.fromJson(value);
+        case 'WorkflowAST':
+          return WorkflowAST.fromJson(value);
         default:
           dynamic match;
           if (value is List && (match = _regList.firstMatch(targetType)?.group(1)) != null) {

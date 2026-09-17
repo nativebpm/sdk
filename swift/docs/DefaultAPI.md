@@ -237,7 +237,7 @@ No authorization required
 
 # **deleteWebhook**
 ```swift
-    open class func deleteWebhook(id: String, completion: @escaping (_ data: ResolveIncident200Response?, _ error: Error?) -> Void)
+    open class func deleteWebhook(id: String, completion: @escaping (_ data: DeleteWebhook200Response?, _ error: Error?) -> Void)
 ```
 
 Delete webhook target
@@ -272,7 +272,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**ResolveIncident200Response**](ResolveIncident200Response.md)
+[**DeleteWebhook200Response**](DeleteWebhook200Response.md)
 
 ### Authorization
 
@@ -1081,7 +1081,7 @@ No authorization required
 
 # **testWebhook**
 ```swift
-    open class func testWebhook(id: String, completion: @escaping (_ data: ResolveIncident200Response?, _ error: Error?) -> Void)
+    open class func testWebhook(id: String, completion: @escaping (_ data: TestWebhook200Response?, _ error: Error?) -> Void)
 ```
 
 Test webhook target
@@ -1116,7 +1116,7 @@ Name | Type | Description  | Notes
 
 ### Return type
 
-[**ResolveIncident200Response**](ResolveIncident200Response.md)
+[**TestWebhook200Response**](TestWebhook200Response.md)
 
 ### Authorization
 

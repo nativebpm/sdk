@@ -195,7 +195,7 @@ No authorization required
 
 <a id="deletewebhook"></a>
 # **DeleteWebhook**
-> ResolveIncident200Response DeleteWebhook (string id)
+> DeleteWebhook200Response DeleteWebhook (string id)
 
 Delete webhook target
 
@@ -210,7 +210,7 @@ Delete a webhook configuration.
 
 ### Return type
 
-[**ResolveIncident200Response**](ResolveIncident200Response.md)
+[**DeleteWebhook200Response**](DeleteWebhook200Response.md)
 
 ### Authorization
 
@@ -848,7 +848,7 @@ No authorization required
 
 <a id="testwebhook"></a>
 # **TestWebhook**
-> ResolveIncident200Response TestWebhook (string id)
+> TestWebhook200Response TestWebhook (string id)
 
 Test webhook target
 
@@ -863,7 +863,7 @@ Send a test ping event delivery to verification URL.
 
 ### Return type
 
-[**ResolveIncident200Response**](ResolveIncident200Response.md)
+[**TestWebhook200Response**](TestWebhook200Response.md)
 
 ### Authorization
 

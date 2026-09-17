@@ -117,8 +117,18 @@ namespace NativeBPM.Client.Model
     /// <summary>
     /// A Json converter for type <see cref="StartInstanceRequest" />
     /// </summary>
-    public class StartInstanceRequestJsonConverter : JsonConverter<StartInstanceRequest>
+    public partial class StartInstanceRequestJsonConverter : JsonConverter<StartInstanceRequest>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="StartInstanceRequestJsonConverter" /> class.
+        /// </summary>
+        public StartInstanceRequestJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// Deserializes json to <see cref="StartInstanceRequest" />
         /// </summary>

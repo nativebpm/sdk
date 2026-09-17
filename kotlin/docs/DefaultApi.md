@@ -59,9 +59,9 @@ try {
 ```
 
 ### Parameters
-| **id** | **kotlin.String**|  | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
+| **id** | **kotlin.String**|  | |
 | **claimTaskRequest** | [**ClaimTaskRequest**](ClaimTaskRequest.md)|  | |
 
 ### Return type
@@ -107,9 +107,9 @@ try {
 ```
 
 ### Parameters
-| **id** | **kotlin.String**|  | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
+| **id** | **kotlin.String**|  | |
 | **completeInstanceTaskRequest** | [**CompleteInstanceTaskRequest**](CompleteInstanceTaskRequest.md)|  | |
 
 ### Return type
@@ -155,9 +155,9 @@ try {
 ```
 
 ### Parameters
-| **id** | **kotlin.String**|  | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
+| **id** | **kotlin.String**|  | |
 | **completeTaskRequest** | [**CompleteTaskRequest**](CompleteTaskRequest.md)|  | [optional] |
 
 ### Return type
@@ -221,7 +221,7 @@ No authorization required
 
 <a id="deleteWebhook"></a>
 # **deleteWebhook**
-> ResolveIncident200Response deleteWebhook(id)
+> DeleteWebhook200Response deleteWebhook(id)
 
 Delete webhook target
 
@@ -236,7 +236,7 @@ Delete a webhook configuration.
 val apiInstance = DefaultApi()
 val id : kotlin.String = id_example // kotlin.String | 
 try {
-    val result : ResolveIncident200Response = apiInstance.deleteWebhook(id)
+    val result : DeleteWebhook200Response = apiInstance.deleteWebhook(id)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling DefaultApi#deleteWebhook")
@@ -254,7 +254,7 @@ try {
 
 ### Return type
 
-[**ResolveIncident200Response**](ResolveIncident200Response.md)
+[**DeleteWebhook200Response**](DeleteWebhook200Response.md)
 
 ### Authorization
 
@@ -479,9 +479,9 @@ try {
 ```
 
 ### Parameters
-| **id** | **kotlin.String**|  | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
+| **id** | **kotlin.String**|  | |
 | **title** | **kotlin.String**| Optional custom title for the visualization widget. If empty, the title header is hidden. | [optional] |
 
 ### Return type
@@ -749,10 +749,10 @@ try {
 ```
 
 ### Parameters
-| **assignee** | **kotlin.String**|  | [optional] |
-| **candidateGroup** | **kotlin.String**|  | [optional] |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
+| **assignee** | **kotlin.String**|  | [optional] |
+| **candidateGroup** | **kotlin.String**|  | [optional] |
 | **status** | **kotlin.String**|  | [optional] [enum: CREATED, CLAIMED, COMPLETED] |
 
 ### Return type
@@ -887,9 +887,9 @@ try {
 ```
 
 ### Parameters
-| **id** | **kotlin.String**|  | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
+| **id** | **kotlin.String**|  | |
 | **incidentId** | **kotlin.String**|  | |
 
 ### Return type
@@ -981,9 +981,9 @@ try {
 ```
 
 ### Parameters
-| **id** | **kotlin.String**| The process definition ID (e.g., matching the BPMN process element ID) | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
+| **id** | **kotlin.String**| The process definition ID (e.g., matching the BPMN process element ID) | |
 | **startInstanceRequest** | [**StartInstanceRequest**](StartInstanceRequest.md)|  | [optional] |
 
 ### Return type
@@ -1001,7 +1001,7 @@ No authorization required
 
 <a id="testWebhook"></a>
 # **testWebhook**
-> ResolveIncident200Response testWebhook(id)
+> TestWebhook200Response testWebhook(id)
 
 Test webhook target
 
@@ -1016,7 +1016,7 @@ Send a test ping event delivery to verification URL.
 val apiInstance = DefaultApi()
 val id : kotlin.String = id_example // kotlin.String | 
 try {
-    val result : ResolveIncident200Response = apiInstance.testWebhook(id)
+    val result : TestWebhook200Response = apiInstance.testWebhook(id)
     println(result)
 } catch (e: ClientException) {
     println("4xx response calling DefaultApi#testWebhook")
@@ -1034,7 +1034,7 @@ try {
 
 ### Return type
 
-[**ResolveIncident200Response**](ResolveIncident200Response.md)
+[**TestWebhook200Response**](TestWebhook200Response.md)
 
 ### Authorization
 
@@ -1075,9 +1075,9 @@ try {
 ```
 
 ### Parameters
-| **id** | **kotlin.String**|  | |
 | Name | Type | Description  | Notes |
 | ------------- | ------------- | ------------- | ------------- |
+| **id** | **kotlin.String**|  | |
 | **createWebhookRequest** | [**CreateWebhookRequest**](CreateWebhookRequest.md)|  | |
 
 ### Return type

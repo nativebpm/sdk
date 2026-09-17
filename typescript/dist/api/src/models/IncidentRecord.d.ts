@@ -17,56 +17,38 @@
 export interface IncidentRecord {
     /**
      *
-     * @type {string}
-     * @memberof IncidentRecord
      */
     id: string;
     /**
      *
-     * @type {string}
-     * @memberof IncidentRecord
      */
     instanceId: string;
     /**
      *
-     * @type {string}
-     * @memberof IncidentRecord
      */
     activityId: string;
     /**
      *
-     * @type {string}
-     * @memberof IncidentRecord
      */
     errorMessage: string;
     /**
      *
-     * @type {string}
-     * @memberof IncidentRecord
      */
     stackTrace?: string;
     /**
      *
-     * @type {number}
-     * @memberof IncidentRecord
      */
     attemptsMade: number;
     /**
      *
-     * @type {boolean}
-     * @memberof IncidentRecord
      */
     resolved: boolean;
     /**
      *
-     * @type {Date}
-     * @memberof IncidentRecord
      */
     createdAt: Date;
     /**
      *
-     * @type {Date}
-     * @memberof IncidentRecord
      */
     resolvedAt?: Date;
 }

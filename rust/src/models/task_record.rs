@@ -32,6 +32,9 @@ pub struct TaskRecord {
     /// JSON schema definition of form widgets
     #[serde(rename = "input_schema", skip_serializing_if = "Option::is_none")]
     pub input_schema: Option<String>,
+    /// Form identifier or Camunda form key for dynamic schema rendering
+    #[serde(rename = "form_id", skip_serializing_if = "Option::is_none")]
+    pub form_id: Option<String>,
     #[serde(rename = "created_at")]
     pub created_at: chrono::DateTime<chrono::FixedOffset>,
     #[serde(rename = "claimed_at", skip_serializing_if = "Option::is_none")]
@@ -56,6 +59,7 @@ impl TaskRecord {
             status,
             due_date: None,
             input_schema: None,
+            form_id: None,
             created_at,
             claimed_at: None,
             completed_at: None,

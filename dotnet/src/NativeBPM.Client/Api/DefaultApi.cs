@@ -21,6 +21,7 @@ using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text.Json;
 using NativeBPM.Client.Client;
+using NativeBPM.Client.Logging;
 using NativeBPM.Client.Model;
 using System.Diagnostics.CodeAnalysis;
 
@@ -580,7 +581,7 @@ namespace NativeBPM.Client.Api
     /// <summary>
     /// The <see cref="IClaimTaskApiResponse"/>
     /// </summary>
-    public interface IClaimTaskApiResponse : NativeBPM.Client.Client.IApiResponse, IOk<NativeBPM.Client.Model.TaskRecord?>, IUnauthorized<NativeBPM.Client.Model.ListDefinitions401Response?>, IForbidden<NativeBPM.Client.Model.ListDefinitions401Response?>
+    public interface IClaimTaskApiResponse : NativeBPM.Client.Client.IApiResponse, IOk<NativeBPM.Client.Model.TaskRecord?>, IUnauthorized<NativeBPM.Client.Model.ListDefinitions401Response?>, IForbidden<NativeBPM.Client.Model.DeployDefinition403Response?>
     {
         /// <summary>
         /// Returns true if the response is 200 Ok
@@ -622,7 +623,7 @@ namespace NativeBPM.Client.Api
     /// <summary>
     /// The <see cref="ICompleteInstanceTaskApiResponse"/>
     /// </summary>
-    public interface ICompleteInstanceTaskApiResponse : NativeBPM.Client.Client.IApiResponse, IOk<NativeBPM.Client.Model.ProcessInstance?>, IUnauthorized<NativeBPM.Client.Model.ListDefinitions401Response?>, IForbidden<NativeBPM.Client.Model.ListDefinitions401Response?>
+    public interface ICompleteInstanceTaskApiResponse : NativeBPM.Client.Client.IApiResponse, IOk<NativeBPM.Client.Model.ProcessInstance?>, IUnauthorized<NativeBPM.Client.Model.ListDefinitions401Response?>, IForbidden<NativeBPM.Client.Model.DeployDefinition403Response?>
     {
         /// <summary>
         /// Returns true if the response is 200 Ok
@@ -658,7 +659,7 @@ namespace NativeBPM.Client.Api
     /// <summary>
     /// The <see cref="ICompleteTaskApiResponse"/>
     /// </summary>
-    public interface ICompleteTaskApiResponse : NativeBPM.Client.Client.IApiResponse, IOk<NativeBPM.Client.Model.ProcessInstance?>, IUnauthorized<NativeBPM.Client.Model.ListDefinitions401Response?>, IForbidden<NativeBPM.Client.Model.ListDefinitions401Response?>
+    public interface ICompleteTaskApiResponse : NativeBPM.Client.Client.IApiResponse, IOk<NativeBPM.Client.Model.ProcessInstance?>, IUnauthorized<NativeBPM.Client.Model.ListDefinitions401Response?>, IForbidden<NativeBPM.Client.Model.DeployDefinition403Response?>
     {
         /// <summary>
         /// Returns true if the response is 200 Ok
@@ -700,7 +701,7 @@ namespace NativeBPM.Client.Api
     /// <summary>
     /// The <see cref="ICreateWebhookApiResponse"/>
     /// </summary>
-    public interface ICreateWebhookApiResponse : NativeBPM.Client.Client.IApiResponse, IOk<NativeBPM.Client.Model.WebhookRecord?>, IUnauthorized<NativeBPM.Client.Model.ListDefinitions401Response?>, IForbidden<NativeBPM.Client.Model.ListDefinitions401Response?>
+    public interface ICreateWebhookApiResponse : NativeBPM.Client.Client.IApiResponse, IOk<NativeBPM.Client.Model.WebhookRecord?>, IUnauthorized<NativeBPM.Client.Model.ListDefinitions401Response?>, IForbidden<NativeBPM.Client.Model.DeployDefinition403Response?>
     {
         /// <summary>
         /// Returns true if the response is 200 Ok
@@ -736,7 +737,7 @@ namespace NativeBPM.Client.Api
     /// <summary>
     /// The <see cref="IDeleteWebhookApiResponse"/>
     /// </summary>
-    public interface IDeleteWebhookApiResponse : NativeBPM.Client.Client.IApiResponse, IOk<NativeBPM.Client.Model.ResolveIncident200Response?>, IUnauthorized<NativeBPM.Client.Model.ListDefinitions401Response?>, IForbidden<NativeBPM.Client.Model.ListDefinitions401Response?>
+    public interface IDeleteWebhookApiResponse : NativeBPM.Client.Client.IApiResponse, IOk<NativeBPM.Client.Model.DeleteWebhook200Response?>, IUnauthorized<NativeBPM.Client.Model.ListDefinitions401Response?>, IForbidden<NativeBPM.Client.Model.DeployDefinition403Response?>
     {
         /// <summary>
         /// Returns true if the response is 200 Ok
@@ -772,7 +773,7 @@ namespace NativeBPM.Client.Api
     /// <summary>
     /// The <see cref="IDeployDefinitionApiResponse"/>
     /// </summary>
-    public interface IDeployDefinitionApiResponse : NativeBPM.Client.Client.IApiResponse, IOk<NativeBPM.Client.Model.ProcessDefinition?>, IUnauthorized<NativeBPM.Client.Model.ListDefinitions401Response?>, IForbidden<NativeBPM.Client.Model.ListDefinitions401Response?>
+    public interface IDeployDefinitionApiResponse : NativeBPM.Client.Client.IApiResponse, IOk<NativeBPM.Client.Model.ProcessDefinition?>, IUnauthorized<NativeBPM.Client.Model.ListDefinitions401Response?>, IForbidden<NativeBPM.Client.Model.DeployDefinition403Response?>
     {
         /// <summary>
         /// Returns true if the response is 200 Ok
@@ -922,7 +923,7 @@ namespace NativeBPM.Client.Api
     /// <summary>
     /// The <see cref="IGetSMTPConfigApiResponse"/>
     /// </summary>
-    public interface IGetSMTPConfigApiResponse : NativeBPM.Client.Client.IApiResponse, IOk<NativeBPM.Client.Model.SMTPConfig?>, IUnauthorized<NativeBPM.Client.Model.ListDefinitions401Response?>, IForbidden<NativeBPM.Client.Model.ListDefinitions401Response?>
+    public interface IGetSMTPConfigApiResponse : NativeBPM.Client.Client.IApiResponse, IOk<NativeBPM.Client.Model.SMTPConfig?>, IUnauthorized<NativeBPM.Client.Model.ListDefinitions401Response?>, IForbidden<NativeBPM.Client.Model.DeployDefinition403Response?>
     {
         /// <summary>
         /// Returns true if the response is 200 Ok
@@ -958,7 +959,7 @@ namespace NativeBPM.Client.Api
     /// <summary>
     /// The <see cref="IGetUserGroupsApiResponse"/>
     /// </summary>
-    public interface IGetUserGroupsApiResponse : NativeBPM.Client.Client.IApiResponse, IOk<List<string>?>, IUnauthorized<NativeBPM.Client.Model.ListDefinitions401Response?>, IForbidden<NativeBPM.Client.Model.ListDefinitions401Response?>
+    public interface IGetUserGroupsApiResponse : NativeBPM.Client.Client.IApiResponse, IOk<List<string>?>, IUnauthorized<NativeBPM.Client.Model.ListDefinitions401Response?>, IForbidden<NativeBPM.Client.Model.DeployDefinition403Response?>
     {
         /// <summary>
         /// Returns true if the response is 200 Ok
@@ -1090,7 +1091,7 @@ namespace NativeBPM.Client.Api
     /// <summary>
     /// The <see cref="IListWebhookDeliveriesApiResponse"/>
     /// </summary>
-    public interface IListWebhookDeliveriesApiResponse : NativeBPM.Client.Client.IApiResponse, IOk<List<WebhookDeliveryRecord>?>, IUnauthorized<NativeBPM.Client.Model.ListDefinitions401Response?>, IForbidden<NativeBPM.Client.Model.ListDefinitions401Response?>
+    public interface IListWebhookDeliveriesApiResponse : NativeBPM.Client.Client.IApiResponse, IOk<List<WebhookDeliveryRecord>?>, IUnauthorized<NativeBPM.Client.Model.ListDefinitions401Response?>, IForbidden<NativeBPM.Client.Model.DeployDefinition403Response?>
     {
         /// <summary>
         /// Returns true if the response is 200 Ok
@@ -1126,7 +1127,7 @@ namespace NativeBPM.Client.Api
     /// <summary>
     /// The <see cref="IListWebhooksApiResponse"/>
     /// </summary>
-    public interface IListWebhooksApiResponse : NativeBPM.Client.Client.IApiResponse, IOk<List<WebhookRecord>?>, IUnauthorized<NativeBPM.Client.Model.ListDefinitions401Response?>, IForbidden<NativeBPM.Client.Model.ListDefinitions401Response?>
+    public interface IListWebhooksApiResponse : NativeBPM.Client.Client.IApiResponse, IOk<List<WebhookRecord>?>, IUnauthorized<NativeBPM.Client.Model.ListDefinitions401Response?>, IForbidden<NativeBPM.Client.Model.DeployDefinition403Response?>
     {
         /// <summary>
         /// Returns true if the response is 200 Ok
@@ -1156,7 +1157,7 @@ namespace NativeBPM.Client.Api
     /// <summary>
     /// The <see cref="IResolveIncidentApiResponse"/>
     /// </summary>
-    public interface IResolveIncidentApiResponse : NativeBPM.Client.Client.IApiResponse, IOk<NativeBPM.Client.Model.ResolveIncident200Response?>, IUnauthorized<NativeBPM.Client.Model.ListDefinitions401Response?>, IForbidden<NativeBPM.Client.Model.ListDefinitions401Response?>
+    public interface IResolveIncidentApiResponse : NativeBPM.Client.Client.IApiResponse, IOk<NativeBPM.Client.Model.ResolveIncident200Response?>, IUnauthorized<NativeBPM.Client.Model.ListDefinitions401Response?>, IForbidden<NativeBPM.Client.Model.DeployDefinition403Response?>
     {
         /// <summary>
         /// Returns true if the response is 200 Ok
@@ -1186,7 +1187,7 @@ namespace NativeBPM.Client.Api
     /// <summary>
     /// The <see cref="IResumeInstanceApiResponse"/>
     /// </summary>
-    public interface IResumeInstanceApiResponse : NativeBPM.Client.Client.IApiResponse, IOk<NativeBPM.Client.Model.ProcessInstance?>, IUnauthorized<NativeBPM.Client.Model.ListDefinitions401Response?>, IForbidden<NativeBPM.Client.Model.ListDefinitions401Response?>
+    public interface IResumeInstanceApiResponse : NativeBPM.Client.Client.IApiResponse, IOk<NativeBPM.Client.Model.ProcessInstance?>, IUnauthorized<NativeBPM.Client.Model.ListDefinitions401Response?>, IForbidden<NativeBPM.Client.Model.DeployDefinition403Response?>
     {
         /// <summary>
         /// Returns true if the response is 200 Ok
@@ -1216,7 +1217,7 @@ namespace NativeBPM.Client.Api
     /// <summary>
     /// The <see cref="IStartInstanceApiResponse"/>
     /// </summary>
-    public interface IStartInstanceApiResponse : NativeBPM.Client.Client.IApiResponse, IOk<NativeBPM.Client.Model.ProcessInstance?>, IUnauthorized<NativeBPM.Client.Model.ListDefinitions401Response?>, IForbidden<NativeBPM.Client.Model.ListDefinitions401Response?>
+    public interface IStartInstanceApiResponse : NativeBPM.Client.Client.IApiResponse, IOk<NativeBPM.Client.Model.ProcessInstance?>, IUnauthorized<NativeBPM.Client.Model.ListDefinitions401Response?>, IForbidden<NativeBPM.Client.Model.DeployDefinition403Response?>
     {
         /// <summary>
         /// Returns true if the response is 200 Ok
@@ -1252,7 +1253,7 @@ namespace NativeBPM.Client.Api
     /// <summary>
     /// The <see cref="ITestWebhookApiResponse"/>
     /// </summary>
-    public interface ITestWebhookApiResponse : NativeBPM.Client.Client.IApiResponse, IOk<NativeBPM.Client.Model.ResolveIncident200Response?>, IUnauthorized<NativeBPM.Client.Model.ListDefinitions401Response?>, IForbidden<NativeBPM.Client.Model.ListDefinitions401Response?>
+    public interface ITestWebhookApiResponse : NativeBPM.Client.Client.IApiResponse, IOk<NativeBPM.Client.Model.TestWebhook200Response?>, IUnauthorized<NativeBPM.Client.Model.ListDefinitions401Response?>, IForbidden<NativeBPM.Client.Model.DeployDefinition403Response?>
     {
         /// <summary>
         /// Returns true if the response is 200 Ok
@@ -1288,7 +1289,7 @@ namespace NativeBPM.Client.Api
     /// <summary>
     /// The <see cref="IUpdateWebhookApiResponse"/>
     /// </summary>
-    public interface IUpdateWebhookApiResponse : NativeBPM.Client.Client.IApiResponse, IOk<NativeBPM.Client.Model.WebhookRecord?>, IUnauthorized<NativeBPM.Client.Model.ListDefinitions401Response?>, IForbidden<NativeBPM.Client.Model.ListDefinitions401Response?>
+    public interface IUpdateWebhookApiResponse : NativeBPM.Client.Client.IApiResponse, IOk<NativeBPM.Client.Model.WebhookRecord?>, IUnauthorized<NativeBPM.Client.Model.ListDefinitions401Response?>, IForbidden<NativeBPM.Client.Model.DeployDefinition403Response?>
     {
         /// <summary>
         /// Returns true if the response is 200 Ok
@@ -1795,11 +1796,6 @@ namespace NativeBPM.Client.Api
         private JsonSerializerOptions _jsonSerializerOptions;
 
         /// <summary>
-        /// The logger factory
-        /// </summary>
-        public ILoggerFactory LoggerFactory { get; }
-
-        /// <summary>
         /// The logger
         /// </summary>
         public ILogger<DefaultApi> Logger { get; }
@@ -1818,11 +1814,10 @@ namespace NativeBPM.Client.Api
         /// Initializes a new instance of the <see cref="DefaultApi"/> class.
         /// </summary>
         /// <returns></returns>
-        public DefaultApi(ILogger<DefaultApi> logger, ILoggerFactory loggerFactory, HttpClient httpClient, JsonSerializerOptionsProvider jsonSerializerOptionsProvider, DefaultApiEvents defaultApiEvents)
+        public DefaultApi(ILogger<DefaultApi> logger, HttpClient httpClient, JsonSerializerOptionsProvider jsonSerializerOptionsProvider, DefaultApiEvents defaultApiEvents)
         {
             _jsonSerializerOptions = jsonSerializerOptionsProvider.Options;
-            LoggerFactory = loggerFactory;
-            Logger = LoggerFactory.CreateLogger<DefaultApi>();
+            Logger = logger;
             HttpClient = httpClient;
             Events = defaultApiEvents;
         }
@@ -1855,7 +1850,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLog = false;
             AfterClaimTask(ref suppressDefaultLog, apiResponseLocalVar, id, claimTaskRequest);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation(RestLogEvents.ApiRequestCompleted, "{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -1880,7 +1875,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLogLocalVar = false;
             OnErrorClaimTask(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, id, claimTaskRequest);
             if (!suppressDefaultLogLocalVar)
-                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
+                Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
@@ -1971,13 +1966,12 @@ namespace NativeBPM.Client.Api
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        ILogger<ClaimTaskApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<ClaimTaskApiResponse>();
                         ClaimTaskApiResponse apiResponseLocalVar;
 
                         switch ((int)httpResponseMessageLocalVar.StatusCode) {
                             default: {
                                 string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-                                apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/tasks/{id}/claim", requestedAtLocalVar, _jsonSerializerOptions);
+                                apiResponseLocalVar = new(Logger, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/tasks/{id}/claim", requestedAtLocalVar, _jsonSerializerOptions);
 
                                 break;
                             }
@@ -2007,7 +2001,7 @@ namespace NativeBPM.Client.Api
             /// <summary>
             /// The logger
             /// </summary>
-            public ILogger<ClaimTaskApiResponse> Logger { get; }
+            public ILogger<DefaultApi> Logger { get; }
 
             /// <summary>
             /// The <see cref="ClaimTaskApiResponse"/>
@@ -2019,7 +2013,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public ClaimTaskApiResponse(ILogger<ClaimTaskApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            public ClaimTaskApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -2035,7 +2029,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public ClaimTaskApiResponse(ILogger<ClaimTaskApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            public ClaimTaskApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -2055,11 +2049,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.TaskRecord? Ok()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.TaskRecord? result = null;
+                OnOk(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultOk();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.TaskRecord? DefaultOk()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsOk
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.TaskRecord>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnOk(ref bool suppressDefault, ref NativeBPM.Client.Model.TaskRecord? result);
 
             /// <summary>
             /// Returns true if the response is 200 Ok and the deserialized response is not null
@@ -2099,11 +2105,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.ListDefinitions401Response? Unauthorized()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.ListDefinitions401Response? result = null;
+                OnUnauthorized(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultUnauthorized();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.ListDefinitions401Response? DefaultUnauthorized()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsUnauthorized
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnUnauthorized(ref bool suppressDefault, ref NativeBPM.Client.Model.ListDefinitions401Response? result);
 
             /// <summary>
             /// Returns true if the response is 401 Unauthorized and the deserialized response is not null
@@ -2135,20 +2153,32 @@ namespace NativeBPM.Client.Api
             /// Deserializes the response if the response is 403 Forbidden
             /// </summary>
             /// <returns></returns>
-            public NativeBPM.Client.Model.ListDefinitions401Response? Forbidden()
+            public NativeBPM.Client.Model.DeployDefinition403Response? Forbidden()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.DeployDefinition403Response? result = null;
+                OnForbidden(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultForbidden();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.DeployDefinition403Response? DefaultForbidden()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsForbidden
-                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
+                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.DeployDefinition403Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnForbidden(ref bool suppressDefault, ref NativeBPM.Client.Model.DeployDefinition403Response? result);
 
             /// <summary>
             /// Returns true if the response is 403 Forbidden and the deserialized response is not null
             /// </summary>
             /// <param name="result"></param>
             /// <returns></returns>
-            public bool TryForbidden([NotNullWhen(true)]out NativeBPM.Client.Model.ListDefinitions401Response? result)
+            public bool TryForbidden([NotNullWhen(true)]out NativeBPM.Client.Model.DeployDefinition403Response? result)
             {
                 result = null;
 
@@ -2180,7 +2210,7 @@ namespace NativeBPM.Client.Api
                 bool suppressDefaultLog = false;
                 OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
                 if (!suppressDefaultLog)
-                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+                    Logger.LogError(RestLogEvents.ApiDeserializationFailed, exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
             }
 
             partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
@@ -2214,7 +2244,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLog = false;
             AfterCompleteInstanceTask(ref suppressDefaultLog, apiResponseLocalVar, id, completeInstanceTaskRequest);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation(RestLogEvents.ApiRequestCompleted, "{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -2239,7 +2269,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLogLocalVar = false;
             OnErrorCompleteInstanceTask(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, id, completeInstanceTaskRequest);
             if (!suppressDefaultLogLocalVar)
-                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
+                Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
@@ -2330,13 +2360,12 @@ namespace NativeBPM.Client.Api
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        ILogger<CompleteInstanceTaskApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<CompleteInstanceTaskApiResponse>();
                         CompleteInstanceTaskApiResponse apiResponseLocalVar;
 
                         switch ((int)httpResponseMessageLocalVar.StatusCode) {
                             default: {
                                 string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-                                apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/instances/{id}/complete", requestedAtLocalVar, _jsonSerializerOptions);
+                                apiResponseLocalVar = new(Logger, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/instances/{id}/complete", requestedAtLocalVar, _jsonSerializerOptions);
 
                                 break;
                             }
@@ -2366,7 +2395,7 @@ namespace NativeBPM.Client.Api
             /// <summary>
             /// The logger
             /// </summary>
-            public ILogger<CompleteInstanceTaskApiResponse> Logger { get; }
+            public ILogger<DefaultApi> Logger { get; }
 
             /// <summary>
             /// The <see cref="CompleteInstanceTaskApiResponse"/>
@@ -2378,7 +2407,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public CompleteInstanceTaskApiResponse(ILogger<CompleteInstanceTaskApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            public CompleteInstanceTaskApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -2394,7 +2423,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public CompleteInstanceTaskApiResponse(ILogger<CompleteInstanceTaskApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            public CompleteInstanceTaskApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -2414,11 +2443,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.ProcessInstance? Ok()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.ProcessInstance? result = null;
+                OnOk(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultOk();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.ProcessInstance? DefaultOk()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsOk
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ProcessInstance>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnOk(ref bool suppressDefault, ref NativeBPM.Client.Model.ProcessInstance? result);
 
             /// <summary>
             /// Returns true if the response is 200 Ok and the deserialized response is not null
@@ -2458,11 +2499,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.ListDefinitions401Response? Unauthorized()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.ListDefinitions401Response? result = null;
+                OnUnauthorized(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultUnauthorized();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.ListDefinitions401Response? DefaultUnauthorized()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsUnauthorized
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnUnauthorized(ref bool suppressDefault, ref NativeBPM.Client.Model.ListDefinitions401Response? result);
 
             /// <summary>
             /// Returns true if the response is 401 Unauthorized and the deserialized response is not null
@@ -2494,20 +2547,32 @@ namespace NativeBPM.Client.Api
             /// Deserializes the response if the response is 403 Forbidden
             /// </summary>
             /// <returns></returns>
-            public NativeBPM.Client.Model.ListDefinitions401Response? Forbidden()
+            public NativeBPM.Client.Model.DeployDefinition403Response? Forbidden()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.DeployDefinition403Response? result = null;
+                OnForbidden(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultForbidden();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.DeployDefinition403Response? DefaultForbidden()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsForbidden
-                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
+                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.DeployDefinition403Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnForbidden(ref bool suppressDefault, ref NativeBPM.Client.Model.DeployDefinition403Response? result);
 
             /// <summary>
             /// Returns true if the response is 403 Forbidden and the deserialized response is not null
             /// </summary>
             /// <param name="result"></param>
             /// <returns></returns>
-            public bool TryForbidden([NotNullWhen(true)]out NativeBPM.Client.Model.ListDefinitions401Response? result)
+            public bool TryForbidden([NotNullWhen(true)]out NativeBPM.Client.Model.DeployDefinition403Response? result)
             {
                 result = null;
 
@@ -2533,7 +2598,7 @@ namespace NativeBPM.Client.Api
                 bool suppressDefaultLog = false;
                 OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
                 if (!suppressDefaultLog)
-                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+                    Logger.LogError(RestLogEvents.ApiDeserializationFailed, exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
             }
 
             partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
@@ -2567,7 +2632,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLog = false;
             AfterCompleteTask(ref suppressDefaultLog, apiResponseLocalVar, id, completeTaskRequest);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation(RestLogEvents.ApiRequestCompleted, "{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -2592,7 +2657,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLogLocalVar = false;
             OnErrorCompleteTask(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, id, completeTaskRequest);
             if (!suppressDefaultLogLocalVar)
-                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
+                Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
@@ -2686,13 +2751,12 @@ namespace NativeBPM.Client.Api
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        ILogger<CompleteTaskApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<CompleteTaskApiResponse>();
                         CompleteTaskApiResponse apiResponseLocalVar;
 
                         switch ((int)httpResponseMessageLocalVar.StatusCode) {
                             default: {
                                 string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-                                apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/tasks/{id}/complete", requestedAtLocalVar, _jsonSerializerOptions);
+                                apiResponseLocalVar = new(Logger, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/tasks/{id}/complete", requestedAtLocalVar, _jsonSerializerOptions);
 
                                 break;
                             }
@@ -2722,7 +2786,7 @@ namespace NativeBPM.Client.Api
             /// <summary>
             /// The logger
             /// </summary>
-            public ILogger<CompleteTaskApiResponse> Logger { get; }
+            public ILogger<DefaultApi> Logger { get; }
 
             /// <summary>
             /// The <see cref="CompleteTaskApiResponse"/>
@@ -2734,7 +2798,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public CompleteTaskApiResponse(ILogger<CompleteTaskApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            public CompleteTaskApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -2750,7 +2814,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public CompleteTaskApiResponse(ILogger<CompleteTaskApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            public CompleteTaskApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -2770,11 +2834,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.ProcessInstance? Ok()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.ProcessInstance? result = null;
+                OnOk(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultOk();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.ProcessInstance? DefaultOk()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsOk
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ProcessInstance>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnOk(ref bool suppressDefault, ref NativeBPM.Client.Model.ProcessInstance? result);
 
             /// <summary>
             /// Returns true if the response is 200 Ok and the deserialized response is not null
@@ -2814,11 +2890,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.ListDefinitions401Response? Unauthorized()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.ListDefinitions401Response? result = null;
+                OnUnauthorized(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultUnauthorized();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.ListDefinitions401Response? DefaultUnauthorized()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsUnauthorized
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnUnauthorized(ref bool suppressDefault, ref NativeBPM.Client.Model.ListDefinitions401Response? result);
 
             /// <summary>
             /// Returns true if the response is 401 Unauthorized and the deserialized response is not null
@@ -2850,20 +2938,32 @@ namespace NativeBPM.Client.Api
             /// Deserializes the response if the response is 403 Forbidden
             /// </summary>
             /// <returns></returns>
-            public NativeBPM.Client.Model.ListDefinitions401Response? Forbidden()
+            public NativeBPM.Client.Model.DeployDefinition403Response? Forbidden()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.DeployDefinition403Response? result = null;
+                OnForbidden(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultForbidden();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.DeployDefinition403Response? DefaultForbidden()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsForbidden
-                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
+                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.DeployDefinition403Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnForbidden(ref bool suppressDefault, ref NativeBPM.Client.Model.DeployDefinition403Response? result);
 
             /// <summary>
             /// Returns true if the response is 403 Forbidden and the deserialized response is not null
             /// </summary>
             /// <param name="result"></param>
             /// <returns></returns>
-            public bool TryForbidden([NotNullWhen(true)]out NativeBPM.Client.Model.ListDefinitions401Response? result)
+            public bool TryForbidden([NotNullWhen(true)]out NativeBPM.Client.Model.DeployDefinition403Response? result)
             {
                 result = null;
 
@@ -2895,7 +2995,7 @@ namespace NativeBPM.Client.Api
                 bool suppressDefaultLog = false;
                 OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
                 if (!suppressDefaultLog)
-                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+                    Logger.LogError(RestLogEvents.ApiDeserializationFailed, exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
             }
 
             partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
@@ -2924,7 +3024,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLog = false;
             AfterCreateWebhook(ref suppressDefaultLog, apiResponseLocalVar, createWebhookRequest);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation(RestLogEvents.ApiRequestCompleted, "{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -2947,7 +3047,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLogLocalVar = false;
             OnErrorCreateWebhook(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, createWebhookRequest);
             if (!suppressDefaultLogLocalVar)
-                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
+                Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
@@ -3034,13 +3134,12 @@ namespace NativeBPM.Client.Api
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        ILogger<CreateWebhookApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<CreateWebhookApiResponse>();
                         CreateWebhookApiResponse apiResponseLocalVar;
 
                         switch ((int)httpResponseMessageLocalVar.StatusCode) {
                             default: {
                                 string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-                                apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/webhooks", requestedAtLocalVar, _jsonSerializerOptions);
+                                apiResponseLocalVar = new(Logger, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/webhooks", requestedAtLocalVar, _jsonSerializerOptions);
 
                                 break;
                             }
@@ -3070,7 +3169,7 @@ namespace NativeBPM.Client.Api
             /// <summary>
             /// The logger
             /// </summary>
-            public ILogger<CreateWebhookApiResponse> Logger { get; }
+            public ILogger<DefaultApi> Logger { get; }
 
             /// <summary>
             /// The <see cref="CreateWebhookApiResponse"/>
@@ -3082,7 +3181,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public CreateWebhookApiResponse(ILogger<CreateWebhookApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            public CreateWebhookApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -3098,7 +3197,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public CreateWebhookApiResponse(ILogger<CreateWebhookApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            public CreateWebhookApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -3118,11 +3217,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.WebhookRecord? Ok()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.WebhookRecord? result = null;
+                OnOk(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultOk();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.WebhookRecord? DefaultOk()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsOk
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.WebhookRecord>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnOk(ref bool suppressDefault, ref NativeBPM.Client.Model.WebhookRecord? result);
 
             /// <summary>
             /// Returns true if the response is 200 Ok and the deserialized response is not null
@@ -3162,11 +3273,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.ListDefinitions401Response? Unauthorized()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.ListDefinitions401Response? result = null;
+                OnUnauthorized(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultUnauthorized();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.ListDefinitions401Response? DefaultUnauthorized()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsUnauthorized
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnUnauthorized(ref bool suppressDefault, ref NativeBPM.Client.Model.ListDefinitions401Response? result);
 
             /// <summary>
             /// Returns true if the response is 401 Unauthorized and the deserialized response is not null
@@ -3198,20 +3321,32 @@ namespace NativeBPM.Client.Api
             /// Deserializes the response if the response is 403 Forbidden
             /// </summary>
             /// <returns></returns>
-            public NativeBPM.Client.Model.ListDefinitions401Response? Forbidden()
+            public NativeBPM.Client.Model.DeployDefinition403Response? Forbidden()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.DeployDefinition403Response? result = null;
+                OnForbidden(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultForbidden();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.DeployDefinition403Response? DefaultForbidden()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsForbidden
-                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
+                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.DeployDefinition403Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnForbidden(ref bool suppressDefault, ref NativeBPM.Client.Model.DeployDefinition403Response? result);
 
             /// <summary>
             /// Returns true if the response is 403 Forbidden and the deserialized response is not null
             /// </summary>
             /// <param name="result"></param>
             /// <returns></returns>
-            public bool TryForbidden([NotNullWhen(true)]out NativeBPM.Client.Model.ListDefinitions401Response? result)
+            public bool TryForbidden([NotNullWhen(true)]out NativeBPM.Client.Model.DeployDefinition403Response? result)
             {
                 result = null;
 
@@ -3237,7 +3372,7 @@ namespace NativeBPM.Client.Api
                 bool suppressDefaultLog = false;
                 OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
                 if (!suppressDefaultLog)
-                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+                    Logger.LogError(RestLogEvents.ApiDeserializationFailed, exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
             }
 
             partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
@@ -3266,7 +3401,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLog = false;
             AfterDeleteWebhook(ref suppressDefaultLog, apiResponseLocalVar, id);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation(RestLogEvents.ApiRequestCompleted, "{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -3289,7 +3424,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLogLocalVar = false;
             OnErrorDeleteWebhook(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, id);
             if (!suppressDefaultLogLocalVar)
-                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
+                Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
@@ -3364,13 +3499,12 @@ namespace NativeBPM.Client.Api
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        ILogger<DeleteWebhookApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<DeleteWebhookApiResponse>();
                         DeleteWebhookApiResponse apiResponseLocalVar;
 
                         switch ((int)httpResponseMessageLocalVar.StatusCode) {
                             default: {
                                 string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-                                apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/webhooks/{id}", requestedAtLocalVar, _jsonSerializerOptions);
+                                apiResponseLocalVar = new(Logger, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/webhooks/{id}", requestedAtLocalVar, _jsonSerializerOptions);
 
                                 break;
                             }
@@ -3400,7 +3534,7 @@ namespace NativeBPM.Client.Api
             /// <summary>
             /// The logger
             /// </summary>
-            public ILogger<DeleteWebhookApiResponse> Logger { get; }
+            public ILogger<DefaultApi> Logger { get; }
 
             /// <summary>
             /// The <see cref="DeleteWebhookApiResponse"/>
@@ -3412,7 +3546,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public DeleteWebhookApiResponse(ILogger<DeleteWebhookApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            public DeleteWebhookApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -3428,7 +3562,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public DeleteWebhookApiResponse(ILogger<DeleteWebhookApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            public DeleteWebhookApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -3446,20 +3580,32 @@ namespace NativeBPM.Client.Api
             /// Deserializes the response if the response is 200 Ok
             /// </summary>
             /// <returns></returns>
-            public NativeBPM.Client.Model.ResolveIncident200Response? Ok()
+            public NativeBPM.Client.Model.DeleteWebhook200Response? Ok()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.DeleteWebhook200Response? result = null;
+                OnOk(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultOk();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.DeleteWebhook200Response? DefaultOk()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsOk
-                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ResolveIncident200Response>(RawContent, _jsonSerializerOptions)
+                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.DeleteWebhook200Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnOk(ref bool suppressDefault, ref NativeBPM.Client.Model.DeleteWebhook200Response? result);
 
             /// <summary>
             /// Returns true if the response is 200 Ok and the deserialized response is not null
             /// </summary>
             /// <param name="result"></param>
             /// <returns></returns>
-            public bool TryOk([NotNullWhen(true)]out NativeBPM.Client.Model.ResolveIncident200Response? result)
+            public bool TryOk([NotNullWhen(true)]out NativeBPM.Client.Model.DeleteWebhook200Response? result)
             {
                 result = null;
 
@@ -3486,11 +3632,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.ListDefinitions401Response? Unauthorized()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.ListDefinitions401Response? result = null;
+                OnUnauthorized(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultUnauthorized();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.ListDefinitions401Response? DefaultUnauthorized()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsUnauthorized
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnUnauthorized(ref bool suppressDefault, ref NativeBPM.Client.Model.ListDefinitions401Response? result);
 
             /// <summary>
             /// Returns true if the response is 401 Unauthorized and the deserialized response is not null
@@ -3522,20 +3680,32 @@ namespace NativeBPM.Client.Api
             /// Deserializes the response if the response is 403 Forbidden
             /// </summary>
             /// <returns></returns>
-            public NativeBPM.Client.Model.ListDefinitions401Response? Forbidden()
+            public NativeBPM.Client.Model.DeployDefinition403Response? Forbidden()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.DeployDefinition403Response? result = null;
+                OnForbidden(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultForbidden();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.DeployDefinition403Response? DefaultForbidden()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsForbidden
-                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
+                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.DeployDefinition403Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnForbidden(ref bool suppressDefault, ref NativeBPM.Client.Model.DeployDefinition403Response? result);
 
             /// <summary>
             /// Returns true if the response is 403 Forbidden and the deserialized response is not null
             /// </summary>
             /// <param name="result"></param>
             /// <returns></returns>
-            public bool TryForbidden([NotNullWhen(true)]out NativeBPM.Client.Model.ListDefinitions401Response? result)
+            public bool TryForbidden([NotNullWhen(true)]out NativeBPM.Client.Model.DeployDefinition403Response? result)
             {
                 result = null;
 
@@ -3567,7 +3737,7 @@ namespace NativeBPM.Client.Api
                 bool suppressDefaultLog = false;
                 OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
                 if (!suppressDefaultLog)
-                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+                    Logger.LogError(RestLogEvents.ApiDeserializationFailed, exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
             }
 
             partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
@@ -3596,7 +3766,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLog = false;
             AfterDeployDefinition(ref suppressDefaultLog, apiResponseLocalVar, file);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation(RestLogEvents.ApiRequestCompleted, "{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -3619,7 +3789,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLogLocalVar = false;
             OnErrorDeployDefinition(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, file);
             if (!suppressDefaultLogLocalVar)
-                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
+                Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
@@ -3714,13 +3884,12 @@ namespace NativeBPM.Client.Api
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        ILogger<DeployDefinitionApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<DeployDefinitionApiResponse>();
                         DeployDefinitionApiResponse apiResponseLocalVar;
 
                         switch ((int)httpResponseMessageLocalVar.StatusCode) {
                             default: {
                                 string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-                                apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/deploy", requestedAtLocalVar, _jsonSerializerOptions);
+                                apiResponseLocalVar = new(Logger, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/deploy", requestedAtLocalVar, _jsonSerializerOptions);
 
                                 break;
                             }
@@ -3750,7 +3919,7 @@ namespace NativeBPM.Client.Api
             /// <summary>
             /// The logger
             /// </summary>
-            public ILogger<DeployDefinitionApiResponse> Logger { get; }
+            public ILogger<DefaultApi> Logger { get; }
 
             /// <summary>
             /// The <see cref="DeployDefinitionApiResponse"/>
@@ -3762,7 +3931,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public DeployDefinitionApiResponse(ILogger<DeployDefinitionApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            public DeployDefinitionApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -3778,7 +3947,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public DeployDefinitionApiResponse(ILogger<DeployDefinitionApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            public DeployDefinitionApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -3798,11 +3967,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.ProcessDefinition? Ok()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.ProcessDefinition? result = null;
+                OnOk(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultOk();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.ProcessDefinition? DefaultOk()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsOk
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ProcessDefinition>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnOk(ref bool suppressDefault, ref NativeBPM.Client.Model.ProcessDefinition? result);
 
             /// <summary>
             /// Returns true if the response is 200 Ok and the deserialized response is not null
@@ -3842,11 +4023,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.ListDefinitions401Response? Unauthorized()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.ListDefinitions401Response? result = null;
+                OnUnauthorized(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultUnauthorized();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.ListDefinitions401Response? DefaultUnauthorized()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsUnauthorized
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnUnauthorized(ref bool suppressDefault, ref NativeBPM.Client.Model.ListDefinitions401Response? result);
 
             /// <summary>
             /// Returns true if the response is 401 Unauthorized and the deserialized response is not null
@@ -3878,20 +4071,32 @@ namespace NativeBPM.Client.Api
             /// Deserializes the response if the response is 403 Forbidden
             /// </summary>
             /// <returns></returns>
-            public NativeBPM.Client.Model.ListDefinitions401Response? Forbidden()
+            public NativeBPM.Client.Model.DeployDefinition403Response? Forbidden()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.DeployDefinition403Response? result = null;
+                OnForbidden(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultForbidden();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.DeployDefinition403Response? DefaultForbidden()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsForbidden
-                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
+                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.DeployDefinition403Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnForbidden(ref bool suppressDefault, ref NativeBPM.Client.Model.DeployDefinition403Response? result);
 
             /// <summary>
             /// Returns true if the response is 403 Forbidden and the deserialized response is not null
             /// </summary>
             /// <param name="result"></param>
             /// <returns></returns>
-            public bool TryForbidden([NotNullWhen(true)]out NativeBPM.Client.Model.ListDefinitions401Response? result)
+            public bool TryForbidden([NotNullWhen(true)]out NativeBPM.Client.Model.DeployDefinition403Response? result)
             {
                 result = null;
 
@@ -3917,7 +4122,7 @@ namespace NativeBPM.Client.Api
                 bool suppressDefaultLog = false;
                 OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
                 if (!suppressDefaultLog)
-                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+                    Logger.LogError(RestLogEvents.ApiDeserializationFailed, exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
             }
 
             partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
@@ -3946,7 +4151,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLog = false;
             AfterGetInstance(ref suppressDefaultLog, apiResponseLocalVar, id);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation(RestLogEvents.ApiRequestCompleted, "{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -3969,7 +4174,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLogLocalVar = false;
             OnErrorGetInstance(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, id);
             if (!suppressDefaultLogLocalVar)
-                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
+                Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
@@ -4044,13 +4249,12 @@ namespace NativeBPM.Client.Api
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        ILogger<GetInstanceApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<GetInstanceApiResponse>();
                         GetInstanceApiResponse apiResponseLocalVar;
 
                         switch ((int)httpResponseMessageLocalVar.StatusCode) {
                             default: {
                                 string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-                                apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/instances/{id}", requestedAtLocalVar, _jsonSerializerOptions);
+                                apiResponseLocalVar = new(Logger, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/instances/{id}", requestedAtLocalVar, _jsonSerializerOptions);
 
                                 break;
                             }
@@ -4080,7 +4284,7 @@ namespace NativeBPM.Client.Api
             /// <summary>
             /// The logger
             /// </summary>
-            public ILogger<GetInstanceApiResponse> Logger { get; }
+            public ILogger<DefaultApi> Logger { get; }
 
             /// <summary>
             /// The <see cref="GetInstanceApiResponse"/>
@@ -4092,7 +4296,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public GetInstanceApiResponse(ILogger<GetInstanceApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            public GetInstanceApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -4108,7 +4312,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public GetInstanceApiResponse(ILogger<GetInstanceApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            public GetInstanceApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -4128,11 +4332,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.ProcessInstance? Ok()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.ProcessInstance? result = null;
+                OnOk(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultOk();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.ProcessInstance? DefaultOk()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsOk
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ProcessInstance>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnOk(ref bool suppressDefault, ref NativeBPM.Client.Model.ProcessInstance? result);
 
             /// <summary>
             /// Returns true if the response is 200 Ok and the deserialized response is not null
@@ -4166,11 +4382,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.ListDefinitions401Response? Unauthorized()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.ListDefinitions401Response? result = null;
+                OnUnauthorized(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultUnauthorized();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.ListDefinitions401Response? DefaultUnauthorized()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsUnauthorized
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnUnauthorized(ref bool suppressDefault, ref NativeBPM.Client.Model.ListDefinitions401Response? result);
 
             /// <summary>
             /// Returns true if the response is 401 Unauthorized and the deserialized response is not null
@@ -4209,7 +4437,7 @@ namespace NativeBPM.Client.Api
                 bool suppressDefaultLog = false;
                 OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
                 if (!suppressDefaultLog)
-                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+                    Logger.LogError(RestLogEvents.ApiDeserializationFailed, exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
             }
 
             partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
@@ -4238,7 +4466,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLog = false;
             AfterGetInstanceHistory(ref suppressDefaultLog, apiResponseLocalVar, id);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation(RestLogEvents.ApiRequestCompleted, "{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -4261,7 +4489,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLogLocalVar = false;
             OnErrorGetInstanceHistory(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, id);
             if (!suppressDefaultLogLocalVar)
-                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
+                Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
@@ -4336,13 +4564,12 @@ namespace NativeBPM.Client.Api
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        ILogger<GetInstanceHistoryApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<GetInstanceHistoryApiResponse>();
                         GetInstanceHistoryApiResponse apiResponseLocalVar;
 
                         switch ((int)httpResponseMessageLocalVar.StatusCode) {
                             default: {
                                 string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-                                apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/instances/{id}/history", requestedAtLocalVar, _jsonSerializerOptions);
+                                apiResponseLocalVar = new(Logger, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/instances/{id}/history", requestedAtLocalVar, _jsonSerializerOptions);
 
                                 break;
                             }
@@ -4372,7 +4599,7 @@ namespace NativeBPM.Client.Api
             /// <summary>
             /// The logger
             /// </summary>
-            public ILogger<GetInstanceHistoryApiResponse> Logger { get; }
+            public ILogger<DefaultApi> Logger { get; }
 
             /// <summary>
             /// The <see cref="GetInstanceHistoryApiResponse"/>
@@ -4384,7 +4611,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public GetInstanceHistoryApiResponse(ILogger<GetInstanceHistoryApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            public GetInstanceHistoryApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -4400,7 +4627,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public GetInstanceHistoryApiResponse(ILogger<GetInstanceHistoryApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            public GetInstanceHistoryApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -4420,11 +4647,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public List<HistoryRecord>? Ok()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                List<HistoryRecord>? result = null;
+                OnOk(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultOk();
+                return result;
+            }
+
+            private List<HistoryRecord>? DefaultOk()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsOk
                     ? System.Text.Json.JsonSerializer.Deserialize<List<HistoryRecord>>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnOk(ref bool suppressDefault, ref List<HistoryRecord>? result);
 
             /// <summary>
             /// Returns true if the response is 200 Ok and the deserialized response is not null
@@ -4458,11 +4697,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.ListDefinitions401Response? Unauthorized()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.ListDefinitions401Response? result = null;
+                OnUnauthorized(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultUnauthorized();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.ListDefinitions401Response? DefaultUnauthorized()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsUnauthorized
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnUnauthorized(ref bool suppressDefault, ref NativeBPM.Client.Model.ListDefinitions401Response? result);
 
             /// <summary>
             /// Returns true if the response is 401 Unauthorized and the deserialized response is not null
@@ -4495,7 +4746,7 @@ namespace NativeBPM.Client.Api
                 bool suppressDefaultLog = false;
                 OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
                 if (!suppressDefaultLog)
-                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+                    Logger.LogError(RestLogEvents.ApiDeserializationFailed, exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
             }
 
             partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
@@ -4524,7 +4775,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLog = false;
             AfterGetInstanceVisualization(ref suppressDefaultLog, apiResponseLocalVar, id);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation(RestLogEvents.ApiRequestCompleted, "{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -4547,7 +4798,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLogLocalVar = false;
             OnErrorGetInstanceVisualization(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, id);
             if (!suppressDefaultLogLocalVar)
-                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
+                Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
@@ -4622,13 +4873,12 @@ namespace NativeBPM.Client.Api
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        ILogger<GetInstanceVisualizationApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<GetInstanceVisualizationApiResponse>();
                         GetInstanceVisualizationApiResponse apiResponseLocalVar;
 
                         switch ((int)httpResponseMessageLocalVar.StatusCode) {
                             default: {
                                 string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-                                apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/instances/{id}/visualization", requestedAtLocalVar, _jsonSerializerOptions);
+                                apiResponseLocalVar = new(Logger, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/instances/{id}/visualization", requestedAtLocalVar, _jsonSerializerOptions);
 
                                 break;
                             }
@@ -4658,7 +4908,7 @@ namespace NativeBPM.Client.Api
             /// <summary>
             /// The logger
             /// </summary>
-            public ILogger<GetInstanceVisualizationApiResponse> Logger { get; }
+            public ILogger<DefaultApi> Logger { get; }
 
             /// <summary>
             /// The <see cref="GetInstanceVisualizationApiResponse"/>
@@ -4670,7 +4920,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public GetInstanceVisualizationApiResponse(ILogger<GetInstanceVisualizationApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            public GetInstanceVisualizationApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -4686,7 +4936,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public GetInstanceVisualizationApiResponse(ILogger<GetInstanceVisualizationApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            public GetInstanceVisualizationApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -4706,11 +4956,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.VisualizationData? Ok()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.VisualizationData? result = null;
+                OnOk(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultOk();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.VisualizationData? DefaultOk()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsOk
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.VisualizationData>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnOk(ref bool suppressDefault, ref NativeBPM.Client.Model.VisualizationData? result);
 
             /// <summary>
             /// Returns true if the response is 200 Ok and the deserialized response is not null
@@ -4744,11 +5006,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.ListDefinitions401Response? Unauthorized()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.ListDefinitions401Response? result = null;
+                OnUnauthorized(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultUnauthorized();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.ListDefinitions401Response? DefaultUnauthorized()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsUnauthorized
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnUnauthorized(ref bool suppressDefault, ref NativeBPM.Client.Model.ListDefinitions401Response? result);
 
             /// <summary>
             /// Returns true if the response is 401 Unauthorized and the deserialized response is not null
@@ -4787,7 +5061,7 @@ namespace NativeBPM.Client.Api
                 bool suppressDefaultLog = false;
                 OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
                 if (!suppressDefaultLog)
-                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+                    Logger.LogError(RestLogEvents.ApiDeserializationFailed, exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
             }
 
             partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
@@ -4821,7 +5095,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLog = false;
             AfterGetInstanceVisualizationWidget(ref suppressDefaultLog, apiResponseLocalVar, id, title);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation(RestLogEvents.ApiRequestCompleted, "{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -4846,7 +5120,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLogLocalVar = false;
             OnErrorGetInstanceVisualizationWidget(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, id, title);
             if (!suppressDefaultLogLocalVar)
-                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
+                Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
@@ -4932,13 +5206,12 @@ namespace NativeBPM.Client.Api
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        ILogger<GetInstanceVisualizationWidgetApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<GetInstanceVisualizationWidgetApiResponse>();
                         GetInstanceVisualizationWidgetApiResponse apiResponseLocalVar;
 
                         switch ((int)httpResponseMessageLocalVar.StatusCode) {
                             default: {
                                 string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-                                apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/instances/{id}/visualization/widget", requestedAtLocalVar, _jsonSerializerOptions);
+                                apiResponseLocalVar = new(Logger, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/instances/{id}/visualization/widget", requestedAtLocalVar, _jsonSerializerOptions);
 
                                 break;
                             }
@@ -4968,7 +5241,7 @@ namespace NativeBPM.Client.Api
             /// <summary>
             /// The logger
             /// </summary>
-            public ILogger<GetInstanceVisualizationWidgetApiResponse> Logger { get; }
+            public ILogger<DefaultApi> Logger { get; }
 
             /// <summary>
             /// The <see cref="GetInstanceVisualizationWidgetApiResponse"/>
@@ -4980,7 +5253,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public GetInstanceVisualizationWidgetApiResponse(ILogger<GetInstanceVisualizationWidgetApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            public GetInstanceVisualizationWidgetApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -4996,7 +5269,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public GetInstanceVisualizationWidgetApiResponse(ILogger<GetInstanceVisualizationWidgetApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            public GetInstanceVisualizationWidgetApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -5016,11 +5289,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public string? Ok()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                string? result = null;
+                OnOk(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultOk();
+                return result;
+            }
+
+            private string? DefaultOk()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsOk
                     ? System.Text.Json.JsonSerializer.Deserialize<string>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnOk(ref bool suppressDefault, ref string? result);
 
             /// <summary>
             /// Returns true if the response is 200 Ok and the deserialized response is not null
@@ -5054,11 +5339,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.ListDefinitions401Response? Unauthorized()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.ListDefinitions401Response? result = null;
+                OnUnauthorized(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultUnauthorized();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.ListDefinitions401Response? DefaultUnauthorized()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsUnauthorized
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnUnauthorized(ref bool suppressDefault, ref NativeBPM.Client.Model.ListDefinitions401Response? result);
 
             /// <summary>
             /// Returns true if the response is 401 Unauthorized and the deserialized response is not null
@@ -5097,7 +5394,7 @@ namespace NativeBPM.Client.Api
                 bool suppressDefaultLog = false;
                 OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
                 if (!suppressDefaultLog)
-                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+                    Logger.LogError(RestLogEvents.ApiDeserializationFailed, exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
             }
 
             partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
@@ -5112,7 +5409,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLog = false;
             AfterGetSMTPConfig(ref suppressDefaultLog, apiResponseLocalVar);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation(RestLogEvents.ApiRequestCompleted, "{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -5133,7 +5430,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLogLocalVar = false;
             OnErrorGetSMTPConfig(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar);
             if (!suppressDefaultLogLocalVar)
-                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
+                Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
@@ -5200,13 +5497,12 @@ namespace NativeBPM.Client.Api
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        ILogger<GetSMTPConfigApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<GetSMTPConfigApiResponse>();
                         GetSMTPConfigApiResponse apiResponseLocalVar;
 
                         switch ((int)httpResponseMessageLocalVar.StatusCode) {
                             default: {
                                 string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-                                apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/smtp-config", requestedAtLocalVar, _jsonSerializerOptions);
+                                apiResponseLocalVar = new(Logger, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/smtp-config", requestedAtLocalVar, _jsonSerializerOptions);
 
                                 break;
                             }
@@ -5236,7 +5532,7 @@ namespace NativeBPM.Client.Api
             /// <summary>
             /// The logger
             /// </summary>
-            public ILogger<GetSMTPConfigApiResponse> Logger { get; }
+            public ILogger<DefaultApi> Logger { get; }
 
             /// <summary>
             /// The <see cref="GetSMTPConfigApiResponse"/>
@@ -5248,7 +5544,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public GetSMTPConfigApiResponse(ILogger<GetSMTPConfigApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            public GetSMTPConfigApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -5264,7 +5560,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public GetSMTPConfigApiResponse(ILogger<GetSMTPConfigApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            public GetSMTPConfigApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -5284,11 +5580,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.SMTPConfig? Ok()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.SMTPConfig? result = null;
+                OnOk(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultOk();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.SMTPConfig? DefaultOk()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsOk
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.SMTPConfig>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnOk(ref bool suppressDefault, ref NativeBPM.Client.Model.SMTPConfig? result);
 
             /// <summary>
             /// Returns true if the response is 200 Ok and the deserialized response is not null
@@ -5322,11 +5630,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.ListDefinitions401Response? Unauthorized()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.ListDefinitions401Response? result = null;
+                OnUnauthorized(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultUnauthorized();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.ListDefinitions401Response? DefaultUnauthorized()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsUnauthorized
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnUnauthorized(ref bool suppressDefault, ref NativeBPM.Client.Model.ListDefinitions401Response? result);
 
             /// <summary>
             /// Returns true if the response is 401 Unauthorized and the deserialized response is not null
@@ -5358,20 +5678,32 @@ namespace NativeBPM.Client.Api
             /// Deserializes the response if the response is 403 Forbidden
             /// </summary>
             /// <returns></returns>
-            public NativeBPM.Client.Model.ListDefinitions401Response? Forbidden()
+            public NativeBPM.Client.Model.DeployDefinition403Response? Forbidden()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.DeployDefinition403Response? result = null;
+                OnForbidden(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultForbidden();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.DeployDefinition403Response? DefaultForbidden()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsForbidden
-                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
+                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.DeployDefinition403Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnForbidden(ref bool suppressDefault, ref NativeBPM.Client.Model.DeployDefinition403Response? result);
 
             /// <summary>
             /// Returns true if the response is 403 Forbidden and the deserialized response is not null
             /// </summary>
             /// <param name="result"></param>
             /// <returns></returns>
-            public bool TryForbidden([NotNullWhen(true)]out NativeBPM.Client.Model.ListDefinitions401Response? result)
+            public bool TryForbidden([NotNullWhen(true)]out NativeBPM.Client.Model.DeployDefinition403Response? result)
             {
                 result = null;
 
@@ -5403,7 +5735,7 @@ namespace NativeBPM.Client.Api
                 bool suppressDefaultLog = false;
                 OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
                 if (!suppressDefaultLog)
-                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+                    Logger.LogError(RestLogEvents.ApiDeserializationFailed, exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
             }
 
             partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
@@ -5432,7 +5764,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLog = false;
             AfterGetUserGroups(ref suppressDefaultLog, apiResponseLocalVar, username);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation(RestLogEvents.ApiRequestCompleted, "{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -5455,7 +5787,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLogLocalVar = false;
             OnErrorGetUserGroups(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, username);
             if (!suppressDefaultLogLocalVar)
-                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
+                Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
@@ -5530,13 +5862,12 @@ namespace NativeBPM.Client.Api
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        ILogger<GetUserGroupsApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<GetUserGroupsApiResponse>();
                         GetUserGroupsApiResponse apiResponseLocalVar;
 
                         switch ((int)httpResponseMessageLocalVar.StatusCode) {
                             default: {
                                 string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-                                apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/users/{username}/groups", requestedAtLocalVar, _jsonSerializerOptions);
+                                apiResponseLocalVar = new(Logger, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/users/{username}/groups", requestedAtLocalVar, _jsonSerializerOptions);
 
                                 break;
                             }
@@ -5566,7 +5897,7 @@ namespace NativeBPM.Client.Api
             /// <summary>
             /// The logger
             /// </summary>
-            public ILogger<GetUserGroupsApiResponse> Logger { get; }
+            public ILogger<DefaultApi> Logger { get; }
 
             /// <summary>
             /// The <see cref="GetUserGroupsApiResponse"/>
@@ -5578,7 +5909,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public GetUserGroupsApiResponse(ILogger<GetUserGroupsApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            public GetUserGroupsApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -5594,7 +5925,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public GetUserGroupsApiResponse(ILogger<GetUserGroupsApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            public GetUserGroupsApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -5614,11 +5945,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public List<string>? Ok()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                List<string>? result = null;
+                OnOk(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultOk();
+                return result;
+            }
+
+            private List<string>? DefaultOk()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsOk
                     ? System.Text.Json.JsonSerializer.Deserialize<List<string>>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnOk(ref bool suppressDefault, ref List<string>? result);
 
             /// <summary>
             /// Returns true if the response is 200 Ok and the deserialized response is not null
@@ -5652,11 +5995,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.ListDefinitions401Response? Unauthorized()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.ListDefinitions401Response? result = null;
+                OnUnauthorized(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultUnauthorized();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.ListDefinitions401Response? DefaultUnauthorized()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsUnauthorized
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnUnauthorized(ref bool suppressDefault, ref NativeBPM.Client.Model.ListDefinitions401Response? result);
 
             /// <summary>
             /// Returns true if the response is 401 Unauthorized and the deserialized response is not null
@@ -5688,20 +6043,32 @@ namespace NativeBPM.Client.Api
             /// Deserializes the response if the response is 403 Forbidden
             /// </summary>
             /// <returns></returns>
-            public NativeBPM.Client.Model.ListDefinitions401Response? Forbidden()
+            public NativeBPM.Client.Model.DeployDefinition403Response? Forbidden()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.DeployDefinition403Response? result = null;
+                OnForbidden(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultForbidden();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.DeployDefinition403Response? DefaultForbidden()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsForbidden
-                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
+                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.DeployDefinition403Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnForbidden(ref bool suppressDefault, ref NativeBPM.Client.Model.DeployDefinition403Response? result);
 
             /// <summary>
             /// Returns true if the response is 403 Forbidden and the deserialized response is not null
             /// </summary>
             /// <param name="result"></param>
             /// <returns></returns>
-            public bool TryForbidden([NotNullWhen(true)]out NativeBPM.Client.Model.ListDefinitions401Response? result)
+            public bool TryForbidden([NotNullWhen(true)]out NativeBPM.Client.Model.DeployDefinition403Response? result)
             {
                 result = null;
 
@@ -5727,7 +6094,7 @@ namespace NativeBPM.Client.Api
                 bool suppressDefaultLog = false;
                 OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
                 if (!suppressDefaultLog)
-                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+                    Logger.LogError(RestLogEvents.ApiDeserializationFailed, exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
             }
 
             partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
@@ -5742,7 +6109,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLog = false;
             AfterListDefinitions(ref suppressDefaultLog, apiResponseLocalVar);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation(RestLogEvents.ApiRequestCompleted, "{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -5763,7 +6130,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLogLocalVar = false;
             OnErrorListDefinitions(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar);
             if (!suppressDefaultLogLocalVar)
-                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
+                Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
@@ -5830,13 +6197,12 @@ namespace NativeBPM.Client.Api
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        ILogger<ListDefinitionsApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<ListDefinitionsApiResponse>();
                         ListDefinitionsApiResponse apiResponseLocalVar;
 
                         switch ((int)httpResponseMessageLocalVar.StatusCode) {
                             default: {
                                 string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-                                apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/definitions", requestedAtLocalVar, _jsonSerializerOptions);
+                                apiResponseLocalVar = new(Logger, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/definitions", requestedAtLocalVar, _jsonSerializerOptions);
 
                                 break;
                             }
@@ -5866,7 +6232,7 @@ namespace NativeBPM.Client.Api
             /// <summary>
             /// The logger
             /// </summary>
-            public ILogger<ListDefinitionsApiResponse> Logger { get; }
+            public ILogger<DefaultApi> Logger { get; }
 
             /// <summary>
             /// The <see cref="ListDefinitionsApiResponse"/>
@@ -5878,7 +6244,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public ListDefinitionsApiResponse(ILogger<ListDefinitionsApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            public ListDefinitionsApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -5894,7 +6260,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public ListDefinitionsApiResponse(ILogger<ListDefinitionsApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            public ListDefinitionsApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -5914,11 +6280,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public List<ProcessDefinition>? Ok()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                List<ProcessDefinition>? result = null;
+                OnOk(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultOk();
+                return result;
+            }
+
+            private List<ProcessDefinition>? DefaultOk()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsOk
                     ? System.Text.Json.JsonSerializer.Deserialize<List<ProcessDefinition>>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnOk(ref bool suppressDefault, ref List<ProcessDefinition>? result);
 
             /// <summary>
             /// Returns true if the response is 200 Ok and the deserialized response is not null
@@ -5952,11 +6330,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.ListDefinitions401Response? Unauthorized()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.ListDefinitions401Response? result = null;
+                OnUnauthorized(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultUnauthorized();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.ListDefinitions401Response? DefaultUnauthorized()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsUnauthorized
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnUnauthorized(ref bool suppressDefault, ref NativeBPM.Client.Model.ListDefinitions401Response? result);
 
             /// <summary>
             /// Returns true if the response is 401 Unauthorized and the deserialized response is not null
@@ -5989,7 +6379,7 @@ namespace NativeBPM.Client.Api
                 bool suppressDefaultLog = false;
                 OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
                 if (!suppressDefaultLog)
-                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+                    Logger.LogError(RestLogEvents.ApiDeserializationFailed, exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
             }
 
             partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
@@ -6018,7 +6408,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLog = false;
             AfterListIncidents(ref suppressDefaultLog, apiResponseLocalVar, id);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation(RestLogEvents.ApiRequestCompleted, "{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -6041,7 +6431,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLogLocalVar = false;
             OnErrorListIncidents(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, id);
             if (!suppressDefaultLogLocalVar)
-                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
+                Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
@@ -6116,13 +6506,12 @@ namespace NativeBPM.Client.Api
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        ILogger<ListIncidentsApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<ListIncidentsApiResponse>();
                         ListIncidentsApiResponse apiResponseLocalVar;
 
                         switch ((int)httpResponseMessageLocalVar.StatusCode) {
                             default: {
                                 string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-                                apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/instances/{id}/incidents", requestedAtLocalVar, _jsonSerializerOptions);
+                                apiResponseLocalVar = new(Logger, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/instances/{id}/incidents", requestedAtLocalVar, _jsonSerializerOptions);
 
                                 break;
                             }
@@ -6152,7 +6541,7 @@ namespace NativeBPM.Client.Api
             /// <summary>
             /// The logger
             /// </summary>
-            public ILogger<ListIncidentsApiResponse> Logger { get; }
+            public ILogger<DefaultApi> Logger { get; }
 
             /// <summary>
             /// The <see cref="ListIncidentsApiResponse"/>
@@ -6164,7 +6553,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public ListIncidentsApiResponse(ILogger<ListIncidentsApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            public ListIncidentsApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -6180,7 +6569,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public ListIncidentsApiResponse(ILogger<ListIncidentsApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            public ListIncidentsApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -6200,11 +6589,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public List<IncidentRecord>? Ok()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                List<IncidentRecord>? result = null;
+                OnOk(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultOk();
+                return result;
+            }
+
+            private List<IncidentRecord>? DefaultOk()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsOk
                     ? System.Text.Json.JsonSerializer.Deserialize<List<IncidentRecord>>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnOk(ref bool suppressDefault, ref List<IncidentRecord>? result);
 
             /// <summary>
             /// Returns true if the response is 200 Ok and the deserialized response is not null
@@ -6238,11 +6639,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.ListDefinitions401Response? Unauthorized()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.ListDefinitions401Response? result = null;
+                OnUnauthorized(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultUnauthorized();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.ListDefinitions401Response? DefaultUnauthorized()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsUnauthorized
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnUnauthorized(ref bool suppressDefault, ref NativeBPM.Client.Model.ListDefinitions401Response? result);
 
             /// <summary>
             /// Returns true if the response is 401 Unauthorized and the deserialized response is not null
@@ -6281,7 +6694,7 @@ namespace NativeBPM.Client.Api
                 bool suppressDefaultLog = false;
                 OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
                 if (!suppressDefaultLog)
-                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+                    Logger.LogError(RestLogEvents.ApiDeserializationFailed, exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
             }
 
             partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
@@ -6296,7 +6709,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLog = false;
             AfterListInstances(ref suppressDefaultLog, apiResponseLocalVar);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation(RestLogEvents.ApiRequestCompleted, "{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -6317,7 +6730,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLogLocalVar = false;
             OnErrorListInstances(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar);
             if (!suppressDefaultLogLocalVar)
-                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
+                Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
@@ -6384,13 +6797,12 @@ namespace NativeBPM.Client.Api
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        ILogger<ListInstancesApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<ListInstancesApiResponse>();
                         ListInstancesApiResponse apiResponseLocalVar;
 
                         switch ((int)httpResponseMessageLocalVar.StatusCode) {
                             default: {
                                 string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-                                apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/instances", requestedAtLocalVar, _jsonSerializerOptions);
+                                apiResponseLocalVar = new(Logger, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/instances", requestedAtLocalVar, _jsonSerializerOptions);
 
                                 break;
                             }
@@ -6420,7 +6832,7 @@ namespace NativeBPM.Client.Api
             /// <summary>
             /// The logger
             /// </summary>
-            public ILogger<ListInstancesApiResponse> Logger { get; }
+            public ILogger<DefaultApi> Logger { get; }
 
             /// <summary>
             /// The <see cref="ListInstancesApiResponse"/>
@@ -6432,7 +6844,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public ListInstancesApiResponse(ILogger<ListInstancesApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            public ListInstancesApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -6448,7 +6860,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public ListInstancesApiResponse(ILogger<ListInstancesApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            public ListInstancesApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -6468,11 +6880,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public List<ProcessInstance>? Ok()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                List<ProcessInstance>? result = null;
+                OnOk(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultOk();
+                return result;
+            }
+
+            private List<ProcessInstance>? DefaultOk()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsOk
                     ? System.Text.Json.JsonSerializer.Deserialize<List<ProcessInstance>>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnOk(ref bool suppressDefault, ref List<ProcessInstance>? result);
 
             /// <summary>
             /// Returns true if the response is 200 Ok and the deserialized response is not null
@@ -6506,11 +6930,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.ListDefinitions401Response? Unauthorized()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.ListDefinitions401Response? result = null;
+                OnUnauthorized(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultUnauthorized();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.ListDefinitions401Response? DefaultUnauthorized()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsUnauthorized
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnUnauthorized(ref bool suppressDefault, ref NativeBPM.Client.Model.ListDefinitions401Response? result);
 
             /// <summary>
             /// Returns true if the response is 401 Unauthorized and the deserialized response is not null
@@ -6543,7 +6979,7 @@ namespace NativeBPM.Client.Api
                 bool suppressDefaultLog = false;
                 OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
                 if (!suppressDefaultLog)
-                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+                    Logger.LogError(RestLogEvents.ApiDeserializationFailed, exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
             }
 
             partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
@@ -6582,7 +7018,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLog = false;
             AfterListTasks(ref suppressDefaultLog, apiResponseLocalVar, assignee, candidateGroup, status);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation(RestLogEvents.ApiRequestCompleted, "{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -6609,7 +7045,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLogLocalVar = false;
             OnErrorListTasks(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, assignee, candidateGroup, status);
             if (!suppressDefaultLogLocalVar)
-                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
+                Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
@@ -6702,13 +7138,12 @@ namespace NativeBPM.Client.Api
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        ILogger<ListTasksApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<ListTasksApiResponse>();
                         ListTasksApiResponse apiResponseLocalVar;
 
                         switch ((int)httpResponseMessageLocalVar.StatusCode) {
                             default: {
                                 string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-                                apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/tasks", requestedAtLocalVar, _jsonSerializerOptions);
+                                apiResponseLocalVar = new(Logger, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/tasks", requestedAtLocalVar, _jsonSerializerOptions);
 
                                 break;
                             }
@@ -6738,7 +7173,7 @@ namespace NativeBPM.Client.Api
             /// <summary>
             /// The logger
             /// </summary>
-            public ILogger<ListTasksApiResponse> Logger { get; }
+            public ILogger<DefaultApi> Logger { get; }
 
             /// <summary>
             /// The <see cref="ListTasksApiResponse"/>
@@ -6750,7 +7185,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public ListTasksApiResponse(ILogger<ListTasksApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            public ListTasksApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -6766,7 +7201,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public ListTasksApiResponse(ILogger<ListTasksApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            public ListTasksApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -6786,11 +7221,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public List<TaskRecord>? Ok()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                List<TaskRecord>? result = null;
+                OnOk(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultOk();
+                return result;
+            }
+
+            private List<TaskRecord>? DefaultOk()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsOk
                     ? System.Text.Json.JsonSerializer.Deserialize<List<TaskRecord>>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnOk(ref bool suppressDefault, ref List<TaskRecord>? result);
 
             /// <summary>
             /// Returns true if the response is 200 Ok and the deserialized response is not null
@@ -6824,11 +7271,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.ListDefinitions401Response? Unauthorized()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.ListDefinitions401Response? result = null;
+                OnUnauthorized(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultUnauthorized();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.ListDefinitions401Response? DefaultUnauthorized()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsUnauthorized
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnUnauthorized(ref bool suppressDefault, ref NativeBPM.Client.Model.ListDefinitions401Response? result);
 
             /// <summary>
             /// Returns true if the response is 401 Unauthorized and the deserialized response is not null
@@ -6861,7 +7320,7 @@ namespace NativeBPM.Client.Api
                 bool suppressDefaultLog = false;
                 OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
                 if (!suppressDefaultLog)
-                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+                    Logger.LogError(RestLogEvents.ApiDeserializationFailed, exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
             }
 
             partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
@@ -6890,7 +7349,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLog = false;
             AfterListWebhookDeliveries(ref suppressDefaultLog, apiResponseLocalVar, id);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation(RestLogEvents.ApiRequestCompleted, "{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -6913,7 +7372,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLogLocalVar = false;
             OnErrorListWebhookDeliveries(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, id);
             if (!suppressDefaultLogLocalVar)
-                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
+                Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
@@ -6988,13 +7447,12 @@ namespace NativeBPM.Client.Api
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        ILogger<ListWebhookDeliveriesApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<ListWebhookDeliveriesApiResponse>();
                         ListWebhookDeliveriesApiResponse apiResponseLocalVar;
 
                         switch ((int)httpResponseMessageLocalVar.StatusCode) {
                             default: {
                                 string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-                                apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/webhooks/{id}/deliveries", requestedAtLocalVar, _jsonSerializerOptions);
+                                apiResponseLocalVar = new(Logger, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/webhooks/{id}/deliveries", requestedAtLocalVar, _jsonSerializerOptions);
 
                                 break;
                             }
@@ -7024,7 +7482,7 @@ namespace NativeBPM.Client.Api
             /// <summary>
             /// The logger
             /// </summary>
-            public ILogger<ListWebhookDeliveriesApiResponse> Logger { get; }
+            public ILogger<DefaultApi> Logger { get; }
 
             /// <summary>
             /// The <see cref="ListWebhookDeliveriesApiResponse"/>
@@ -7036,7 +7494,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public ListWebhookDeliveriesApiResponse(ILogger<ListWebhookDeliveriesApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            public ListWebhookDeliveriesApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -7052,7 +7510,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public ListWebhookDeliveriesApiResponse(ILogger<ListWebhookDeliveriesApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            public ListWebhookDeliveriesApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -7072,11 +7530,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public List<WebhookDeliveryRecord>? Ok()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                List<WebhookDeliveryRecord>? result = null;
+                OnOk(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultOk();
+                return result;
+            }
+
+            private List<WebhookDeliveryRecord>? DefaultOk()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsOk
                     ? System.Text.Json.JsonSerializer.Deserialize<List<WebhookDeliveryRecord>>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnOk(ref bool suppressDefault, ref List<WebhookDeliveryRecord>? result);
 
             /// <summary>
             /// Returns true if the response is 200 Ok and the deserialized response is not null
@@ -7110,11 +7580,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.ListDefinitions401Response? Unauthorized()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.ListDefinitions401Response? result = null;
+                OnUnauthorized(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultUnauthorized();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.ListDefinitions401Response? DefaultUnauthorized()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsUnauthorized
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnUnauthorized(ref bool suppressDefault, ref NativeBPM.Client.Model.ListDefinitions401Response? result);
 
             /// <summary>
             /// Returns true if the response is 401 Unauthorized and the deserialized response is not null
@@ -7146,20 +7628,32 @@ namespace NativeBPM.Client.Api
             /// Deserializes the response if the response is 403 Forbidden
             /// </summary>
             /// <returns></returns>
-            public NativeBPM.Client.Model.ListDefinitions401Response? Forbidden()
+            public NativeBPM.Client.Model.DeployDefinition403Response? Forbidden()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.DeployDefinition403Response? result = null;
+                OnForbidden(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultForbidden();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.DeployDefinition403Response? DefaultForbidden()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsForbidden
-                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
+                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.DeployDefinition403Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnForbidden(ref bool suppressDefault, ref NativeBPM.Client.Model.DeployDefinition403Response? result);
 
             /// <summary>
             /// Returns true if the response is 403 Forbidden and the deserialized response is not null
             /// </summary>
             /// <param name="result"></param>
             /// <returns></returns>
-            public bool TryForbidden([NotNullWhen(true)]out NativeBPM.Client.Model.ListDefinitions401Response? result)
+            public bool TryForbidden([NotNullWhen(true)]out NativeBPM.Client.Model.DeployDefinition403Response? result)
             {
                 result = null;
 
@@ -7191,7 +7685,7 @@ namespace NativeBPM.Client.Api
                 bool suppressDefaultLog = false;
                 OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
                 if (!suppressDefaultLog)
-                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+                    Logger.LogError(RestLogEvents.ApiDeserializationFailed, exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
             }
 
             partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
@@ -7206,7 +7700,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLog = false;
             AfterListWebhooks(ref suppressDefaultLog, apiResponseLocalVar);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation(RestLogEvents.ApiRequestCompleted, "{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -7227,7 +7721,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLogLocalVar = false;
             OnErrorListWebhooks(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar);
             if (!suppressDefaultLogLocalVar)
-                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
+                Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
@@ -7294,13 +7788,12 @@ namespace NativeBPM.Client.Api
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        ILogger<ListWebhooksApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<ListWebhooksApiResponse>();
                         ListWebhooksApiResponse apiResponseLocalVar;
 
                         switch ((int)httpResponseMessageLocalVar.StatusCode) {
                             default: {
                                 string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-                                apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/webhooks", requestedAtLocalVar, _jsonSerializerOptions);
+                                apiResponseLocalVar = new(Logger, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/webhooks", requestedAtLocalVar, _jsonSerializerOptions);
 
                                 break;
                             }
@@ -7330,7 +7823,7 @@ namespace NativeBPM.Client.Api
             /// <summary>
             /// The logger
             /// </summary>
-            public ILogger<ListWebhooksApiResponse> Logger { get; }
+            public ILogger<DefaultApi> Logger { get; }
 
             /// <summary>
             /// The <see cref="ListWebhooksApiResponse"/>
@@ -7342,7 +7835,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public ListWebhooksApiResponse(ILogger<ListWebhooksApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            public ListWebhooksApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -7358,7 +7851,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public ListWebhooksApiResponse(ILogger<ListWebhooksApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            public ListWebhooksApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -7378,11 +7871,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public List<WebhookRecord>? Ok()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                List<WebhookRecord>? result = null;
+                OnOk(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultOk();
+                return result;
+            }
+
+            private List<WebhookRecord>? DefaultOk()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsOk
                     ? System.Text.Json.JsonSerializer.Deserialize<List<WebhookRecord>>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnOk(ref bool suppressDefault, ref List<WebhookRecord>? result);
 
             /// <summary>
             /// Returns true if the response is 200 Ok and the deserialized response is not null
@@ -7416,11 +7921,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.ListDefinitions401Response? Unauthorized()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.ListDefinitions401Response? result = null;
+                OnUnauthorized(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultUnauthorized();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.ListDefinitions401Response? DefaultUnauthorized()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsUnauthorized
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnUnauthorized(ref bool suppressDefault, ref NativeBPM.Client.Model.ListDefinitions401Response? result);
 
             /// <summary>
             /// Returns true if the response is 401 Unauthorized and the deserialized response is not null
@@ -7452,20 +7969,32 @@ namespace NativeBPM.Client.Api
             /// Deserializes the response if the response is 403 Forbidden
             /// </summary>
             /// <returns></returns>
-            public NativeBPM.Client.Model.ListDefinitions401Response? Forbidden()
+            public NativeBPM.Client.Model.DeployDefinition403Response? Forbidden()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.DeployDefinition403Response? result = null;
+                OnForbidden(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultForbidden();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.DeployDefinition403Response? DefaultForbidden()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsForbidden
-                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
+                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.DeployDefinition403Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnForbidden(ref bool suppressDefault, ref NativeBPM.Client.Model.DeployDefinition403Response? result);
 
             /// <summary>
             /// Returns true if the response is 403 Forbidden and the deserialized response is not null
             /// </summary>
             /// <param name="result"></param>
             /// <returns></returns>
-            public bool TryForbidden([NotNullWhen(true)]out NativeBPM.Client.Model.ListDefinitions401Response? result)
+            public bool TryForbidden([NotNullWhen(true)]out NativeBPM.Client.Model.DeployDefinition403Response? result)
             {
                 result = null;
 
@@ -7491,7 +8020,7 @@ namespace NativeBPM.Client.Api
                 bool suppressDefaultLog = false;
                 OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
                 if (!suppressDefaultLog)
-                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+                    Logger.LogError(RestLogEvents.ApiDeserializationFailed, exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
             }
 
             partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
@@ -7525,7 +8054,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLog = false;
             AfterResolveIncident(ref suppressDefaultLog, apiResponseLocalVar, id, incidentId);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation(RestLogEvents.ApiRequestCompleted, "{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -7550,7 +8079,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLogLocalVar = false;
             OnErrorResolveIncident(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, id, incidentId);
             if (!suppressDefaultLogLocalVar)
-                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
+                Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
@@ -7629,13 +8158,12 @@ namespace NativeBPM.Client.Api
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        ILogger<ResolveIncidentApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<ResolveIncidentApiResponse>();
                         ResolveIncidentApiResponse apiResponseLocalVar;
 
                         switch ((int)httpResponseMessageLocalVar.StatusCode) {
                             default: {
                                 string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-                                apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/instances/{id}/incidents/{incidentId}/resolve", requestedAtLocalVar, _jsonSerializerOptions);
+                                apiResponseLocalVar = new(Logger, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/instances/{id}/incidents/{incidentId}/resolve", requestedAtLocalVar, _jsonSerializerOptions);
 
                                 break;
                             }
@@ -7665,7 +8193,7 @@ namespace NativeBPM.Client.Api
             /// <summary>
             /// The logger
             /// </summary>
-            public ILogger<ResolveIncidentApiResponse> Logger { get; }
+            public ILogger<DefaultApi> Logger { get; }
 
             /// <summary>
             /// The <see cref="ResolveIncidentApiResponse"/>
@@ -7677,7 +8205,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public ResolveIncidentApiResponse(ILogger<ResolveIncidentApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            public ResolveIncidentApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -7693,7 +8221,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public ResolveIncidentApiResponse(ILogger<ResolveIncidentApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            public ResolveIncidentApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -7713,11 +8241,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.ResolveIncident200Response? Ok()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.ResolveIncident200Response? result = null;
+                OnOk(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultOk();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.ResolveIncident200Response? DefaultOk()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsOk
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ResolveIncident200Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnOk(ref bool suppressDefault, ref NativeBPM.Client.Model.ResolveIncident200Response? result);
 
             /// <summary>
             /// Returns true if the response is 200 Ok and the deserialized response is not null
@@ -7751,11 +8291,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.ListDefinitions401Response? Unauthorized()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.ListDefinitions401Response? result = null;
+                OnUnauthorized(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultUnauthorized();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.ListDefinitions401Response? DefaultUnauthorized()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsUnauthorized
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnUnauthorized(ref bool suppressDefault, ref NativeBPM.Client.Model.ListDefinitions401Response? result);
 
             /// <summary>
             /// Returns true if the response is 401 Unauthorized and the deserialized response is not null
@@ -7787,20 +8339,32 @@ namespace NativeBPM.Client.Api
             /// Deserializes the response if the response is 403 Forbidden
             /// </summary>
             /// <returns></returns>
-            public NativeBPM.Client.Model.ListDefinitions401Response? Forbidden()
+            public NativeBPM.Client.Model.DeployDefinition403Response? Forbidden()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.DeployDefinition403Response? result = null;
+                OnForbidden(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultForbidden();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.DeployDefinition403Response? DefaultForbidden()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsForbidden
-                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
+                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.DeployDefinition403Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnForbidden(ref bool suppressDefault, ref NativeBPM.Client.Model.DeployDefinition403Response? result);
 
             /// <summary>
             /// Returns true if the response is 403 Forbidden and the deserialized response is not null
             /// </summary>
             /// <param name="result"></param>
             /// <returns></returns>
-            public bool TryForbidden([NotNullWhen(true)]out NativeBPM.Client.Model.ListDefinitions401Response? result)
+            public bool TryForbidden([NotNullWhen(true)]out NativeBPM.Client.Model.DeployDefinition403Response? result)
             {
                 result = null;
 
@@ -7826,7 +8390,7 @@ namespace NativeBPM.Client.Api
                 bool suppressDefaultLog = false;
                 OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
                 if (!suppressDefaultLog)
-                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+                    Logger.LogError(RestLogEvents.ApiDeserializationFailed, exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
             }
 
             partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
@@ -7855,7 +8419,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLog = false;
             AfterResumeInstance(ref suppressDefaultLog, apiResponseLocalVar, id);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation(RestLogEvents.ApiRequestCompleted, "{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -7878,7 +8442,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLogLocalVar = false;
             OnErrorResumeInstance(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, id);
             if (!suppressDefaultLogLocalVar)
-                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
+                Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
@@ -7953,13 +8517,12 @@ namespace NativeBPM.Client.Api
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        ILogger<ResumeInstanceApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<ResumeInstanceApiResponse>();
                         ResumeInstanceApiResponse apiResponseLocalVar;
 
                         switch ((int)httpResponseMessageLocalVar.StatusCode) {
                             default: {
                                 string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-                                apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/instances/{id}/resume", requestedAtLocalVar, _jsonSerializerOptions);
+                                apiResponseLocalVar = new(Logger, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/instances/{id}/resume", requestedAtLocalVar, _jsonSerializerOptions);
 
                                 break;
                             }
@@ -7989,7 +8552,7 @@ namespace NativeBPM.Client.Api
             /// <summary>
             /// The logger
             /// </summary>
-            public ILogger<ResumeInstanceApiResponse> Logger { get; }
+            public ILogger<DefaultApi> Logger { get; }
 
             /// <summary>
             /// The <see cref="ResumeInstanceApiResponse"/>
@@ -8001,7 +8564,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public ResumeInstanceApiResponse(ILogger<ResumeInstanceApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            public ResumeInstanceApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -8017,7 +8580,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public ResumeInstanceApiResponse(ILogger<ResumeInstanceApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            public ResumeInstanceApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -8037,11 +8600,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.ProcessInstance? Ok()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.ProcessInstance? result = null;
+                OnOk(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultOk();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.ProcessInstance? DefaultOk()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsOk
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ProcessInstance>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnOk(ref bool suppressDefault, ref NativeBPM.Client.Model.ProcessInstance? result);
 
             /// <summary>
             /// Returns true if the response is 200 Ok and the deserialized response is not null
@@ -8075,11 +8650,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.ListDefinitions401Response? Unauthorized()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.ListDefinitions401Response? result = null;
+                OnUnauthorized(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultUnauthorized();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.ListDefinitions401Response? DefaultUnauthorized()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsUnauthorized
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnUnauthorized(ref bool suppressDefault, ref NativeBPM.Client.Model.ListDefinitions401Response? result);
 
             /// <summary>
             /// Returns true if the response is 401 Unauthorized and the deserialized response is not null
@@ -8111,20 +8698,32 @@ namespace NativeBPM.Client.Api
             /// Deserializes the response if the response is 403 Forbidden
             /// </summary>
             /// <returns></returns>
-            public NativeBPM.Client.Model.ListDefinitions401Response? Forbidden()
+            public NativeBPM.Client.Model.DeployDefinition403Response? Forbidden()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.DeployDefinition403Response? result = null;
+                OnForbidden(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultForbidden();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.DeployDefinition403Response? DefaultForbidden()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsForbidden
-                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
+                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.DeployDefinition403Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnForbidden(ref bool suppressDefault, ref NativeBPM.Client.Model.DeployDefinition403Response? result);
 
             /// <summary>
             /// Returns true if the response is 403 Forbidden and the deserialized response is not null
             /// </summary>
             /// <param name="result"></param>
             /// <returns></returns>
-            public bool TryForbidden([NotNullWhen(true)]out NativeBPM.Client.Model.ListDefinitions401Response? result)
+            public bool TryForbidden([NotNullWhen(true)]out NativeBPM.Client.Model.DeployDefinition403Response? result)
             {
                 result = null;
 
@@ -8150,7 +8749,7 @@ namespace NativeBPM.Client.Api
                 bool suppressDefaultLog = false;
                 OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
                 if (!suppressDefaultLog)
-                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+                    Logger.LogError(RestLogEvents.ApiDeserializationFailed, exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
             }
 
             partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
@@ -8184,7 +8783,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLog = false;
             AfterStartInstance(ref suppressDefaultLog, apiResponseLocalVar, id, startInstanceRequest);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation(RestLogEvents.ApiRequestCompleted, "{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -8209,7 +8808,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLogLocalVar = false;
             OnErrorStartInstance(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, id, startInstanceRequest);
             if (!suppressDefaultLogLocalVar)
-                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
+                Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
@@ -8303,13 +8902,12 @@ namespace NativeBPM.Client.Api
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        ILogger<StartInstanceApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<StartInstanceApiResponse>();
                         StartInstanceApiResponse apiResponseLocalVar;
 
                         switch ((int)httpResponseMessageLocalVar.StatusCode) {
                             default: {
                                 string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-                                apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/definitions/{id}/start", requestedAtLocalVar, _jsonSerializerOptions);
+                                apiResponseLocalVar = new(Logger, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/definitions/{id}/start", requestedAtLocalVar, _jsonSerializerOptions);
 
                                 break;
                             }
@@ -8339,7 +8937,7 @@ namespace NativeBPM.Client.Api
             /// <summary>
             /// The logger
             /// </summary>
-            public ILogger<StartInstanceApiResponse> Logger { get; }
+            public ILogger<DefaultApi> Logger { get; }
 
             /// <summary>
             /// The <see cref="StartInstanceApiResponse"/>
@@ -8351,7 +8949,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public StartInstanceApiResponse(ILogger<StartInstanceApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            public StartInstanceApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -8367,7 +8965,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public StartInstanceApiResponse(ILogger<StartInstanceApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            public StartInstanceApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -8387,11 +8985,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.ProcessInstance? Ok()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.ProcessInstance? result = null;
+                OnOk(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultOk();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.ProcessInstance? DefaultOk()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsOk
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ProcessInstance>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnOk(ref bool suppressDefault, ref NativeBPM.Client.Model.ProcessInstance? result);
 
             /// <summary>
             /// Returns true if the response is 200 Ok and the deserialized response is not null
@@ -8431,11 +9041,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.ListDefinitions401Response? Unauthorized()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.ListDefinitions401Response? result = null;
+                OnUnauthorized(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultUnauthorized();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.ListDefinitions401Response? DefaultUnauthorized()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsUnauthorized
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnUnauthorized(ref bool suppressDefault, ref NativeBPM.Client.Model.ListDefinitions401Response? result);
 
             /// <summary>
             /// Returns true if the response is 401 Unauthorized and the deserialized response is not null
@@ -8467,20 +9089,32 @@ namespace NativeBPM.Client.Api
             /// Deserializes the response if the response is 403 Forbidden
             /// </summary>
             /// <returns></returns>
-            public NativeBPM.Client.Model.ListDefinitions401Response? Forbidden()
+            public NativeBPM.Client.Model.DeployDefinition403Response? Forbidden()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.DeployDefinition403Response? result = null;
+                OnForbidden(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultForbidden();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.DeployDefinition403Response? DefaultForbidden()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsForbidden
-                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
+                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.DeployDefinition403Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnForbidden(ref bool suppressDefault, ref NativeBPM.Client.Model.DeployDefinition403Response? result);
 
             /// <summary>
             /// Returns true if the response is 403 Forbidden and the deserialized response is not null
             /// </summary>
             /// <param name="result"></param>
             /// <returns></returns>
-            public bool TryForbidden([NotNullWhen(true)]out NativeBPM.Client.Model.ListDefinitions401Response? result)
+            public bool TryForbidden([NotNullWhen(true)]out NativeBPM.Client.Model.DeployDefinition403Response? result)
             {
                 result = null;
 
@@ -8506,7 +9140,7 @@ namespace NativeBPM.Client.Api
                 bool suppressDefaultLog = false;
                 OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
                 if (!suppressDefaultLog)
-                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+                    Logger.LogError(RestLogEvents.ApiDeserializationFailed, exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
             }
 
             partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
@@ -8535,7 +9169,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLog = false;
             AfterTestWebhook(ref suppressDefaultLog, apiResponseLocalVar, id);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation(RestLogEvents.ApiRequestCompleted, "{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -8558,7 +9192,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLogLocalVar = false;
             OnErrorTestWebhook(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, id);
             if (!suppressDefaultLogLocalVar)
-                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
+                Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
@@ -8633,13 +9267,12 @@ namespace NativeBPM.Client.Api
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        ILogger<TestWebhookApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<TestWebhookApiResponse>();
                         TestWebhookApiResponse apiResponseLocalVar;
 
                         switch ((int)httpResponseMessageLocalVar.StatusCode) {
                             default: {
                                 string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-                                apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/webhooks/{id}/test", requestedAtLocalVar, _jsonSerializerOptions);
+                                apiResponseLocalVar = new(Logger, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/webhooks/{id}/test", requestedAtLocalVar, _jsonSerializerOptions);
 
                                 break;
                             }
@@ -8669,7 +9302,7 @@ namespace NativeBPM.Client.Api
             /// <summary>
             /// The logger
             /// </summary>
-            public ILogger<TestWebhookApiResponse> Logger { get; }
+            public ILogger<DefaultApi> Logger { get; }
 
             /// <summary>
             /// The <see cref="TestWebhookApiResponse"/>
@@ -8681,7 +9314,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public TestWebhookApiResponse(ILogger<TestWebhookApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            public TestWebhookApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -8697,7 +9330,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public TestWebhookApiResponse(ILogger<TestWebhookApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            public TestWebhookApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -8715,20 +9348,32 @@ namespace NativeBPM.Client.Api
             /// Deserializes the response if the response is 200 Ok
             /// </summary>
             /// <returns></returns>
-            public NativeBPM.Client.Model.ResolveIncident200Response? Ok()
+            public NativeBPM.Client.Model.TestWebhook200Response? Ok()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.TestWebhook200Response? result = null;
+                OnOk(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultOk();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.TestWebhook200Response? DefaultOk()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsOk
-                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ResolveIncident200Response>(RawContent, _jsonSerializerOptions)
+                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.TestWebhook200Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnOk(ref bool suppressDefault, ref NativeBPM.Client.Model.TestWebhook200Response? result);
 
             /// <summary>
             /// Returns true if the response is 200 Ok and the deserialized response is not null
             /// </summary>
             /// <param name="result"></param>
             /// <returns></returns>
-            public bool TryOk([NotNullWhen(true)]out NativeBPM.Client.Model.ResolveIncident200Response? result)
+            public bool TryOk([NotNullWhen(true)]out NativeBPM.Client.Model.TestWebhook200Response? result)
             {
                 result = null;
 
@@ -8755,11 +9400,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.ListDefinitions401Response? Unauthorized()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.ListDefinitions401Response? result = null;
+                OnUnauthorized(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultUnauthorized();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.ListDefinitions401Response? DefaultUnauthorized()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsUnauthorized
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnUnauthorized(ref bool suppressDefault, ref NativeBPM.Client.Model.ListDefinitions401Response? result);
 
             /// <summary>
             /// Returns true if the response is 401 Unauthorized and the deserialized response is not null
@@ -8791,20 +9448,32 @@ namespace NativeBPM.Client.Api
             /// Deserializes the response if the response is 403 Forbidden
             /// </summary>
             /// <returns></returns>
-            public NativeBPM.Client.Model.ListDefinitions401Response? Forbidden()
+            public NativeBPM.Client.Model.DeployDefinition403Response? Forbidden()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.DeployDefinition403Response? result = null;
+                OnForbidden(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultForbidden();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.DeployDefinition403Response? DefaultForbidden()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsForbidden
-                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
+                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.DeployDefinition403Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnForbidden(ref bool suppressDefault, ref NativeBPM.Client.Model.DeployDefinition403Response? result);
 
             /// <summary>
             /// Returns true if the response is 403 Forbidden and the deserialized response is not null
             /// </summary>
             /// <param name="result"></param>
             /// <returns></returns>
-            public bool TryForbidden([NotNullWhen(true)]out NativeBPM.Client.Model.ListDefinitions401Response? result)
+            public bool TryForbidden([NotNullWhen(true)]out NativeBPM.Client.Model.DeployDefinition403Response? result)
             {
                 result = null;
 
@@ -8836,7 +9505,7 @@ namespace NativeBPM.Client.Api
                 bool suppressDefaultLog = false;
                 OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
                 if (!suppressDefaultLog)
-                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+                    Logger.LogError(RestLogEvents.ApiDeserializationFailed, exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
             }
 
             partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);
@@ -8870,7 +9539,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLog = false;
             AfterUpdateWebhook(ref suppressDefaultLog, apiResponseLocalVar, id, createWebhookRequest);
             if (!suppressDefaultLog)
-                Logger.LogInformation("{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
+                Logger.LogInformation(RestLogEvents.ApiRequestCompleted, "{0,-9} | {1} | {2}", (apiResponseLocalVar.DownloadedAt - apiResponseLocalVar.RequestedAt).TotalSeconds, apiResponseLocalVar.StatusCode, apiResponseLocalVar.Path);
         }
 
         /// <summary>
@@ -8895,7 +9564,7 @@ namespace NativeBPM.Client.Api
             bool suppressDefaultLogLocalVar = false;
             OnErrorUpdateWebhook(ref suppressDefaultLogLocalVar, exceptionLocalVar, pathFormatLocalVar, pathLocalVar, id, createWebhookRequest);
             if (!suppressDefaultLogLocalVar)
-                Logger.LogError(exceptionLocalVar, "An error occurred while sending the request to the server.");
+                Logger.LogError(RestLogEvents.ApiRequestFailed, exceptionLocalVar, "An error occurred while sending the request to the server.");
         }
 
         /// <summary>
@@ -8986,13 +9655,12 @@ namespace NativeBPM.Client.Api
 
                     using (HttpResponseMessage httpResponseMessageLocalVar = await HttpClient.SendAsync(httpRequestMessageLocalVar, cancellationToken).ConfigureAwait(false))
                     {
-                        ILogger<UpdateWebhookApiResponse> apiResponseLoggerLocalVar = LoggerFactory.CreateLogger<UpdateWebhookApiResponse>();
                         UpdateWebhookApiResponse apiResponseLocalVar;
 
                         switch ((int)httpResponseMessageLocalVar.StatusCode) {
                             default: {
                                 string responseContentLocalVar = await httpResponseMessageLocalVar.Content.ReadAsStringAsync(cancellationToken).ConfigureAwait(false);
-                                apiResponseLocalVar = new(apiResponseLoggerLocalVar, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/webhooks/{id}", requestedAtLocalVar, _jsonSerializerOptions);
+                                apiResponseLocalVar = new(Logger, httpRequestMessageLocalVar, httpResponseMessageLocalVar, responseContentLocalVar, "/api/webhooks/{id}", requestedAtLocalVar, _jsonSerializerOptions);
 
                                 break;
                             }
@@ -9022,7 +9690,7 @@ namespace NativeBPM.Client.Api
             /// <summary>
             /// The logger
             /// </summary>
-            public ILogger<UpdateWebhookApiResponse> Logger { get; }
+            public ILogger<DefaultApi> Logger { get; }
 
             /// <summary>
             /// The <see cref="UpdateWebhookApiResponse"/>
@@ -9034,7 +9702,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public UpdateWebhookApiResponse(ILogger<UpdateWebhookApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
+            public UpdateWebhookApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, string rawContent, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, rawContent, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -9050,7 +9718,7 @@ namespace NativeBPM.Client.Api
             /// <param name="path"></param>
             /// <param name="requestedAt"></param>
             /// <param name="jsonSerializerOptions"></param>
-            public UpdateWebhookApiResponse(ILogger<UpdateWebhookApiResponse> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
+            public UpdateWebhookApiResponse(ILogger<DefaultApi> logger, System.Net.Http.HttpRequestMessage httpRequestMessage, System.Net.Http.HttpResponseMessage httpResponseMessage, System.IO.Stream contentStream, string path, DateTime requestedAt, System.Text.Json.JsonSerializerOptions jsonSerializerOptions) : base(httpRequestMessage, httpResponseMessage, contentStream, path, requestedAt, jsonSerializerOptions)
             {
                 Logger = logger;
                 OnCreated(httpRequestMessage, httpResponseMessage);
@@ -9070,11 +9738,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.WebhookRecord? Ok()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.WebhookRecord? result = null;
+                OnOk(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultOk();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.WebhookRecord? DefaultOk()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsOk
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.WebhookRecord>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnOk(ref bool suppressDefault, ref NativeBPM.Client.Model.WebhookRecord? result);
 
             /// <summary>
             /// Returns true if the response is 200 Ok and the deserialized response is not null
@@ -9108,11 +9788,23 @@ namespace NativeBPM.Client.Api
             /// <returns></returns>
             public NativeBPM.Client.Model.ListDefinitions401Response? Unauthorized()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.ListDefinitions401Response? result = null;
+                OnUnauthorized(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultUnauthorized();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.ListDefinitions401Response? DefaultUnauthorized()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsUnauthorized
                     ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnUnauthorized(ref bool suppressDefault, ref NativeBPM.Client.Model.ListDefinitions401Response? result);
 
             /// <summary>
             /// Returns true if the response is 401 Unauthorized and the deserialized response is not null
@@ -9144,20 +9836,32 @@ namespace NativeBPM.Client.Api
             /// Deserializes the response if the response is 403 Forbidden
             /// </summary>
             /// <returns></returns>
-            public NativeBPM.Client.Model.ListDefinitions401Response? Forbidden()
+            public NativeBPM.Client.Model.DeployDefinition403Response? Forbidden()
             {
-                // This logic may be modified with the AsModel.mustache template
+                bool suppressDefault = false;
+                NativeBPM.Client.Model.DeployDefinition403Response? result = null;
+                OnForbidden(ref suppressDefault, ref result);
+                if (!suppressDefault)
+                    result = DefaultForbidden();
+                return result;
+            }
+
+            private NativeBPM.Client.Model.DeployDefinition403Response? DefaultForbidden()
+            {
+                // NOTICE: Consider this AsModel template deprecated. Implement the appropriate partial method instead
                 return IsForbidden
-                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.ListDefinitions401Response>(RawContent, _jsonSerializerOptions)
+                    ? System.Text.Json.JsonSerializer.Deserialize<NativeBPM.Client.Model.DeployDefinition403Response>(RawContent, _jsonSerializerOptions)
                     : null;
             }
+
+            partial void OnForbidden(ref bool suppressDefault, ref NativeBPM.Client.Model.DeployDefinition403Response? result);
 
             /// <summary>
             /// Returns true if the response is 403 Forbidden and the deserialized response is not null
             /// </summary>
             /// <param name="result"></param>
             /// <returns></returns>
-            public bool TryForbidden([NotNullWhen(true)]out NativeBPM.Client.Model.ListDefinitions401Response? result)
+            public bool TryForbidden([NotNullWhen(true)]out NativeBPM.Client.Model.DeployDefinition403Response? result)
             {
                 result = null;
 
@@ -9189,7 +9893,7 @@ namespace NativeBPM.Client.Api
                 bool suppressDefaultLog = false;
                 OnDeserializationError(ref suppressDefaultLog, exception, httpStatusCode);
                 if (!suppressDefaultLog)
-                    Logger.LogError(exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
+                    Logger.LogError(RestLogEvents.ApiDeserializationFailed, exception, "An error occurred while deserializing the {code} response.", httpStatusCode);
             }
 
             partial void OnDeserializationError(ref bool suppressDefaultLog, Exception exception, HttpStatusCode httpStatusCode);

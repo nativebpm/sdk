@@ -139,8 +139,18 @@ namespace NativeBPM.Client.Model
     /// <summary>
     /// A Json converter for type <see cref="VisualizationData" />
     /// </summary>
-    public class VisualizationDataJsonConverter : JsonConverter<VisualizationData>
+    public partial class VisualizationDataJsonConverter : JsonConverter<VisualizationData>
     {
+        partial void OnCreated();
+
+        /// <summary>
+        /// Initializes a new instance of the <see cref="VisualizationDataJsonConverter" /> class.
+        /// </summary>
+        public VisualizationDataJsonConverter()
+        {
+            OnCreated();
+        }
+
         /// <summary>
         /// Deserializes json to <see cref="VisualizationData" />
         /// </summary>

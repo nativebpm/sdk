@@ -13,6 +13,7 @@ Name | Type | Description | Notes
 **status** | **string** |  |
 **due_date** | **\DateTime** |  | [optional]
 **input_schema** | **string** | JSON schema definition of form widgets | [optional]
+**form_id** | **string** | Form identifier or Camunda form key for dynamic schema rendering | [optional]
 **created_at** | **\DateTime** |  |
 **claimed_at** | **\DateTime** |  | [optional]
 **completed_at** | **\DateTime** |  | [optional]
