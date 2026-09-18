@@ -295,7 +295,7 @@ func (w *Worker) connect(ctx context.Context) (*yamux.Session, error) {
 		return nil, fmt.Errorf("unexpected HTTP upgrade status: %d %s", resp.StatusCode, resp.Status)
 	}
 
-	return yamux.Client(conn, nil)
+	return yamux.Client(&bufferedConn{Conn: conn, r: bufr}, nil)
 }
 
 func (w *Worker) serveMux(ctx context.Context, mux *yamux.Session) {
@@ -445,4 +445,13 @@ func writeRawResponse(w io.Writer, status byte, errMsg string) error {
 	copy(buf[3:], errBytes)
 	_, err := w.Write(buf)
 	return err
+}
+
+type bufferedConn struct {
+	net.Conn
+	r io.Reader
+}
+
+func (bc *bufferedConn) Read(p []byte) (int, error) {
+	return bc.r.Read(p)
 }

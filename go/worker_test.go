@@ -140,7 +140,7 @@ func TestWorker_HTTPUpgrade(t *testing.T) {
 		_, _ = bufrw.WriteString("HTTP/1.1 101 Switching Protocols\r\nConnection: Upgrade\r\nUpgrade: yamux\r\n\r\n")
 		_ = bufrw.Flush()
 
-		smux, err := yamux.Server(conn, nil)
+		smux, err := yamux.Server(&bufferedConn{Conn: conn, r: bufrw}, nil)
 		require.NoError(t, err)
 		serverMuxChan <- smux
 	}))
@@ -211,7 +211,7 @@ func TestWorker_HandlerError(t *testing.T) {
 		_, _ = bufrw.WriteString("HTTP/1.1 101 Switching Protocols\r\nConnection: Upgrade\r\nUpgrade: yamux\r\n\r\n")
 		_ = bufrw.Flush()
 
-		smux, err := yamux.Server(conn, nil)
+		smux, err := yamux.Server(&bufferedConn{Conn: conn, r: bufrw}, nil)
 		require.NoError(t, err)
 		serverMuxChan <- smux
 	}))
