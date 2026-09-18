@@ -10,15 +10,15 @@ Built for **Node.js 22+ (native TypeScript execution without compilation via `--
 
 ## Key Features
 
-- **Native Zod 4 Out-of-the-Box**: Re-exports `z`, `ZodError`, and `ZodType`. Define forms and process graphs in a single file (`*.flow.ts`).
-- **Automatic JSON Schema Draft 2020-12 Compilation**: Automatically compiles Zod schemas into JSON Schema Draft 2020-12 for Server-Driven UI (`<nativebpm-trigger>`, Vue, React, Capacitor).
-- **Three-Tier Architecture**:
-  1. *Level 1 (SSOT)*: OpenAPI 3.0 specification (`openapi.yaml`).
-  2. *Level 2 (Generated Transport)*: Strictly typed low-level fetch client.
-  3. *Level 3 (Fluent API Façade & Worker)*: High-level developer experience for deploying, starting, claiming, and running workers.
+- **Native Zod 4 Out-of-the-Box**: Re-exports `z`, `ZodError`, `ZodType`, and `fromJSONSchema`. Define forms, variable contracts, and process graphs in a single file (`*.flow.ts`).
+- **Formal Workflow AST Schemas**: Includes 7 modular Zod schemas (`WorkflowASTSchema`, `NodeASTSchema`, `FlowASTSchema`, `DMNRuleSchema`, `DMNInputSchema`, `DMNOutputSchema`, `InVariableSchema`) serving as the Single Source of Truth for OpenAPI 3.0 and JSON Schema Draft 2020-12.
+- **Process Variables Contract (`.variables(schema)`)**: Enforce typed process start variables directly at the API edge.
+- **AI Task Structured Outputs (`aiTask({ responseSchema })`)**: Pass Zod schemas directly to AI tasks; NativeBPM serializes them to standard JSON Schema to guarantee structured LLM responses.
+- **Fail-Fast Boundary Timers**: Validates ISO 8601 duration strings at build time using `z.iso.duration()`.
+- **Shortened Branching Fluent API**: Ultra-concise `when(cond).then(target).otherwise(target)` syntax with automatic decision gateway generation, plus closure-block DSL.
+- **Two-Way Server-Driven UI (BDUI)**: Compile Zod forms to JSON Schema for `<nativebpm-trigger>`, and re-hydrate live Zod validators on the frontend using `fromJSONSchema()`.
+- **Standard OMG BPMN 2.0 XML Export**: Compile directly to standard BPMN 2.0 XML via `workflow.toBPMN()`.
 - **Clean Code (Zero Parameter Properties)**: 100% compliant with Node 22+ native TypeScript type stripping (`node script.ts`).
-- **Standard OMG BPMN 2.0 XML Export**: Compile directly to BPMN 2.0 XML via `workflow.toBPMN()`.
-- **DMN 1.3 Decision Tables**: Built-in support for BusinessRuleTask and local rule evaluation.
 
 ---
 
@@ -30,37 +30,63 @@ npm install @nativebpm/sdk
 
 ---
 
-## 1. Single-File Workflow-as-Code & Schema-as-Code with Zod
+## 1. Single-File Workflow-as-Code & Schema-as-Code with Zod 4
 
 ```typescript
-import { z, WorkflowBuilder } from "@nativebpm/sdk";
+import { z, WorkflowBuilder, fromJSONSchema } from "@nativebpm/sdk";
 
-// 1. Declare form schema using native Zod 4
+// 1. Process start variables contract
+export const ProcessInputSchema = z.object({
+  customerId: z.string().min(1, "Customer ID is required"),
+  orderAmount: z.number().positive("Amount must be positive"),
+  tier: z.enum(["standard", "premium", "vip"]),
+});
+
+// 2. UserTask UI Form Schema (Server-Driven UI)
 export const OrderFormSchema = z.object({
   order_id: z.string().min(1, "Order ID is required"),
   amount: z.number().positive("Amount must be positive"),
   promo_code: z.string().optional(),
 });
 
-// 2. Build the BPMN process with fluent API
+// 3. AI Service Task Structured Output Schema
+export const RiskAnalysisSchema = z.object({
+  riskScore: z.number().min(0).max(100),
+  recommendation: z.enum(["approve", "manual_review", "reject"]),
+  reasons: z.array(z.string()),
+});
+
+// 4. Build the BPMN process with fluent API
 export const orderWorkflow = new WorkflowBuilder("order_flow", "Order Process")
+  .variables(ProcessInputSchema) // Enforce process input contract
   .start("start")
-  .userTask("fill_order", "Enter Order", {
-    form: OrderFormSchema,
-    formId: "order_form_v1",
-    candidateGroups: "sales",
+  .aiTask("analyze_risk", "Analyze Order Risk", {
+    prompt: "Assess fraud risk for customer: ${customerId}, amount: ${orderAmount}",
+    responseSchema: RiskAnalysisSchema,
+    resultVar: "risk",
   })
-  .exclusiveGateway("check_amount", "Check Order Amount")
-    .when("amount > 100000").then("vip_review").userTask("vip_review", "VIP Review", { candidateGroups: "vip_managers" })
-    .else("auto_approve").serviceTask("auto_approve", "Auto Approval", "auto_approver")
+  // Shortened Fluent API: automatically creates and connects exclusiveGateway
+  .when("risk.recommendation === 'manual_review'")
+    .then("fill_order")
+    .userTask("fill_order", "Manual Order Review", {
+      form: OrderFormSchema,
+      formId: "order_form_v1",
+      candidateGroups: "risk_team",
+    })
+    .boundaryTimer("sla_timer", "SLA 15 Minutes", "PT15M") // ISO 8601 validated
+  .otherwise("auto_approve")
+    .serviceTask("auto_approve", "Auto Approval", "auto_approver")
   .end("end", "Process Finished");
 
-// 3. Extract compiled JSON Schema Draft 2020-12 for Server-Driven UI (BDUI)
+// 5. Extract compiled JSON Schema Draft 2020-12 for Server-Driven UI (BDUI)
 const forms = orderWorkflow.extractForms();
 console.log(forms.order_form_v1);
-// Output: { $schema: "https://json-schema.org/draft/2020-12/schema", type: "object", ... }
 
-// 4. Export standard OMG BPMN 2.0 XML
+// 6. Two-Way Re-hydration on Frontend:
+const clientValidator = fromJSONSchema(forms.order_form_v1);
+const validation = clientValidator.safeParse({ order_id: "ORD-1", amount: 250 });
+
+// 7. Export standard OMG BPMN 2.0 XML
 const bpmnXml = orderWorkflow.toBPMN();
 ```
 

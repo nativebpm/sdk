@@ -41,6 +41,53 @@ Click on the language badges below to navigate to their respective subdirectorie
 
 ---
 
+## ⚡ Universal Contract Architecture: Zod 4 + OpenAPI 3.0 = JSON Schema = BPMN 2.0
+
+NativeBPM employs an end-to-end **Schema-as-Code** pipeline anchored by **Zod 4**:
+* **Single Source of Truth (SSOT)**: Workflow AST graphs and data contracts are declared in TypeScript via Zod 4 (`sdk/typescript/src/schemas/workflow-ast.ts`).
+* **Multi-Target Native Compilation**: Zod 4 natively compiles schemas without third-party dependencies to:
+  1. **OpenAPI 3.0** (`target: 'openapi-3.0'`) — embedded into `sdk/api/openapi.yaml` to generate strongly typed models across all 10 language SDKs.
+  2. **JSON Schema Draft 2020-12** (`target: 'draft-2020-12'`) — drives Server-Driven UI (BDUI) and dynamic form rendering in `<nativebpm-trigger>` web components.
+* **Two-Way Re-hydration (`fromJSONSchema`)**: Enables frontend applications to reconstruct live, executable Zod validators directly from JSON Schemas delivered over the wire.
+* **OMG BPMN 2.0 Parity**: The NativeBPM Go core engine accepts AST directly and serializes standard BPMN 2.0 XML with `inputSchema` and `nativebpm:responseSchema` extensions.
+
+```mermaid
+flowchart LR
+    ZOD["Zod 4 AST & Data Schemas<br/>(Single Source of Truth)"] -->|z.toJSONSchema openapi-3.0| OAI["OpenAPI 3.0 Spec<br/>(sdk/api/openapi.yaml)"]
+    ZOD -->|z.toJSONSchema draft-2020-12| JS["JSON Schema Draft 2020-12<br/>(Server-Driven UI)"]
+    OAI -->|openapi-generator / oapi-codegen| SDK["10 Polyglot SDKs<br/>(Go, Python, Java, C#, Rust...)"]
+    ZOD -->|WorkflowBuilder.toBPMN| BPMN["BPMN 2.0 XML<br/>(inputSchema, responseSchema)"]
+    SDK -->|Deploy AST / XML| ENGINE["NativeBPM Go Core Engine<br/>(Wasmee UDS < 13µs)"]
+```
+
+### 7 Modular AST Zod Schemas
+1. **`WorkflowASTSchema`** — root process container (`id`, `name`, `inputSchema`, `nodes`, `flows`).
+2. **`NodeASTSchema`** — unified schema covering 12 BPMN 2.0 node types (`serviceTask`, `userTask`, `aiTask`, `exclusiveGateway`, `boundaryTimerEvent`...).
+3. **`FlowASTSchema`** — sequence flows with JUEL/FEEL condition expressions.
+4. **`DMNRuleSchema`** — decision matrix rows (`inputs: string[]`, `outputs: string[]`).
+5. **`DMNInputSchema` & `DMNOutputSchema`** — DMN column type definitions.
+6. **`InVariableSchema` & `OutVariableSchema`** — callActivity subprocess variable mapping.
+
+### Shortened Branching Fluent API (`when ... then ... otherwise`)
+Decision gateways (`exclusiveGateway`) are synthesized automatically behind the scenes:
+
+```typescript
+const workflow = new WorkflowBuilder('order_flow', 'Order Processing')
+  .variables(OrderInputSchema) // Process start variables contract
+  .start('start')
+  .serviceTask('score', 'Score Order', 'scoring_topic')
+  // Automatically creates and connects exclusiveGateway:
+  .when("score > 80")
+    .then('vip_review')
+    .userTask('vip_review', 'VIP Review', { form: VIPFormSchema })
+    .boundaryTimer('sla_timer', 'SLA 15M', 'PT15M') // ISO 8601 validated via z.iso.duration()
+  .otherwise('auto_approve')
+    .serviceTask('auto_approve', 'Auto Approval', 'payout_topic')
+  .end('end', 'Done');
+```
+
+---
+
 ## 🛠️ Server-side Workflow-as-Code Compilation
 
 NativeBPM features a state-of-the-art **Workflow-as-Code** builder. Instead of writing verbose BPMN 2.0 XML by hand or using external visual tools, developers can write type-safe, fluent code in their host language.
