@@ -192,13 +192,24 @@ To facilitate seamless AI and LLM orchestration without breaking BPMN 2.0 standa
 
 ---
 
-## ⚙️ Monorepo SDK Development & Code Generation
+## ⚙️ Polyglot SDK Development & Code Generation (BuildKit)
 
-All client libraries in this monorepo are generated directly from the central OpenAPI 3.0 specification ([api/openapi.yaml](api/openapi.yaml)).
+All client libraries are generated hermetically from the central OpenAPI 3.0 specification ([api/openapi.yaml](api/openapi.yaml)) using **Docker BuildKit (`docker buildx`)**. This eliminates host environment dependencies, runs parallel multi-stage generation across all CPU cores, and writes files with user-mapped permissions.
 
-To regenerate code across all 10 languages:
+### Generate All 10 Languages in Parallel
 ```bash
 make generate
+# Or directly via buildx:
+docker buildx build -f Dockerfile.gen --target export-all --output type=local,dest=./out .
+```
+
+### Generate a Specific Language
+```bash
+make generate-go
+make generate-typescript
+make generate-python
+# Or override destination directory:
+make generate-go DEST=./go
 ```
 
 For detailed instructions on modifying API schemas, regenerating individual language SDKs, and running test suites, please refer to the [Contributing Guide](CONTRIBUTING.md).

@@ -18,84 +18,41 @@ NODE22_IMG = registry.gitlab.com/nativebpm/sdk/node:22
 DOCKER_GIT_IMG = registry.gitlab.com/nativebpm/sdk/docker:27
 DOCKER_DIND_IMG = registry.gitlab.com/nativebpm/sdk/docker:27-dind
 
-# Unified code generator target for all polyglot SDKs using local openapi.yaml
-generate: generate-go generate-python generate-typescript generate-java generate-php generate-dotnet generate-rust generate-kotlin generate-swift generate-dart
+# BuildKit-powered code generator for polyglot SDKs
+BUILDX = docker buildx build -f Dockerfile.gen
+
+generate:
+	$(BUILDX) --target export-all --output type=local,dest=$${DEST:-./out} .
 
 generate-go:
-	docker run --rm -v "$$(pwd):/local" $(OPENAPI_GEN_IMG) generate \
-		-i /local/api/openapi.yaml \
-		-g go \
-		-o /local/go \
-		--additional-properties=packageName=nativebpm,hideGenerationTimestamp=true \
-		--git-host gitlab.com \
-		--git-user-id nativebpm \
-		--git-repo-id sdk/go
-	mkdir -p go/api
-	docker run --rm -v "$$(pwd):/local" -w /local/go $(GOLANG_IMG) sh -c "go run github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@v2.7.1 -package api -generate types,std-http,spec,strict-server /local/api/openapi.yaml > /local/go/api/api.gen.go"
-	docker run --rm -v "$$(pwd):/local" -w /local/go $(GOLANG_IMG) go mod tidy
+	$(BUILDX) --target export-go --output type=local,dest=$${DEST:-./out/go} .
 
 generate-python:
-	docker run --rm -v "$$(pwd):/local" $(OPENAPI_GEN_IMG) generate \
-		-i /local/api/openapi.yaml \
-		-g python \
-		-o /local/python \
-		--additional-properties=packageName=nativebpm_client,hideGenerationTimestamp=true
+	$(BUILDX) --target export-python --output type=local,dest=$${DEST:-./out/python} .
 
 generate-typescript:
-	docker run --rm -v "$$(pwd):/local" $(OPENAPI_GEN_IMG) generate \
-		-i /local/api/openapi.yaml \
-		-g typescript-fetch \
-		-o /local/typescript/src/api \
-		--additional-properties=npmName=@nativebpm/client,npmVersion=1.0.0,hideGenerationTimestamp=true
+	$(BUILDX) --target export-typescript --output type=local,dest=$${DEST:-./out/typescript} .
 
 generate-java:
-	docker run --rm -v "$$(pwd):/local" $(OPENAPI_GEN_IMG) generate \
-		-i /local/api/openapi.yaml \
-		-g java \
-		-o /local/java \
-		--additional-properties=library=okhttp-gson,serializationLibrary=gson,groupId=com.nativebpm,artifactId=nativebpm-java-client,artifactVersion=1.0.0,invokerPackage=com.nativebpm.client,apiPackage=com.nativebpm.client.api,modelPackage=com.nativebpm.client.model,hideGenerationTimestamp=true
+	$(BUILDX) --target export-java --output type=local,dest=$${DEST:-./out/java} .
 
 generate-php:
-	docker run --rm -v "$$(pwd):/local" $(OPENAPI_GEN_IMG) generate \
-		-i /local/api/openapi.yaml \
-		-g php \
-		-o /local/php \
-		--additional-properties=invokerPackage=NativeBPM\\Client,packageName=nativebpm/client,hideGenerationTimestamp=true
+	$(BUILDX) --target export-php --output type=local,dest=$${DEST:-./out/php} .
 
 generate-dotnet:
-	docker run --rm -v "$$(pwd):/local" $(OPENAPI_GEN_IMG) generate \
-		-i /local/api/openapi.yaml \
-		-g csharp \
-		-o /local/dotnet \
-		--additional-properties=packageName=NativeBPM.Client,targetFramework=net9.0,hideGenerationTimestamp=true,packageGuid={5C27DC0F-7267-4E8A-8D82-A50B20450F28}
+	$(BUILDX) --target export-dotnet --output type=local,dest=$${DEST:-./out/dotnet} .
 
 generate-rust:
-	docker run --rm -v "$$(pwd):/local" $(OPENAPI_GEN_IMG) generate \
-		-i /local/api/openapi.yaml \
-		-g rust \
-		-o /local/rust \
-		--additional-properties=packageName=nativebpm-client,hideGenerationTimestamp=true
+	$(BUILDX) --target export-rust --output type=local,dest=$${DEST:-./out/rust} .
 
 generate-kotlin:
-	docker run --rm -v "$$(pwd):/local" $(OPENAPI_GEN_IMG) generate \
-		-i /local/api/openapi.yaml \
-		-g kotlin \
-		-o /local/kotlin \
-		--additional-properties=groupId=com.nativebpm,artifactId=nativebpm-kotlin-client,artifactVersion=1.0.0,packageName=com.nativebpm.client,library=jvm-okhttp4,hideGenerationTimestamp=true
+	$(BUILDX) --target export-kotlin --output type=local,dest=$${DEST:-./out/kotlin} .
 
 generate-swift:
-	docker run --rm -v "$$(pwd):/local" $(OPENAPI_GEN_IMG) generate \
-		-i /local/api/openapi.yaml \
-		-g swift5 \
-		-o /local/swift \
-		--additional-properties=projectName=NativeBPMClient,responseAs=AsyncAwait,hideGenerationTimestamp=true
+	$(BUILDX) --target export-swift --output type=local,dest=$${DEST:-./out/swift} .
 
 generate-dart:
-	docker run --rm -v "$$(pwd):/local" $(OPENAPI_GEN_IMG) generate \
-		-i /local/api/openapi.yaml \
-		-g dart \
-		-o /local/dart \
-		--additional-properties=pubName=nativebpm_client,pubVersion=1.0.0,pubDescription="NativeBPM Client SDK for Dart and Flutter",hideGenerationTimestamp=true
+	$(BUILDX) --target export-dart --output type=local,dest=$${DEST:-./out/dart} .
 
 test: test-schema test-go test-python test-typescript test-java test-kotlin test-php test-dotnet test-rust test-dart
 

@@ -1,0 +1,192 @@
+# syntax=docker/dockerfile:1.7
+ARG OPENAPI_GEN_IMG=registry.gitlab.com/nativebpm/sdk/openapi-generator-cli:latest
+ARG GOLANG_IMG=registry.gitlab.com/nativebpm/sdk/golang:1.26-alpine
+
+# ==============================================================================
+# Base specification stage
+# ==============================================================================
+FROM alpine:3.20 AS spec
+WORKDIR /workspace
+COPY api/openapi.yaml /workspace/api/openapi.yaml
+
+# ==============================================================================
+# 1. Go SDK Generation
+# ==============================================================================
+FROM ${OPENAPI_GEN_IMG} AS gen-go-raw
+WORKDIR /workspace
+COPY --from=spec /workspace/api/openapi.yaml /workspace/api/openapi.yaml
+RUN /usr/local/bin/docker-entrypoint.sh generate \
+    -i /workspace/api/openapi.yaml \
+    -g go \
+    -o /workspace/out \
+    --additional-properties=packageName=nativebpm,hideGenerationTimestamp=true \
+    --git-host gitlab.com \
+    --git-user-id nativebpm \
+    --git-repo-id sdk/go
+
+FROM ${GOLANG_IMG} AS gen-go
+WORKDIR /workspace/go
+COPY --from=gen-go-raw /workspace/out /workspace/go
+COPY --from=spec /workspace/api/openapi.yaml /workspace/api/openapi.yaml
+RUN mkdir -p api && \
+    go run github.com/oapi-codegen/oapi-codegen/v2/cmd/oapi-codegen@v2.7.1 \
+      -package api \
+      -generate types,std-http,spec,strict-server \
+      /workspace/api/openapi.yaml > api/api.gen.go && \
+    go mod tidy
+
+# ==============================================================================
+# 2. Python SDK Generation
+# ==============================================================================
+FROM ${OPENAPI_GEN_IMG} AS gen-python
+WORKDIR /workspace
+COPY --from=spec /workspace/api/openapi.yaml /workspace/api/openapi.yaml
+RUN /usr/local/bin/docker-entrypoint.sh generate \
+    -i /workspace/api/openapi.yaml \
+    -g python \
+    -o /workspace/out \
+    --additional-properties=packageName=nativebpm_client,hideGenerationTimestamp=true
+
+# ==============================================================================
+# 3. TypeScript SDK Generation
+# ==============================================================================
+FROM ${OPENAPI_GEN_IMG} AS gen-typescript
+WORKDIR /workspace
+COPY --from=spec /workspace/api/openapi.yaml /workspace/api/openapi.yaml
+RUN /usr/local/bin/docker-entrypoint.sh generate \
+    -i /workspace/api/openapi.yaml \
+    -g typescript-fetch \
+    -o /workspace/out/src/api \
+    --additional-properties=npmName=@nativebpm/client,npmVersion=1.0.0,hideGenerationTimestamp=true
+
+# ==============================================================================
+# 4. Java SDK Generation
+# ==============================================================================
+FROM ${OPENAPI_GEN_IMG} AS gen-java
+WORKDIR /workspace
+COPY --from=spec /workspace/api/openapi.yaml /workspace/api/openapi.yaml
+RUN /usr/local/bin/docker-entrypoint.sh generate \
+    -i /workspace/api/openapi.yaml \
+    -g java \
+    -o /workspace/out \
+    --additional-properties=library=okhttp-gson,serializationLibrary=gson,groupId=com.nativebpm,artifactId=nativebpm-java-client,artifactVersion=1.0.0,invokerPackage=com.nativebpm.client,apiPackage=com.nativebpm.client.api,modelPackage=com.nativebpm.client.model,hideGenerationTimestamp=true
+
+# ==============================================================================
+# 5. PHP SDK Generation
+# ==============================================================================
+FROM ${OPENAPI_GEN_IMG} AS gen-php
+WORKDIR /workspace
+COPY --from=spec /workspace/api/openapi.yaml /workspace/api/openapi.yaml
+RUN /usr/local/bin/docker-entrypoint.sh generate \
+    -i /workspace/api/openapi.yaml \
+    -g php \
+    -o /workspace/out \
+    --additional-properties=invokerPackage=NativeBPM\\Client,packageName=nativebpm/client,hideGenerationTimestamp=true
+
+# ==============================================================================
+# 6. .NET (C#) SDK Generation
+# ==============================================================================
+FROM ${OPENAPI_GEN_IMG} AS gen-dotnet
+WORKDIR /workspace
+COPY --from=spec /workspace/api/openapi.yaml /workspace/api/openapi.yaml
+RUN /usr/local/bin/docker-entrypoint.sh generate \
+    -i /workspace/api/openapi.yaml \
+    -g csharp \
+    -o /workspace/out \
+    --additional-properties=packageName=NativeBPM.Client,targetFramework=net9.0,hideGenerationTimestamp=true,packageGuid={5C27DC0F-7267-4E8A-8D82-A50B20450F28}
+
+# ==============================================================================
+# 7. Rust SDK Generation
+# ==============================================================================
+FROM ${OPENAPI_GEN_IMG} AS gen-rust
+WORKDIR /workspace
+COPY --from=spec /workspace/api/openapi.yaml /workspace/api/openapi.yaml
+RUN /usr/local/bin/docker-entrypoint.sh generate \
+    -i /workspace/api/openapi.yaml \
+    -g rust \
+    -o /workspace/out \
+    --additional-properties=packageName=nativebpm-client,hideGenerationTimestamp=true
+
+# ==============================================================================
+# 8. Kotlin SDK Generation
+# ==============================================================================
+FROM ${OPENAPI_GEN_IMG} AS gen-kotlin
+WORKDIR /workspace
+COPY --from=spec /workspace/api/openapi.yaml /workspace/api/openapi.yaml
+RUN /usr/local/bin/docker-entrypoint.sh generate \
+    -i /workspace/api/openapi.yaml \
+    -g kotlin \
+    -o /workspace/out \
+    --additional-properties=groupId=com.nativebpm,artifactId=nativebpm-kotlin-client,artifactVersion=1.0.0,packageName=com.nativebpm.client,library=jvm-okhttp4,hideGenerationTimestamp=true
+
+# ==============================================================================
+# 9. Swift SDK Generation
+# ==============================================================================
+FROM ${OPENAPI_GEN_IMG} AS gen-swift
+WORKDIR /workspace
+COPY --from=spec /workspace/api/openapi.yaml /workspace/api/openapi.yaml
+RUN /usr/local/bin/docker-entrypoint.sh generate \
+    -i /workspace/api/openapi.yaml \
+    -g swift5 \
+    -o /workspace/out \
+    --additional-properties=projectName=NativeBPMClient,responseAs=AsyncAwait,hideGenerationTimestamp=true
+
+# ==============================================================================
+# 10. Dart SDK Generation
+# ==============================================================================
+FROM ${OPENAPI_GEN_IMG} AS gen-dart
+WORKDIR /workspace
+COPY --from=spec /workspace/api/openapi.yaml /workspace/api/openapi.yaml
+RUN /usr/local/bin/docker-entrypoint.sh generate \
+    -i /workspace/api/openapi.yaml \
+    -g dart \
+    -o /workspace/out \
+    --additional-properties=pubName=nativebpm_client,pubVersion=1.0.0,pubDescription="NativeBPM Client SDK for Dart and Flutter",hideGenerationTimestamp=true
+
+# ==============================================================================
+# Individual export targets (Scratch stages for BuildKit local file exporter)
+# ==============================================================================
+FROM scratch AS export-go
+COPY --from=gen-go /workspace/go /
+
+FROM scratch AS export-python
+COPY --from=gen-python /workspace/out /
+
+FROM scratch AS export-typescript
+COPY --from=gen-typescript /workspace/out /
+
+FROM scratch AS export-java
+COPY --from=gen-java /workspace/out /
+
+FROM scratch AS export-php
+COPY --from=gen-php /workspace/out /
+
+FROM scratch AS export-dotnet
+COPY --from=gen-dotnet /workspace/out /
+
+FROM scratch AS export-rust
+COPY --from=gen-rust /workspace/out /
+
+FROM scratch AS export-kotlin
+COPY --from=gen-kotlin /workspace/out /
+
+FROM scratch AS export-swift
+COPY --from=gen-swift /workspace/out /
+
+FROM scratch AS export-dart
+COPY --from=gen-dart /workspace/out /
+
+# ==============================================================================
+# Unified export target (All 10 languages evaluated in parallel DAG)
+# ==============================================================================
+FROM scratch AS export-all
+COPY --from=gen-go /workspace/go /go
+COPY --from=gen-python /workspace/out /python
+COPY --from=gen-typescript /workspace/out /typescript
+COPY --from=gen-java /workspace/out /java
+COPY --from=gen-php /workspace/out /php
+COPY --from=gen-dotnet /workspace/out /dotnet
+COPY --from=gen-rust /workspace/out /rust
+COPY --from=gen-kotlin /workspace/out /kotlin
+COPY --from=gen-swift /workspace/out /swift
+COPY --from=gen-dart /workspace/out /dart
