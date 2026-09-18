@@ -1,31 +1,379 @@
 {
-  "type": "object",
-  "properties": {
-    "id": {
-      "type": "string",
-      "minLength": 1,
-      "description": "Unique process definition identifier"
-    },
-    "name": {
-      "type": "string",
-      "minLength": 1,
-      "description": "Human-readable process name"
-    },
-    "inputSchema": {
-      "description": "JSON Schema contract for process start variables",
-      "anyOf": [
-        {
-          "type": "string"
+  "openapi": "3.0.3",
+  "info": {
+    "title": "NativeBPM Workflow AST Specification",
+    "version": "1.0.0",
+    "description": "Declarative Zod 4-compiled OpenAPI 3.0 specification for NativeBPM Workflow AST graph models, nodes, flows, and DMN decision tables."
+  },
+  "paths": {
+    "/api/deploy": {
+      "post": {
+        "summary": "Deploy Workflow AST process definition",
+        "description": "Deploy a programmatic Workflow AST process definition directly to NativeBPM engine.",
+        "operationId": "deployWorkflowAST",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/WorkflowAST"
+              }
+            }
+          }
         },
-        {
-          "type": "object",
-          "additionalProperties": {}
+        "responses": {
+          "200": {
+            "description": "Process definition deployed successfully"
+          }
         }
-      ]
-    },
-    "nodes": {
-      "type": "array",
-      "items": {
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "WorkflowAST": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Unique process definition identifier"
+          },
+          "name": {
+            "type": "string",
+            "minLength": 1,
+            "description": "Human-readable process name"
+          },
+          "inputSchema": {
+            "description": "JSON Schema contract for process start variables",
+            "anyOf": [
+              {
+                "type": "string"
+              },
+              {
+                "type": "object",
+                "additionalProperties": {}
+              }
+            ]
+          },
+          "nodes": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Unique element identifier"
+                },
+                "name": {
+                  "type": "string",
+                  "description": "Human-readable element label"
+                },
+                "type": {
+                  "type": "string",
+                  "enum": [
+                    "startEvent",
+                    "endEvent",
+                    "serviceTask",
+                    "userTask",
+                    "aiServiceTask",
+                    "aiTask",
+                    "exclusiveGateway",
+                    "parallelGateway",
+                    "eventBasedGateway",
+                    "callActivity",
+                    "businessRuleTask",
+                    "boundaryTimerEvent"
+                  ],
+                  "description": "BPMN 2.0 node type"
+                },
+                "topic": {
+                  "description": "Worker subscription topic for service tasks",
+                  "type": "string"
+                },
+                "wasmPath": {
+                  "description": "Local or OCI path to WASM module for Wasmee worker",
+                  "type": "string"
+                },
+                "provider": {
+                  "description": "AI Provider (openai, gemini, anthropic)",
+                  "type": "string"
+                },
+                "model": {
+                  "description": "Model identifier (gpt-4o, gemini-1.5-pro)",
+                  "type": "string"
+                },
+                "prompt": {
+                  "description": "Prompt template with variable interpolation",
+                  "type": "string"
+                },
+                "systemInstruction": {
+                  "description": "System instruction for AI assistant",
+                  "type": "string"
+                },
+                "responseSchema": {
+                  "description": "Expected JSON Schema for AI response",
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": {}
+                    }
+                  ]
+                },
+                "temperature": {
+                  "description": "Model temperature (0.0 to 2.0)",
+                  "type": "number"
+                },
+                "resultVar": {
+                  "description": "Variable name to store task result",
+                  "type": "string"
+                },
+                "assignee": {
+                  "description": "Assigned user identifier for UserTask",
+                  "type": "string"
+                },
+                "candidateGroups": {
+                  "description": "Authorized candidate groups for UserTask",
+                  "type": "string"
+                },
+                "dueDate": {
+                  "description": "ISO 8601 due date for task completion",
+                  "type": "string"
+                },
+                "inputSchema": {
+                  "description": "JSON Schema defining the UserTask form fields",
+                  "anyOf": [
+                    {
+                      "type": "string"
+                    },
+                    {
+                      "type": "object",
+                      "additionalProperties": {}
+                    }
+                  ]
+                },
+                "formId": {
+                  "description": "Unique form definition identifier",
+                  "type": "string"
+                },
+                "formKey": {
+                  "description": "Camunda-compatible form key reference",
+                  "type": "string"
+                },
+                "calledElement": {
+                  "description": "Called subprocess definition ID",
+                  "type": "string"
+                },
+                "inVariables": {
+                  "description": "Input variable mappings for callActivity",
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "source": {
+                        "description": "Source variable name",
+                        "type": "string"
+                      },
+                      "target": {
+                        "description": "Target variable name in child context",
+                        "type": "string"
+                      },
+                      "variables": {
+                        "description": "Special mapping, e.g. \"all\"",
+                        "type": "string"
+                      },
+                      "local": {
+                        "description": "Whether variable is scoped locally",
+                        "type": "boolean"
+                      }
+                    },
+                    "additionalProperties": false
+                  }
+                },
+                "outVariables": {
+                  "description": "Output variable mappings for callActivity",
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "source": {
+                        "description": "Source variable name in child context",
+                        "type": "string"
+                      },
+                      "target": {
+                        "description": "Target variable name in parent context",
+                        "type": "string"
+                      },
+                      "variables": {
+                        "description": "Special mapping, e.g. \"all\"",
+                        "type": "string"
+                      }
+                    },
+                    "additionalProperties": false
+                  }
+                },
+                "decisionRef": {
+                  "description": "DMN decision table reference ID",
+                  "type": "string"
+                },
+                "mapDecisionResult": {
+                  "description": "Result mapping policy (singleEntry, collectEntries)",
+                  "type": "string"
+                },
+                "hitPolicy": {
+                  "description": "DMN hit policy (UNIQUE, FIRST, COLLECT)",
+                  "type": "string"
+                },
+                "inputs": {
+                  "description": "DMN input column declarations",
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "expression": {
+                        "type": "string",
+                        "description": "Input expression (variable name)"
+                      },
+                      "type": {
+                        "type": "string",
+                        "description": "Data type (string, number, boolean)"
+                      }
+                    },
+                    "required": [
+                      "expression",
+                      "type"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "outputs": {
+                  "description": "DMN output column declarations",
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "name": {
+                        "type": "string",
+                        "description": "Output variable name"
+                      },
+                      "type": {
+                        "type": "string",
+                        "description": "Data type (string, number, boolean)"
+                      }
+                    },
+                    "required": [
+                      "name",
+                      "type"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "rules": {
+                  "description": "DMN decision matrix rows",
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "inputs": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "Input match conditions per column"
+                      },
+                      "outputs": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "Output assigned values per column"
+                      }
+                    },
+                    "required": [
+                      "inputs",
+                      "outputs"
+                    ],
+                    "additionalProperties": false
+                  }
+                },
+                "attachedToRef": {
+                  "description": "Host task ID for boundaryTimerEvent",
+                  "type": "string"
+                },
+                "timeDuration": {
+                  "description": "ISO 8601 duration (e.g. PT15M, P1D)",
+                  "type": "string"
+                },
+                "timeDate": {
+                  "description": "ISO 8601 target timestamp",
+                  "type": "string"
+                },
+                "timeCycle": {
+                  "description": "ISO 8601 recurrence cycle (e.g. R3/PT10M)",
+                  "type": "string"
+                },
+                "cancelActivity": {
+                  "description": "Whether boundary timer interrupts the host activity",
+                  "type": "boolean"
+                }
+              },
+              "required": [
+                "id",
+                "name",
+                "type"
+              ],
+              "additionalProperties": false
+            },
+            "description": "List of BPMN nodes"
+          },
+          "flows": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "id": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Unique sequence flow identifier"
+                },
+                "source": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Source node ID"
+                },
+                "target": {
+                  "type": "string",
+                  "minLength": 1,
+                  "description": "Target node ID"
+                },
+                "condition": {
+                  "description": "JUEL/FEEL condition expression (e.g. ${approved == true})",
+                  "type": "string"
+                }
+              },
+              "required": [
+                "id",
+                "source",
+                "target"
+              ],
+              "additionalProperties": false
+            },
+            "description": "List of sequence flows connecting nodes"
+          }
+        },
+        "required": [
+          "id",
+          "name",
+          "nodes",
+          "flows"
+        ],
+        "additionalProperties": false
+      },
+      "NodeAST": {
         "type": "object",
         "properties": {
           "id": {
@@ -295,11 +643,7 @@
         ],
         "additionalProperties": false
       },
-      "description": "List of BPMN nodes"
-    },
-    "flows": {
-      "type": "array",
-      "items": {
+      "FlowAST": {
         "type": "object",
         "properties": {
           "id": {
@@ -329,14 +673,106 @@
         ],
         "additionalProperties": false
       },
-      "description": "List of sequence flows connecting nodes"
+      "DMNRule": {
+        "type": "object",
+        "properties": {
+          "inputs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Input match conditions per column"
+          },
+          "outputs": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            },
+            "description": "Output assigned values per column"
+          }
+        },
+        "required": [
+          "inputs",
+          "outputs"
+        ],
+        "additionalProperties": false
+      },
+      "DMNInput": {
+        "type": "object",
+        "properties": {
+          "expression": {
+            "type": "string",
+            "description": "Input expression (variable name)"
+          },
+          "type": {
+            "type": "string",
+            "description": "Data type (string, number, boolean)"
+          }
+        },
+        "required": [
+          "expression",
+          "type"
+        ],
+        "additionalProperties": false
+      },
+      "DMNOutput": {
+        "type": "object",
+        "properties": {
+          "name": {
+            "type": "string",
+            "description": "Output variable name"
+          },
+          "type": {
+            "type": "string",
+            "description": "Data type (string, number, boolean)"
+          }
+        },
+        "required": [
+          "name",
+          "type"
+        ],
+        "additionalProperties": false
+      },
+      "InVariable": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "description": "Source variable name",
+            "type": "string"
+          },
+          "target": {
+            "description": "Target variable name in child context",
+            "type": "string"
+          },
+          "variables": {
+            "description": "Special mapping, e.g. \"all\"",
+            "type": "string"
+          },
+          "local": {
+            "description": "Whether variable is scoped locally",
+            "type": "boolean"
+          }
+        },
+        "additionalProperties": false
+      },
+      "OutVariable": {
+        "type": "object",
+        "properties": {
+          "source": {
+            "description": "Source variable name in child context",
+            "type": "string"
+          },
+          "target": {
+            "description": "Target variable name in parent context",
+            "type": "string"
+          },
+          "variables": {
+            "description": "Special mapping, e.g. \"all\"",
+            "type": "string"
+          }
+        },
+        "additionalProperties": false
+      }
     }
-  },
-  "required": [
-    "id",
-    "name",
-    "nodes",
-    "flows"
-  ],
-  "additionalProperties": false
+  }
 }

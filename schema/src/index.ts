@@ -110,8 +110,60 @@ export function exportWorkflowOpenAPISchema(): Record<string, any> {
 }
 
 /**
+ * Export the complete standalone OpenAPI 3.0.3 specification document for Workflow AST.
+ * This document is fully compatible with OpenAPI 3.0 parsers and Swagger UI previews (e.g. GitLab/GitHub).
+ */
+export function exportWorkflowOpenAPIDocument(): Record<string, any> {
+  return {
+    openapi: '3.0.3',
+    info: {
+      title: 'NativeBPM Workflow AST Specification',
+      version: '1.0.0',
+      description: 'Declarative Zod 4-compiled OpenAPI 3.0 specification for NativeBPM Workflow AST graph models, nodes, flows, and DMN decision tables.',
+    },
+    paths: {
+      '/api/deploy': {
+        post: {
+          summary: 'Deploy Workflow AST process definition',
+          description: 'Deploy a programmatic Workflow AST process definition directly to NativeBPM engine.',
+          operationId: 'deployWorkflowAST',
+          requestBody: {
+            required: true,
+            content: {
+              'application/json': {
+                schema: {
+                  $ref: '#/components/schemas/WorkflowAST',
+                },
+              },
+            },
+          },
+          responses: {
+            '200': {
+              description: 'Process definition deployed successfully',
+            },
+          },
+        },
+      },
+    },
+    components: {
+      schemas: {
+        WorkflowAST: exportWorkflowOpenAPISchema(),
+        NodeAST: toJSONSchema(NodeASTSchema, { target: 'openapi-3.0' }) as Record<string, any>,
+        FlowAST: toJSONSchema(FlowASTSchema, { target: 'openapi-3.0' }) as Record<string, any>,
+        DMNRule: toJSONSchema(DMNRuleSchema, { target: 'openapi-3.0' }) as Record<string, any>,
+        DMNInput: toJSONSchema(DMNInputSchema, { target: 'openapi-3.0' }) as Record<string, any>,
+        DMNOutput: toJSONSchema(DMNOutputSchema, { target: 'openapi-3.0' }) as Record<string, any>,
+        InVariable: toJSONSchema(InVariableSchema, { target: 'openapi-3.0' }) as Record<string, any>,
+        OutVariable: toJSONSchema(OutVariableSchema, { target: 'openapi-3.0' }) as Record<string, any>,
+      },
+    },
+  };
+}
+
+/**
  * Export the WorkflowAST schema as a standard JSON Schema Draft 2020-12 document.
  */
 export function exportWorkflowJSONSchema(): Record<string, any> {
   return toJSONSchema(WorkflowASTSchema, { target: 'draft-2020-12' }) as Record<string, any>;
 }
+

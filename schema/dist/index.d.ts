@@ -183,6 +183,11 @@ export type WorkflowAST = z.infer<typeof WorkflowASTSchema>;
  */
 export declare function exportWorkflowOpenAPISchema(): Record<string, any>;
 /**
+ * Export the complete standalone OpenAPI 3.0.3 specification document for Workflow AST.
+ * This document is fully compatible with OpenAPI 3.0 parsers and Swagger UI previews (e.g. GitLab/GitHub).
+ */
+export declare function exportWorkflowOpenAPIDocument(): Record<string, any>;
+/**
  * Export the WorkflowAST schema as a standard JSON Schema Draft 2020-12 document.
  */
 export declare function exportWorkflowJSONSchema(): Record<string, any>;

@@ -5,6 +5,7 @@ import {
   NodeASTSchema,
   FlowASTSchema,
   exportWorkflowOpenAPISchema,
+  exportWorkflowOpenAPIDocument,
   exportWorkflowJSONSchema,
 } from './dist/index.js';
 
@@ -47,13 +48,31 @@ assert.throws(
 );
 console.log("✓ Invalid AST rejection passed");
 
-// 3. OpenAPI 3.0 Exporter
-const openapi = exportWorkflowOpenAPISchema();
-assert.strictEqual(openapi.type, "object");
-assert.ok(openapi.properties.id);
-assert.ok(openapi.properties.nodes);
-assert.ok(openapi.properties.flows);
+// 3. OpenAPI 3.0 Schema & Document Exporters
+const openapiSchema = exportWorkflowOpenAPISchema();
+assert.strictEqual(openapiSchema.type, "object");
+assert.ok(openapiSchema.properties.id);
+assert.ok(openapiSchema.properties.nodes);
+assert.ok(openapiSchema.properties.flows);
 console.log("✓ OpenAPI 3.0 schema export passed");
+
+const openapiDoc = exportWorkflowOpenAPIDocument();
+assert.strictEqual(openapiDoc.openapi, "3.0.3", "Must have openapi 3.0.3 version field");
+assert.ok(openapiDoc.info, "Must have info object");
+assert.strictEqual(openapiDoc.info.title, "NativeBPM Workflow AST Specification");
+assert.ok(openapiDoc.info.version);
+assert.ok(openapiDoc.paths, "Must have paths object");
+assert.ok(openapiDoc.paths['/api/deploy'], "Must specify /api/deploy endpoint");
+assert.ok(openapiDoc.components && openapiDoc.components.schemas, "Must have components.schemas");
+assert.ok(openapiDoc.components.schemas.WorkflowAST, "Must have WorkflowAST component schema");
+assert.ok(openapiDoc.components.schemas.NodeAST, "Must have NodeAST component schema");
+assert.ok(openapiDoc.components.schemas.FlowAST, "Must have FlowAST component schema");
+assert.ok(openapiDoc.components.schemas.DMNRule, "Must have DMNRule component schema");
+assert.ok(openapiDoc.components.schemas.DMNInput, "Must have DMNInput component schema");
+assert.ok(openapiDoc.components.schemas.DMNOutput, "Must have DMNOutput component schema");
+assert.ok(openapiDoc.components.schemas.InVariable, "Must have InVariable component schema");
+assert.ok(openapiDoc.components.schemas.OutVariable, "Must have OutVariable component schema");
+console.log("✓ OpenAPI 3.0.3 document export (GitLab/Swagger UI compatible) passed");
 
 // 4. JSON Schema Draft 2020-12 Exporter
 const jsonSchema = exportWorkflowJSONSchema();
