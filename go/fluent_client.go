@@ -51,16 +51,6 @@ func NewClient(hostURL, apiToken string) (*Client, error) {
 	}, nil
 }
 
-// NewWorker creates a Yamux reverse-tunnel worker bound to this client's server and credentials.
-func (c *Client) NewWorker(topic string, handler TaskHandler) *Worker {
-	return NewWorker(c.hostURL, c.apiToken).WithTopic(topic, handler)
-}
-
-// NewWorkerBuilder returns a new Worker configuration builder.
-func (c *Client) NewWorkerBuilder() *Worker {
-	return NewWorker(c.hostURL, c.apiToken)
-}
-
 // Deploy compiles and deploys a process definition workflow schema to the engine.
 func (c *Client) Deploy(ctx context.Context, workflow *Workflow) (*ProcessDefinition, error) {
 	return c.Definitions().Deploy().WithWorkflow(workflow).Send(ctx)

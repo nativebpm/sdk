@@ -4,7 +4,6 @@ go 1.25.0
 
 require (
 	github.com/getkin/kin-openapi v0.146.0
-	github.com/hashicorp/yamux v0.1.2
 	github.com/oapi-codegen/runtime v1.6.0
 	github.com/stretchr/testify v1.12.1
 )
