@@ -1,4 +1,4 @@
-import { Client, Workflow } from "./dist/index.js";
+import { Client, Workflow, z } from "./dist/index.js";
 import * as http from "node:http";
 import assert from "node:assert";
 
@@ -127,21 +127,37 @@ async function runTests() {
     assert.strictEqual(defs[0].name, "Test Process");
     console.log("✓ definitions.list passed");
 
-    // 2. Definitions Deploy
-    const workflow = new Workflow("test-proc", "Test Process");
+    // 2. Definitions Deploy with Zod 4 Schema & Branching
+    const OrderInputSchema = z.object({
+      orderId: z.string().min(1),
+      amount: z.number().positive(),
+      tier: z.enum(["standard", "vip"]),
+    });
+
+    const workflow = new Workflow("test-proc", "Test Process")
+      .variables(OrderInputSchema)
+      .start("start")
+      .exclusiveGateway("check_tier", "Check Tier")
+      .when("tier == 'vip'").then("vip_task").serviceTask("vip_task", "VIP Processing", "vip_topic")
+      .otherwise("std_task").serviceTask("std_task", "Standard Processing", "std_topic")
+      .end("end", "End");
+
     const newDef = await client.deploy(workflow);
     assert.strictEqual(newDef.id, "test-proc");
-    console.log("✓ definitions.deploy passed");
+    console.log("✓ definitions.deploy with Zod & branching passed");
 
-    // 3. Instances Start
+    // 3. Instances Start with Zod 4 validation
+    const rawInput = { orderId: "ORD-123", amount: 250.0, tier: "vip" };
+    const validatedInput = OrderInputSchema.parse(rawInput);
+
     const started = await client.instances().start("test-proc")
       .withInstanceID("00000000-0000-0000-0000-000000000001")
       .withBusinessKey("key-123")
-      .withVariable("foo", "bar")
+      .withVariables(validatedInput)
       .send();
     assert.strictEqual(started.id, "00000000-0000-0000-0000-000000000001");
     assert.strictEqual(started.business_key, "key-123");
-    console.log("✓ instances.start passed");
+    console.log("✓ instances.start with Zod validated input passed");
 
     // 4. Instances Complete Task
     const completed = await client.instances().complete("00000000-0000-0000-0000-000000000001")

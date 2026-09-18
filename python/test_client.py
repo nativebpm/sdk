@@ -360,12 +360,35 @@ class TestPythonClientFluentAPI(unittest.TestCase):
         self.assertEqual(defs[0].id, "test-proc")
         self.assertEqual(defs[0].name, "Test Process")
 
-        # Deploy definition
-        workflow = Workflow("test-proc", "Test Process")
+        # Deploy definition with Pydantic v2 Schema & Branching
+        from pydantic import BaseModel, Field
+        from typing import Literal
+
+        class OrderInput(BaseModel):
+            order_id: str = Field(min_length=1)
+            amount: float = Field(gt=0)
+            tier: Literal["standard", "vip"]
+
+        workflow = Workflow("test-proc", "Test Process")\
+            .variables(OrderInput)\
+            .start("start")\
+            .exclusive_gateway("check_tier", "Check Tier")\
+            .when("tier == 'vip'").then("vip_task").service_task("vip_task", "VIP Processing", "vip_topic")\
+            .otherwise("std_task").service_task("std_task", "Standard Processing", "std_topic")\
+            .end("end", "End")
+
         new_def = self.client.deploy(workflow)
         self.assertEqual(new_def.id, "test-proc")
 
     def test_instances(self):
+        from pydantic import BaseModel, Field
+        from typing import Literal
+
+        class OrderInput(BaseModel):
+            order_id: str = Field(min_length=1)
+            amount: float = Field(gt=0)
+            tier: Literal["standard", "vip"]
+
         # List instances
         insts = self.client.instances().list().send()
         self.assertEqual(len(insts), 1)
@@ -375,11 +398,14 @@ class TestPythonClientFluentAPI(unittest.TestCase):
         inst = self.client.instances().get("00000000-0000-0000-0000-000000000001").send()
         self.assertEqual(str(inst.id), "00000000-0000-0000-0000-000000000001")
 
-        # Start instance
+        # Start instance with Pydantic v2 validated input
+        raw_input = {"order_id": "ORD-123", "amount": 250.0, "tier": "vip"}
+        validated_input = OrderInput(**raw_input)
+
         started = self.client.instances().start("test-proc")\
             .with_instance_id("00000000-0000-0000-0000-000000000001")\
             .with_business_key("key-123")\
-            .with_variable("foo", "bar")\
+            .with_variables(validated_input.model_dump())\
             .send()
         self.assertEqual(str(started.id), "00000000-0000-0000-0000-000000000001")
 

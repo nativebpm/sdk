@@ -89,3 +89,72 @@ func TestBlockClosureDSL(t *testing.T) {
 		t.Errorf("expected to find flow condition 'approved == true'")
 	}
 }
+
+func TestWorkflowBuilder_VariablesAndBranching(t *testing.T) {
+	type OrderInput struct {
+		OrderID string  `json:"orderId"`
+		Amount  float64 `json:"amount"`
+		Tier    string  `json:"tier"`
+	}
+
+	orderSchema := M{
+		"type": "object",
+		"required": []string{"orderId", "amount", "tier"},
+		"properties": M{
+			"orderId": M{"type": "string", "minLength": 1},
+			"amount":  M{"type": "number", "minimum": 0.01},
+			"tier":    M{"type": "string", "enum": []string{"standard", "vip"}},
+		},
+	}
+
+	wf := NewWorkflow("order-process", "Order Fulfillment").
+		Variables(orderSchema).
+		Start("start").
+		ExclusiveGateway("check_tier", "Check Tier").
+		When("tier == 'vip'").
+		Then(func(b *Branch) {
+			b.Service("vip_task", "VIP Processing", "vip_topic")
+		}).
+		Otherwise(func(b *Branch) {
+			b.Service("std_task", "Standard Processing", "std_topic")
+		}).
+		End("end", "End")
+
+	jsonData, err := wf.ToJSON()
+	if err != nil {
+		t.Fatalf("failed to serialize to JSON: %v", err)
+	}
+
+	var parsed map[string]interface{}
+	if err := json.Unmarshal(jsonData, &parsed); err != nil {
+		t.Fatalf("failed to parse JSON: %v", err)
+	}
+
+	if parsed["id"] != "order-process" {
+		t.Errorf("expected id order-process, got %v", parsed["id"])
+	}
+
+	inputSchema, ok := parsed["inputSchema"].(string)
+	if !ok || inputSchema == "" {
+		t.Fatalf("expected non-empty inputSchema in JSON, got %v", parsed["inputSchema"])
+	}
+
+	// Also verify struct serialization support in Variables
+	sampleInput := OrderInput{OrderID: "ORD-123", Amount: 250.0, Tier: "vip"}
+	wfStruct := NewWorkflow("order-struct", "Order Struct").
+		Variables(sampleInput).
+		Start("start").
+		End("end", "End")
+
+	structJSON, err := wfStruct.ToJSON()
+	if err != nil {
+		t.Fatalf("failed to serialize struct workflow to JSON: %v", err)
+	}
+	var parsedStruct map[string]interface{}
+	if err := json.Unmarshal(structJSON, &parsedStruct); err != nil {
+		t.Fatalf("failed to parse struct JSON: %v", err)
+	}
+	if parsedStruct["inputSchema"] == "" {
+		t.Errorf("expected struct inputSchema to be populated")
+	}
+}

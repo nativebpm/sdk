@@ -90,39 +90,73 @@ class WhenBuilder:
         self.gateway_id = gateway_id
         self.condition = condition
 
-    def then(self, then_fn: Any) -> 'ThenBuilder':
-        then_branch = Branch(self.workflow, self.gateway_id, self.gateway_id, True, self.condition)
-        then_fn(then_branch)
+    def then(self, then_fn_or_target: Any) -> 'ThenBuilder':
+        if callable(then_fn_or_target):
+            then_branch = Branch(self.workflow, self.gateway_id, self.gateway_id, True, self.condition)
+            then_fn_or_target(then_branch)
 
-        if not then_branch._has_ended and then_branch._current_node_id != self.gateway_id:
-            self.workflow._pending_merges.append(then_branch._current_node_id)
+            if not then_branch._has_ended and then_branch._current_node_id != self.gateway_id:
+                self.workflow._pending_merges.append(then_branch._current_node_id)
 
-        return ThenBuilder(self.workflow, self.gateway_id)
+            return ThenBuilder(self.workflow, self.gateway_id)
+        else:
+            target_id = str(then_fn_or_target)
+            self.workflow.sequence_flow_with_condition(self.gateway_id, target_id, self.condition)
+            self.workflow._current_node_id = target_id
+            return ThenBuilder(self.workflow, self.gateway_id, target_id)
 
     def __call__(self, then_fn: Any) -> 'ThenBuilder':
         return self.then(then_fn)
 
 class ThenBuilder:
-    def __init__(self, workflow: 'Workflow', gateway_id: str):
+    def __init__(self, workflow: 'Workflow', gateway_id: str, current_target_id: Optional[str] = None):
         self.workflow = workflow
         self.gateway_id = gateway_id
+        self.current_target_id = current_target_id
 
-    def Else(self, else_fn=None) -> Any:
-        if else_fn is None:
+    def service_task(self, node_id: str, name: str, topic: str, **kwargs) -> 'ThenBuilder':
+        self.workflow.service_task(node_id, name, topic, **kwargs)
+        self.workflow._current_node_id = node_id
+        self.current_target_id = node_id
+        return self
+
+    def service(self, node_id: str, name: str, topic: str, **kwargs) -> 'ThenBuilder':
+        return self.service_task(node_id, name, topic, **kwargs)
+
+    def user_task(self, node_id: str, name: str, **kwargs) -> 'ThenBuilder':
+        self.workflow.user_task(node_id, name, **kwargs)
+        self.workflow._current_node_id = node_id
+        self.current_target_id = node_id
+        return self
+
+    def user(self, node_id: str, name: str, **kwargs) -> 'ThenBuilder':
+        return self.user_task(node_id, name, **kwargs)
+
+    def end(self, node_id: str = "end", name: str = "End") -> 'Workflow':
+        return self.workflow.end(node_id, name)
+
+    def Else(self, else_fn_or_target=None) -> Any:
+        if else_fn_or_target is None:
             def decorator(func):
                 return self.Else(func)
             return decorator
 
-        else_branch = Branch(self.workflow, self.gateway_id, self.gateway_id, False)
-        else_fn(else_branch)
+        if callable(else_fn_or_target):
+            else_branch = Branch(self.workflow, self.gateway_id, self.gateway_id, False)
+            else_fn_or_target(else_branch)
 
-        if not else_branch._has_ended and else_branch._current_node_id != self.gateway_id:
-            self.workflow._pending_merges.append(else_branch._current_node_id)
+            if not else_branch._has_ended and else_branch._current_node_id != self.gateway_id:
+                self.workflow._pending_merges.append(else_branch._current_node_id)
 
-        return self.workflow
+            return self.workflow
+        else:
+            target_id = str(else_fn_or_target)
+            self.workflow.sequence_flow(self.gateway_id, target_id)
+            self.workflow._current_node_id = target_id
+            return self
 
-    def otherwise(self, else_fn=None) -> Any:
-        return self.Else(else_fn)
+    def otherwise(self, else_fn_or_target=None) -> Any:
+        return self.Else(else_fn_or_target)
 
     def when(self, condition: Any) -> 'WhenBuilder':
         return WhenBuilder(self.workflow, self.gateway_id, str(condition))
@@ -133,39 +167,70 @@ class WhenBranchBuilder:
         self.gateway_id = gateway_id
         self.condition = condition
 
-    def then(self, then_fn: Any) -> 'ThenBranchBuilder':
-        then_branch = Branch(self.branch._workflow, self.gateway_id, self.gateway_id, True, self.condition)
-        then_fn(then_branch)
+    def then(self, then_fn_or_target: Any) -> 'ThenBranchBuilder':
+        if callable(then_fn_or_target):
+            then_branch = Branch(self.branch._workflow, self.gateway_id, self.gateway_id, True, self.condition)
+            then_fn_or_target(then_branch)
 
-        if not then_branch._has_ended and then_branch._current_node_id != self.gateway_id:
-            self.branch._workflow._pending_merges.append(then_branch._current_node_id)
+            if not then_branch._has_ended and then_branch._current_node_id != self.gateway_id:
+                self.branch._workflow._pending_merges.append(then_branch._current_node_id)
 
-        return ThenBranchBuilder(self.branch, self.gateway_id)
+            return ThenBranchBuilder(self.branch, self.gateway_id)
+        else:
+            target_id = str(then_fn_or_target)
+            self.branch._workflow.sequence_flow_with_condition(self.gateway_id, target_id, self.condition)
+            self.branch._current_node_id = target_id
+            return ThenBranchBuilder(self.branch, self.gateway_id, target_id)
 
     def __call__(self, then_fn: Any) -> 'ThenBranchBuilder':
         return self.then(then_fn)
 
 class ThenBranchBuilder:
-    def __init__(self, branch: Branch, gateway_id: str):
+    def __init__(self, branch: Branch, gateway_id: str, current_target_id: Optional[str] = None):
         self.branch = branch
         self.gateway_id = gateway_id
+        self.current_target_id = current_target_id
 
-    def Else(self, else_fn=None) -> Any:
-        if else_fn is None:
+    def service_task(self, node_id: str, name: str, topic: str, **kwargs) -> 'ThenBranchBuilder':
+        self.branch._workflow.service_task(node_id, name, topic, **kwargs)
+        self.branch._current_node_id = node_id
+        self.current_target_id = node_id
+        return self
+
+    def service(self, node_id: str, name: str, topic: str, **kwargs) -> 'ThenBranchBuilder':
+        return self.service_task(node_id, name, topic, **kwargs)
+
+    def user_task(self, node_id: str, name: str, **kwargs) -> 'ThenBranchBuilder':
+        self.branch._workflow.user_task(node_id, name, **kwargs)
+        self.branch._current_node_id = node_id
+        self.current_target_id = node_id
+        return self
+
+    def user(self, node_id: str, name: str, **kwargs) -> 'ThenBranchBuilder':
+        return self.user_task(node_id, name, **kwargs)
+
+    def Else(self, else_fn_or_target=None) -> Any:
+        if else_fn_or_target is None:
             def decorator(func):
                 return self.Else(func)
             return decorator
 
-        else_branch = Branch(self.branch._workflow, self.gateway_id, self.gateway_id, False)
-        else_fn(else_branch)
+        if callable(else_fn_or_target):
+            else_branch = Branch(self.branch._workflow, self.gateway_id, self.gateway_id, False)
+            else_fn_or_target(else_branch)
 
-        if not else_branch._has_ended and else_branch._current_node_id != self.gateway_id:
-            self.branch._workflow._pending_merges.append(else_branch._current_node_id)
+            if not else_branch._has_ended and else_branch._current_node_id != self.gateway_id:
+                self.branch._workflow._pending_merges.append(else_branch._current_node_id)
 
-        return self.branch
+            return self.branch
+        else:
+            target_id = str(else_fn_or_target)
+            self.branch._workflow.sequence_flow(self.gateway_id, target_id)
+            self.branch._current_node_id = target_id
+            return self.branch
 
-    def otherwise(self, else_fn=None) -> Any:
-        return self.Else(else_fn)
+    def otherwise(self, else_fn_or_target=None) -> Any:
+        return self.Else(else_fn_or_target)
 
     def when(self, condition: Any) -> 'WhenBranchBuilder':
         return WhenBranchBuilder(self.branch, self.gateway_id, str(condition))
@@ -174,10 +239,27 @@ class Workflow:
     def __init__(self, id_str: str, name: str):
         self._id = id_str
         self._name = name
+        self._input_schema: Optional[str] = None
         self._nodes: List[Dict[str, Any]] = []
         self._flows: List[Dict[str, Any]] = []
         self._current_node_id = ""
         self._pending_merges: List[str] = []
+
+    def variables(self, schema: Any) -> 'Workflow':
+        if schema is None:
+            self._input_schema = None
+            return self
+        if isinstance(schema, str):
+            self._input_schema = schema
+        elif hasattr(schema, "model_json_schema") and callable(schema.model_json_schema):
+            self._input_schema = json.dumps(schema.model_json_schema())
+        elif hasattr(schema, "schema") and callable(schema.schema):
+            self._input_schema = json.dumps(schema.schema())
+        elif isinstance(schema, dict):
+            self._input_schema = json.dumps(schema)
+        else:
+            self._input_schema = str(schema)
+        return self
 
     def _connect_node(self, node_id: str):
         node = self.find_node(node_id)
@@ -201,7 +283,7 @@ class Workflow:
         self._connect_node(node_id)
         return self
 
-    def end(self, node_id: str, name: str) -> 'Workflow':
+    def end(self, node_id: str = "end", name: str = "End") -> 'Workflow':
         self.end_event(node_id, name)
         self._connect_node(node_id)
         self._current_node_id = ""
@@ -233,9 +315,13 @@ class Workflow:
         return self
 
     def when(self, condition: Any) -> WhenBuilder:
-        gw_id = f"gw_{self._current_node_id}_decision"
-        self.exclusive_gateway(gw_id, "Decision Gateway")
-        self._connect_node(gw_id)
+        current_node = self.find_node(self._current_node_id) if self._current_node_id else None
+        if current_node and current_node.get('type') == 'exclusiveGateway':
+            gw_id = self._current_node_id
+        else:
+            gw_id = f"gw_{self._current_node_id}_decision"
+            self.exclusive_gateway(gw_id, "Decision Gateway")
+            self._connect_node(gw_id)
         return WhenBuilder(self, gw_id, str(condition))
 
     def start_event(self, node_id: str = "start") -> 'Workflow':
@@ -275,11 +361,14 @@ class Workflow:
         self._nodes.append(node)
         return self
 
-    def exclusive_gateway(self, node_id: str, name: str) -> 'Workflow':
-        if self.find_node(node_id):
-            return self
-        self._nodes.append({'type': 'exclusiveGateway', 'id': node_id, 'name': name})
+    def exclusive_gateway(self, node_id: str, name: str = "") -> 'Workflow':
+        if not self.find_node(node_id):
+            self._nodes.append({'type': 'exclusiveGateway', 'id': node_id, 'name': name or node_id})
+        self._current_node_id = node_id
         return self
+
+    def exclusiveGateway(self, node_id: str, name: str = "") -> 'Workflow':
+        return self.exclusive_gateway(node_id, name)
 
     def parallel_gateway(self, node_id: str, name: str) -> 'Workflow':
         if self.find_node(node_id):
@@ -310,10 +399,14 @@ class Workflow:
         return self
 
     def sequence_flow(self, source: str, target: str) -> 'Workflow':
+        if any(f.get('source') == source and f.get('target') == target and not f.get('condition') for f in self._flows):
+            return self
         self._flows.append({'id': f"flow-{source}-{target}", 'source': source, 'target': target, 'condition': ''})
         return self
 
     def sequence_flow_with_condition(self, source: str, target: str, condition: str) -> 'Workflow':
+        if any(f.get('source') == source and f.get('target') == target and f.get('condition') == condition for f in self._flows):
+            return self
         self._flows.append({'id': f"flow-{source}-{target}", 'source': source, 'target': target, 'condition': condition})
         return self
 
@@ -342,12 +435,15 @@ class Workflow:
                     'condition': ''
                 })
 
-        return {
+        ast: Dict[str, Any] = {
             'id': self._id,
             'name': self._name,
             'nodes': nodes,
             'flows': flows
         }
+        if self._input_schema is not None:
+            ast['inputSchema'] = self._input_schema
+        return ast
 
     def to_json(self) -> str:
         return json.dumps(self.to_ast())

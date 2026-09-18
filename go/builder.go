@@ -59,6 +59,7 @@ func DefaultLayoutOptions() LayoutOptions {
 type Workflow struct {
 	ID            string                   `json:"id"`
 	Name          string                   `json:"name"`
+	InputSchema   string                   `json:"inputSchema,omitempty"`
 	Nodes         []map[string]interface{} `json:"nodes"`
 	Flows         []map[string]interface{} `json:"flows"`
 	LayoutOpts    LayoutOptions            `json:"layoutOpts,omitempty"`
@@ -124,6 +125,26 @@ func NewWorkflow(id, name string) *Workflow {
 		Flows:      make([]map[string]interface{}, 0),
 		LayoutOpts: DefaultLayoutOptions(),
 		NodeColors: make(map[string][2]string),
+	}
+	return w
+}
+
+// Variables attaches a JSON Schema or struct/map representation to the workflow as inputSchema contract.
+func (w *Workflow) Variables(schema interface{}) *Workflow {
+	if schema == nil {
+		w.InputSchema = ""
+		return w
+	}
+	switch v := schema.(type) {
+	case string:
+		w.InputSchema = v
+	case []byte:
+		w.InputSchema = string(v)
+	default:
+		bytes, err := json.Marshal(v)
+		if err == nil {
+			w.InputSchema = string(bytes)
+		}
 	}
 	return w
 }

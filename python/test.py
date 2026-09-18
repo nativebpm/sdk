@@ -147,8 +147,41 @@ class TestPythonSDK(unittest.TestCase):
         self.assertTrue(any(f['target'] == 'step1' for f in ast['flows']))
         print("✓ Python SDK implicit back-edges AST test passed!")
 
-if __name__ == '__main__':
-    unittest.main()
+    def test_pydantic_variables_and_branching(self):
+        print("Running Python SDK Pydantic v2 variables and branching test...")
+        from pydantic import BaseModel, Field
+        from typing import Literal
+
+        class OrderInput(BaseModel):
+            order_id: str = Field(min_length=1)
+            amount: float = Field(gt=0)
+            tier: Literal["standard", "vip"]
+
+        wf = Workflow("order-process", "Order Fulfillment")\
+            .variables(OrderInput)\
+            .start("start")\
+            .exclusive_gateway("check_tier", "Check Tier")\
+            .when("tier == 'vip'").then("vip_task").service_task("vip_task", "VIP Processing", "vip_topic")\
+            .otherwise("std_task").service_task("std_task", "Standard Processing", "std_topic")\
+            .end("end", "End")
+
+        ast = wf.to_ast()
+        self.assertEqual(ast["id"], "order-process")
+        self.assertIn("inputSchema", ast)
+        self.assertIn("order_id", ast["inputSchema"])
+        self.assertIn("amount", ast["inputSchema"])
+        self.assertIn("tier", ast["inputSchema"])
+
+        # Check nodes
+        node_ids = {n["id"] for n in ast["nodes"]}
+        self.assertIn("vip_task", node_ids)
+        self.assertIn("std_task", node_ids)
+        self.assertIn("check_tier", node_ids)
+
+        # Check flows with conditions
+        vip_flow = next(f for f in ast["flows"] if f["source"] == "check_tier" and f["target"] == "vip_task")
+        self.assertEqual(vip_flow["condition"], "tier == 'vip'")
+        print("✓ Python SDK Pydantic v2 variables and branching test passed!")
 
 if __name__ == '__main__':
     unittest.main()
