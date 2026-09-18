@@ -1,5 +1,3 @@
-import * as http from "node:http";
-import * as https from "node:https";
 export class Client {
     baseUrl;
     apiToken;
@@ -236,29 +234,42 @@ export class InstancesService {
     }
     subscribe(instanceID, onUpdate) {
         const targetUrl = `${this.client.getBaseUrl()}/ui/instances/${instanceID}/stream`;
-        const clientModule = targetUrl.startsWith("https") ? https : http;
-        const req = clientModule.request(targetUrl, {
-            method: "GET",
-            headers: {
-                ...this.client.getHeaders(),
-                "Accept": "text/event-stream"
-            }
-        }, (res) => {
-            res.on("data", (chunk) => {
-                const lines = chunk.toString().split("\n");
-                for (const line of lines) {
-                    if (line.startsWith("data: refresh")) {
-                        onUpdate();
+        const controller = new AbortController();
+        (async () => {
+            try {
+                const res = await fetch(targetUrl, {
+                    method: "GET",
+                    headers: {
+                        ...this.client.getHeaders(),
+                        "Accept": "text/event-stream"
+                    },
+                    signal: controller.signal
+                });
+                if (!res.body)
+                    return;
+                const reader = res.body.getReader();
+                const decoder = new TextDecoder();
+                let buffer = "";
+                while (true) {
+                    const { done, value } = await reader.read();
+                    if (done)
+                        break;
+                    buffer += decoder.decode(value, { stream: true });
+                    const lines = buffer.split("\n");
+                    buffer = lines.pop() || "";
+                    for (const line of lines) {
+                        if (line.startsWith("data: refresh")) {
+                            onUpdate();
+                        }
                     }
                 }
-            });
-        });
-        req.on("error", () => {
-            // Catch stream errors silently
-        });
-        req.end();
+            }
+            catch {
+                // Stream aborted or closed silently
+            }
+        })();
         return () => {
-            req.destroy();
+            controller.abort();
         };
     }
 }
