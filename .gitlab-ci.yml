@@ -1,3 +1,70 @@
-include:
-  - project: 'nativebpm/infra'
-    file: 'sdk-gitlab-ci.yml'
+# ==============================================================================
+# NativeBPM SDK Core CI/CD Pipeline (100% Docker / Host-Free)
+# ==============================================================================
+
+stages:
+  - test
+  - verify
+
+variables:
+  NODE_IMAGE: registry.gitlab.com/nativebpm/sdk/node:22-alpine
+  DOCKER_IMAGE: registry.gitlab.com/nativebpm/sdk/docker:27
+  DOCKER_DIND_IMAGE: registry.gitlab.com/nativebpm/sdk/docker:27-dind
+
+# 1. Validate Zod 4 Schemas and contract consistency
+test-schema:
+  stage: test
+  image: $NODE_IMAGE
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - cd schema
+    - npm ci || npm install
+    - npm test
+    - npm run export
+    # Fail fast if generated schemas diverge from committed source
+    - |
+      if [ -n "$(git status --porcelain ../api/schemas)" ]; then
+        echo "Error: Uncommitted changes detected in api/schemas/. Please run 'make schemas' locally."
+        git diff ../api/schemas
+        exit 1
+      fi
+
+# 2. Validate OpenAPI 3.0.3 Specification Document
+validate-openapi:
+  stage: test
+  image: $NODE_IMAGE
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+    - if: $CI_PIPELINE_SOURCE == "merge_request_event"
+  script:
+    - |
+      node -e '
+        const fs = require("fs");
+        const doc = JSON.parse(fs.readFileSync("api/schemas/workflow-ast.openapi.json"));
+        if (doc.openapi !== "3.0.3") throw new Error("OpenAPI version must be 3.0.3, got: " + doc.openapi);
+        if (!doc.info || !doc.info.title) throw new Error("Missing info.title");
+        if (!doc.components || !doc.components.schemas || !doc.components.schemas.WorkflowAST) throw new Error("Missing WorkflowAST schema component");
+        console.log("✓ Successfully validated OpenAPI 3.0.3 document:", doc.info.title);
+      '
+
+# 3. Verify Docker BuildKit code generator spec stage (Host-Free via DinD)
+verify-buildkit-generator:
+  stage: verify
+  image: $DOCKER_IMAGE
+  services:
+    - name: $DOCKER_DIND_IMAGE
+      alias: docker
+  variables:
+    DOCKER_HOST: tcp://docker:2375
+    DOCKER_TLS_CERTDIR: ""
+  rules:
+    - if: $CI_COMMIT_BRANCH == "main"
+      changes:
+        - Dockerfile.gen
+        - api/openapi.yaml
+  script:
+    - docker info
+    - docker buildx build -f Dockerfile.gen --target spec .
+
