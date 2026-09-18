@@ -5,12 +5,11 @@
   "description": "NativeBPM TypeScript SDK & Zod Schema Monorepo",
   "type": "module",
   "workspaces": [
-    "schema",
     "typescript"
   ],
   "scripts": {
-    "build": "npm run build --workspace=@nativebpm/schema && npm run build --workspace=@nativebpm/sdk",
-    "test": "npm run test --workspace=@nativebpm/schema && npm run test --workspace=@nativebpm/sdk"
+    "build": "npm run build --workspace=@nativebpm/sdk",
+    "test": "npm run test --workspace=@nativebpm/sdk"
   },
   "engines": {
     "node": ">=22.0.0"

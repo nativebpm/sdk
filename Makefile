@@ -6,10 +6,7 @@ NODE_IMG = registry.gitlab.com/nativebpm/sdk/node:22-alpine
 build:
 	npm run build
 
-test: test-schema test-typescript
-
-test-schema:
-	cd schema && npm test
+test: test-typescript
 
 test-typescript:
 	cd typescript && npm test
