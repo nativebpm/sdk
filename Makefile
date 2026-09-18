@@ -1,5 +1,5 @@
 .PHONY: generate generate-go generate-python generate-typescript generate-java generate-php generate-dotnet generate-rust generate-kotlin generate-swift generate-dart
-.PHONY: test test-go test-python test-typescript test-java test-kotlin test-php test-dotnet test-rust test-dart test-swift
+.PHONY: test test-schema test-go test-python test-typescript test-java test-kotlin test-php test-dotnet test-rust test-dart test-swift
 .PHONY: push-images login-registry push-gradle push-composer push-php push-dotnet push-rust push-dart push-maven push-node push-docker-git push-docker-dind push-openapi-gen push-golang push-python push-node-alpine
 
 # Registry-backed images to bypass Docker Hub rate limits in CI/CD
@@ -97,7 +97,11 @@ generate-dart:
 		-o /local/dart \
 		--additional-properties=pubName=nativebpm_client,pubVersion=1.0.0,pubDescription="NativeBPM Client SDK for Dart and Flutter",hideGenerationTimestamp=true
 
-test: test-go test-python test-typescript test-java test-kotlin test-php test-dotnet test-rust test-dart
+test: test-schema test-go test-python test-typescript test-java test-kotlin test-php test-dotnet test-rust test-dart
+
+test-schema:
+	docker run --rm -v "$$(pwd):/local" -w /local/schema $(NODE_IMG) sh -c "npm install --no-package-lock && npm test"
+
 
 test-go:
 	docker run --rm -v "$$(pwd):/local" -w /local/go $(GOLANG_IMG) sh -c "go get github.com/stretchr/testify/assert && go test -v ./..."
