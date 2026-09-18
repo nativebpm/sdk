@@ -22,22 +22,24 @@ This repository houses the client libraries and Fluent Workflow builders for all
 
 ---
 
-## 🚀 Supported Languages
+## 🚀 Supported Languages (Dedicated Branches)
 
-Click on the language badges below to navigate to their respective subdirectories and check out the documentation and runnable examples:
+To maintain clean dependency trees and isolate ecosystem-specific package managers, each programming language is maintained in its own dedicated Git branch. The `main` branch serves strictly as the central catalog containing the OpenAPI 3.0 specification (`api/openapi.yaml`) and the generator pipeline (`Makefile`).
 
-| Language | Badge | Quick Link |
-| :--- | :--- | :--- |
-| **Go** | ![Go](https://img.shields.io/badge/Go-00ADD8?style=flat-square&logo=go&logoColor=white) | [Go Client & Builder](./go) |
-| **Python** | ![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white) | [Python Client & Builder](./python) |
-| **TypeScript** | ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white) | [TypeScript Client & Builder](./typescript) |
-| **Java** | ![Java](https://img.shields.io/badge/Java-ED8B00?style=flat-square&logo=openjdk&logoColor=white) | [Java Client & Builder](./java) |
-| **.NET (C#)** | ![.NET](https://img.shields.io/badge/.NET-512BD4?style=flat-square&logo=dotnet&logoColor=white) | [.NET Client & Builder](./dotnet) |
-| **PHP** | ![PHP](https://img.shields.io/badge/PHP-777BB4?style=flat-square&logo=php&logoColor=white) | [PHP Client & Builder](./php) |
-| **Rust** | ![Rust](https://img.shields.io/badge/Rust-000000?style=flat-square&logo=rust&logoColor=white) | [Rust Client & Builder](./rust) |
-| **Kotlin** | ![Kotlin](https://img.shields.io/badge/Kotlin-7F52FF?style=flat-square&logo=kotlin&logoColor=white) | [Kotlin Client](./kotlin) |
-| **Swift** | ![Swift](https://img.shields.io/badge/Swift-F05138?style=flat-square&logo=swift&logoColor=white) | [Swift Client](./swift) |
-| **Dart / Flutter** | ![Dart](https://img.shields.io/badge/Dart-0175C2?style=flat-square&logo=dart&logoColor=white) | [Dart & Flutter Client & Builder](./dart) |
+Click on the links below to explore the SDK code, documentation, and packages in their respective branches:
+
+| Language | Ecosystem | Branch | Direct Link |
+| :--- | :--- | :--- | :--- |
+| **Go** | Go Modules / oapi-codegen | `go` | [Go SDK & Builder](https://gitlab.com/nativebpm/sdk/-/tree/go) |
+| **Python** | PyPI / setuptools | `python` | [Python SDK & Builder](https://gitlab.com/nativebpm/sdk/-/tree/python) |
+| **TypeScript** | NPM / Zod 4 SSOT | `typescript` | [TypeScript SDK, Builder & Schemas](https://gitlab.com/nativebpm/sdk/-/tree/typescript) |
+| **Java** | Gradle / OkHttp-Gson | `java` | [Java SDK & Builder](https://gitlab.com/nativebpm/sdk/-/tree/java) |
+| **.NET (C#)** | NuGet / .NET 9.0 | `dotnet` | [.NET Client & Builder](https://gitlab.com/nativebpm/sdk/-/tree/dotnet) |
+| **PHP** | Composer / PHP 8.3 | `php` | [PHP SDK & Builder](https://gitlab.com/nativebpm/sdk/-/tree/php) |
+| **Rust** | Cargo / Tokio | `rust` | [Rust SDK & Builder](https://gitlab.com/nativebpm/sdk/-/tree/rust) |
+| **Kotlin** | Gradle / JVM-OkHttp4 | `kotlin` | [Kotlin SDK](https://gitlab.com/nativebpm/sdk/-/tree/kotlin) |
+| **Swift** | Swift Package Manager | `swift` | [Swift SDK](https://gitlab.com/nativebpm/sdk/-/tree/swift) |
+| **Dart / Flutter** | Pub / Dart & Flutter | `dart` | [Dart & Flutter SDK & Builder](https://gitlab.com/nativebpm/sdk/-/tree/dart) |
 
 ---
 

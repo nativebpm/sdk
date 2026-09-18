@@ -21,22 +21,24 @@
 
 ---
 
-## 🚀 Поддерживаемые языки
+## 🚀 Поддерживаемые языки (Отдельные ветки)
 
-Нажмите на бейдж интересующего вас языка, чтобы перейти в соответствующую папку с документацией и готовыми примерами кода:
+Для чистоты дерева зависимостей и изоляции экосистемных пакетных менеджеров каждый язык программирования разрабатывается и публикуется в собственной отдельной ветке Git. Ветка `main` служит исключительно как реестр и ядро генератора: здесь хранятся спецификация OpenAPI 3.0 (`api/openapi.yaml`), автоматизация генерации (`Makefile`) и данный каталог. В ветке `main` отсутствуют исходные файлы библиотек конкретных языков.
 
-| Язык | Бейдж | Быстрая ссылка |
-| :--- | :--- | :--- |
-| **Go** | ![Go](https://img.shields.io/badge/Go-00ADD8?style=flat-square&logo=go&logoColor=white) | [Клиент и конструктор Go](./go) |
-| **Python** | ![Python](https://img.shields.io/badge/Python-3776AB?style=flat-square&logo=python&logoColor=white) | [Клиент и конструктор Python](./python) |
-| **TypeScript** | ![TypeScript](https://img.shields.io/badge/TypeScript-007ACC?style=flat-square&logo=typescript&logoColor=white) | [Клиент и конструктор TypeScript](./typescript) |
-| **Java** | ![Java](https://img.shields.io/badge/Java-ED8B00?style=flat-square&logo=openjdk&logoColor=white) | [Клиент и конструктор Java](./java) |
-| **.NET (C#)** | ![.NET](https://img.shields.io/badge/.NET-512BD4?style=flat-square&logo=dotnet&logoColor=white) | [Клиент и конструктор .NET](./dotnet) |
-| **PHP** | ![PHP](https://img.shields.io/badge/PHP-777BB4?style=flat-square&logo=php&logoColor=white) | [Клиент и конструктор PHP](./php) |
-| **Rust** | ![Rust](https://img.shields.io/badge/Rust-000000?style=flat-square&logo=rust&logoColor=white) | [Клиент и конструктор Rust](./rust) |
-| **Kotlin** | ![Kotlin](https://img.shields.io/badge/Kotlin-7F52FF?style=flat-square&logo=kotlin&logoColor=white) | [Клиент Kotlin](./kotlin) |
-| **Swift** | ![Swift](https://img.shields.io/badge/Swift-F05138?style=flat-square&logo=swift&logoColor=white) | [Клиент Swift](./swift) |
-| **Dart / Flutter** | ![Dart](https://img.shields.io/badge/Dart-0175C2?style=flat-square&logo=dart&logoColor=white) | [Клиент и конструктор Dart & Flutter](./dart) |
+Перейдите по ссылкам ниже для ознакомления с кодом, документацией и пакетами в соответствующих ветках:
+
+| Язык | Экосистема | Ветка | Прямая ссылка |
+| :--- | :--- | :--- | :--- |
+| **Go** | Go Modules / oapi-codegen | `go` | [Go SDK и конструктор](https://gitlab.com/nativebpm/sdk/-/tree/go) |
+| **Python** | PyPI / setuptools | `python` | [Python SDK и конструктор](https://gitlab.com/nativebpm/sdk/-/tree/python) |
+| **TypeScript** | NPM / Zod 4 SSOT | `typescript` | [TypeScript SDK, конструктор и схемы](https://gitlab.com/nativebpm/sdk/-/tree/typescript) |
+| **Java** | Gradle / OkHttp-Gson | `java` | [Java SDK и конструктор](https://gitlab.com/nativebpm/sdk/-/tree/java) |
+| **.NET (C#)** | NuGet / .NET 9.0 | `dotnet` | [.NET Клиент и конструктор](https://gitlab.com/nativebpm/sdk/-/tree/dotnet) |
+| **PHP** | Composer / PHP 8.3 | `php` | [PHP SDK и конструктор](https://gitlab.com/nativebpm/sdk/-/tree/php) |
+| **Rust** | Cargo / Tokio | `rust` | [Rust SDK и конструктор](https://gitlab.com/nativebpm/sdk/-/tree/rust) |
+| **Kotlin** | Gradle / JVM-OkHttp4 | `kotlin` | [Kotlin SDK](https://gitlab.com/nativebpm/sdk/-/tree/kotlin) |
+| **Swift** | Swift Package Manager | `swift` | [Swift SDK](https://gitlab.com/nativebpm/sdk/-/tree/swift) |
+| **Dart / Flutter** | Pub / Dart & Flutter | `dart` | [Dart & Flutter SDK и конструктор](https://gitlab.com/nativebpm/sdk/-/tree/dart) |
 
 ---
 
