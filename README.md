@@ -46,10 +46,10 @@ Click on the links below to explore the SDK code, documentation, and packages in
 ## ⚡ Universal Contract Architecture: Zod 4 + OpenAPI 3.0 = JSON Schema = BPMN 2.0
 
 NativeBPM employs an end-to-end **Schema-as-Code** pipeline anchored by **Zod 4**:
-* **Single Source of Truth (SSOT)**: Workflow AST graphs and data contracts are declared in TypeScript via Zod 4 (`sdk/typescript/src/schemas/workflow-ast.ts`).
+* **Single Source of Truth (SSOT)**: Workflow AST graphs and data contracts are declared in TypeScript via Zod 4 (`schema/src/index.ts`) in the `main` branch.
 * **Multi-Target Native Compilation**: Zod 4 natively compiles schemas without third-party dependencies to:
-  1. **OpenAPI 3.0** (`target: 'openapi-3.0'`) — embedded into `sdk/api/openapi.yaml` to generate strongly typed models across all 10 language SDKs.
-  2. **JSON Schema Draft 2020-12** (`target: 'draft-2020-12'`) — drives Server-Driven UI (BDUI) and dynamic form rendering in `<nativebpm-trigger>` web components.
+  1. **OpenAPI 3.0** (`target: 'openapi-3.0'`) — embedded into `api/openapi.yaml` to generate strongly typed models across all 10 language SDKs.
+  2. **JSON Schema Draft 2020-12** (`target: 'draft-2020-12'`) — exported to `api/schemas/workflow-ast.schema.json` to drive Server-Driven UI (BDUI) and dynamic form rendering in `<nativebpm-trigger>` web components.
 * **Two-Way Re-hydration (`fromJSONSchema`)**: Enables frontend applications to reconstruct live, executable Zod validators directly from JSON Schemas delivered over the wire.
 * **OMG BPMN 2.0 Parity**: The NativeBPM Go core engine accepts AST directly and serializes standard BPMN 2.0 XML with `inputSchema` and `nativebpm:responseSchema` extensions.
 

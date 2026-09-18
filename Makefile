@@ -54,10 +54,13 @@ generate-swift:
 generate-dart:
 	$(BUILDX) --target export-dart --output type=local,dest=$${DEST:-./out/dart} .
 
+schemas:
+	cd schema && npm install && npm run export
+
 test: test-schema test-go test-python test-typescript test-java test-kotlin test-php test-dotnet test-rust test-dart
 
 test-schema:
-	docker run --rm -v "$$(pwd):/local" -w /local/schema $(NODE_IMG) sh -c "npm install --no-package-lock && npm test"
+	cd schema && npm test
 
 
 test-go:

@@ -45,10 +45,10 @@
 ## ⚡ Архитектура контрактов: Zod 4 + OpenAPI 3.0 = JSON Schema = BPMN 2.0
 
 В монорепозитории реализован сквозной конвейер **Schema-as-Code** на базе **Zod 4**:
-* **Единый первоисточник (Single Source of Truth)**: Контракты графа процессов (Workflow AST) и данных описываются на TypeScript с помощью Zod 4 (`sdk/typescript/src/schemas/workflow-ast.ts`).
+* **Единый первоисточник (Single Source of Truth)**: Контракты графа процессов (Workflow AST) и данных описываются на TypeScript с помощью Zod 4 (`schema/src/index.ts`) в ветке `main`.
 * **Мульти-таргетная компиляция**: Zod 4 нативно компилирует схемы в:
-  1. **OpenAPI 3.0** (`target: 'openapi-3.0'`) — внедряется в `sdk/api/openapi.yaml` для генерации типизированных клиентов на 10 языков.
-  2. **JSON Schema Draft 2020-12** (`target: 'draft-2020-12'`) — используется для динамического рендеринга форм Server-Driven UI (BDUI) в веб-виджетах `<nativebpm-trigger>`.
+  1. **OpenAPI 3.0** (`target: 'openapi-3.0'`) — внедряется в `api/openapi.yaml` для генерации типизированных клиентов на 10 языков.
+  2. **JSON Schema Draft 2020-12** (`target: 'draft-2020-12'`) — экспортируется в `api/schemas/workflow-ast.schema.json` и используется для динамического рендеринга форм Server-Driven UI (BDUI) в веб-виджетах `<nativebpm-trigger>`.
 * **Двусторонняя регидратация (`fromJSONSchema`)**: Позволяет веб-компонентам и фронтенду в одну строчку восстанавливать исполняемые валидаторы Zod из JSON Schema, полученной от сервера.
 * **OMG BPMN 2.0 Parity**: Движок NativeBPM на Go нативно принимает AST с сохранением спецификаций `inputSchema` и `nativebpm:responseSchema`.
 
