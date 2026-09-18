@@ -32,7 +32,7 @@ Click on the links below to explore the SDK code, documentation, and packages in
 | :--- | :--- | :--- | :--- |
 | **Go** | Go Modules / oapi-codegen | `go` | [Go SDK & Builder](https://gitlab.com/nativebpm/sdk/-/tree/go) |
 | **Python** | PyPI / setuptools | `python` | [Python SDK & Builder](https://gitlab.com/nativebpm/sdk/-/tree/python) |
-| **TypeScript** | NPM / Zod 4 SSOT | `typescript` | [TypeScript SDK, Builder & Schemas](https://gitlab.com/nativebpm/sdk/-/tree/typescript) |
+| **TypeScript** | NPM / Fetch Client | `typescript` | [TypeScript SDK & Builder](https://gitlab.com/nativebpm/sdk/-/tree/typescript) |
 | **Java** | Gradle / OkHttp-Gson | `java` | [Java SDK & Builder](https://gitlab.com/nativebpm/sdk/-/tree/java) |
 | **.NET (C#)** | NuGet / .NET 9.0 | `dotnet` | [.NET Client & Builder](https://gitlab.com/nativebpm/sdk/-/tree/dotnet) |
 | **PHP** | Composer / PHP 8.3 | `php` | [PHP SDK & Builder](https://gitlab.com/nativebpm/sdk/-/tree/php) |
@@ -48,7 +48,7 @@ Click on the links below to explore the SDK code, documentation, and packages in
 NativeBPM employs an end-to-end **Schema-as-Code** pipeline anchored by **Zod 4**:
 * **Single Source of Truth (SSOT)**: Workflow AST graphs and data contracts are declared in TypeScript via Zod 4 (`schema/src/index.ts`) in the `main` branch.
 * **Multi-Target Native Compilation**: Zod 4 natively compiles schemas without third-party dependencies to:
-  1. **OpenAPI 3.0** (`target: 'openapi-3.0'`) — embedded into `api/openapi.yaml` to generate strongly typed models across all 10 language SDKs.
+  1. **OpenAPI 3.0.3 Specification Document** (`target: 'openapi-3.0'`) — exported to `api/schemas/workflow-ast.openapi.json` (featuring a standalone OpenAPI 3.0.3 document with live Swagger UI interactive preview on GitLab) and embedded into `api/openapi.yaml` to generate strongly typed models across all 10 language SDKs.
   2. **JSON Schema Draft 2020-12** (`target: 'draft-2020-12'`) — exported to `api/schemas/workflow-ast.schema.json` to drive Server-Driven UI (BDUI) and dynamic form rendering in `<nativebpm-trigger>` web components.
 * **Two-Way Re-hydration (`fromJSONSchema`)**: Enables frontend applications to reconstruct live, executable Zod validators directly from JSON Schemas delivered over the wire.
 * **OMG BPMN 2.0 Parity**: The NativeBPM Go core engine accepts AST directly and serializes standard BPMN 2.0 XML with `inputSchema` and `nativebpm:responseSchema` extensions.
@@ -210,6 +210,19 @@ make generate-typescript
 make generate-python
 # Or override destination directory:
 make generate-go DEST=./go
+```
+
+### 100% Docker-Based Host-Free Development
+Every single target in the `Makefile` runs inside standardized Docker containers without requiring local host language runtimes (`node`, `go`, `python`, `gradle`, etc.):
+```bash
+# Validate Zod 4 contracts inside Docker
+make test-schema
+
+# Export OpenAPI 3.0.3 and JSON Schema inside Docker
+make schemas
+
+# Run all polyglot tests in isolated Docker containers
+make test
 ```
 
 For detailed instructions on modifying API schemas, regenerating individual language SDKs, and running test suites, please refer to the [Contributing Guide](CONTRIBUTING.md).

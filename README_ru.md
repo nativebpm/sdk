@@ -31,7 +31,7 @@
 | :--- | :--- | :--- | :--- |
 | **Go** | Go Modules / oapi-codegen | `go` | [Go SDK и конструктор](https://gitlab.com/nativebpm/sdk/-/tree/go) |
 | **Python** | PyPI / setuptools | `python` | [Python SDK и конструктор](https://gitlab.com/nativebpm/sdk/-/tree/python) |
-| **TypeScript** | NPM / Zod 4 SSOT | `typescript` | [TypeScript SDK, конструктор и схемы](https://gitlab.com/nativebpm/sdk/-/tree/typescript) |
+| **TypeScript** | NPM / Fetch Client | `typescript` | [TypeScript SDK и конструктор](https://gitlab.com/nativebpm/sdk/-/tree/typescript) |
 | **Java** | Gradle / OkHttp-Gson | `java` | [Java SDK и конструктор](https://gitlab.com/nativebpm/sdk/-/tree/java) |
 | **.NET (C#)** | NuGet / .NET 9.0 | `dotnet` | [.NET Клиент и конструктор](https://gitlab.com/nativebpm/sdk/-/tree/dotnet) |
 | **PHP** | Composer / PHP 8.3 | `php` | [PHP SDK и конструктор](https://gitlab.com/nativebpm/sdk/-/tree/php) |
@@ -47,7 +47,7 @@
 В монорепозитории реализован сквозной конвейер **Schema-as-Code** на базе **Zod 4**:
 * **Единый первоисточник (Single Source of Truth)**: Контракты графа процессов (Workflow AST) и данных описываются на TypeScript с помощью Zod 4 (`schema/src/index.ts`) в ветке `main`.
 * **Мульти-таргетная компиляция**: Zod 4 нативно компилирует схемы в:
-  1. **OpenAPI 3.0** (`target: 'openapi-3.0'`) — внедряется в `api/openapi.yaml` для генерации типизированных клиентов на 10 языков.
+  1. **Документ спецификации OpenAPI 3.0.3** (`target: 'openapi-3.0'`) — экспортируется в `api/schemas/workflow-ast.openapi.json` (с полноценной спецификацией OpenAPI 3.0.3 и интерактивным предпросмотром Swagger UI в GitLab) и внедряется в `api/openapi.yaml` для генерации типизированных клиентов на 10 языков.
   2. **JSON Schema Draft 2020-12** (`target: 'draft-2020-12'`) — экспортируется в `api/schemas/workflow-ast.schema.json` и используется для динамического рендеринга форм Server-Driven UI (BDUI) в веб-виджетах `<nativebpm-trigger>`.
 * **Двусторонняя регидратация (`fromJSONSchema`)**: Позволяет веб-компонентам и фронтенду в одну строчку восстанавливать исполняемые валидаторы Zod из JSON Schema, полученной от сервера.
 * **OMG BPMN 2.0 Parity**: Движок NativeBPM на Go нативно принимает AST с сохранением спецификаций `inputSchema` и `nativebpm:responseSchema`.
@@ -209,6 +209,19 @@ make generate-typescript
 make generate-python
 # Или с переопределением целевого каталога:
 make generate-go DEST=./go
+```
+
+### 100% Docker-Based Host-Free разработка
+Все таргеты в `Makefile` исполняются внутри стандартизированных Docker-контейнеров без необходимости установки локальных рантаймов (`node`, `go`, `python`, `gradle` и т.д.) на хостовой машине:
+```bash
+# Валидация Zod 4 контрактов в Docker
+make test-schema
+
+# Экспорт OpenAPI 3.0.3 и JSON Schema в Docker
+make schemas
+
+# Запуск полиглот-тестов в изолированных Docker-контейнерах
+make test
 ```
 
 Подробные инструкции по модификации схем API, генерации SDK для отдельных языков и выполнению тестовых наборов смотрите в [Руководстве разработчика (Contributing Guide)](CONTRIBUTING_ru.md).
