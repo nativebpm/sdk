@@ -98,6 +98,36 @@ paths:
         '500':
           $ref: '#/components/responses/500InternalError'
 
+  /api/process/compile:
+    post:
+      summary: Compile raw source code to BPMN 2.0 and optionally execute (Zero-SDK)
+      description: |
+        Zero-SDK entry point: Parses raw source code (Go, Python, JavaScript, TypeScript, or JSON State Machine)
+        into a canonical OMG BPMN 2.0 XML with auto-layout and WorkflowAST.
+        If `execute: true` is passed, atomically deploys and executes the process in a single call.
+      operationId: compileProcess
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CompileProcessRequest'
+      responses:
+        '200':
+          description: Process compiled successfully (and executed if requested)
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CompileProcessResponse'
+        '400':
+          description: Syntax error, unsupported language, or invalid request
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '500':
+          $ref: '#/components/responses/500InternalError'
+
   /api/process/execute:
     post:
       summary: Execute process with JIT auto-deploy
@@ -1384,4 +1414,81 @@ components:
           items:
             $ref: '#/components/schemas/TaskRecord'
           description: Active tasks currently waiting for human intervention or external completion
+
+    CompileProcessRequest:
+      type: object
+      required:
+        - code
+      properties:
+        id:
+          type: string
+          description: Workflow definition identifier (defaults to 'compiled_process' or derived from code)
+        name:
+          type: string
+          description: Human-readable workflow name
+        code:
+          type: string
+          description: Raw source code (Go, Python, TypeScript, JavaScript, or JSON State Machine)
+        language:
+          type: string
+          description: Optional language identifier ('go', 'python', 'javascript', 'typescript', 'json'). Auto-detected if omitted.
+        execute:
+          type: boolean
+          description: If true, immediately deploys and executes the compiled process
+        variables:
+          type: object
+          additionalProperties: true
+          description: Initial variables to start execution with (when execute is true)
+        businessKey:
+          type: string
+          description: Optional business correlation key (when execute is true)
+
+    CompileProcessResponse:
+      type: object
+      required:
+        - id
+        - name
+        - ast
+        - bpmnXml
+        - contentHash
+        - status
+      properties:
+        id:
+          type: string
+          description: Process definition identifier
+        name:
+          type: string
+          description: Process definition name
+        ast:
+          $ref: '#/components/schemas/WorkflowAST'
+        bpmnXml:
+          type: string
+          description: Full OMG BPMN 2.0 XML representation with auto-layout diagram coordinates
+        contentHash:
+          type: string
+          description: Deterministic SHA-256 hash of the workflow AST and ID
+        status:
+          type: string
+          description: Compilation status (e.g. COMPILED)
+        instanceId:
+          type: string
+          description: Process instance identifier (if execute was true)
+        version:
+          type: integer
+          description: Version number of the deployed process definition (if execute was true)
+        isNewVersionDeployed:
+          type: boolean
+          description: Indicates whether a new process definition version was deployed (if execute was true)
+        instanceStatus:
+          type: string
+          description: Status of the created instance (e.g. ACTIVE, COMPLETED)
+        state:
+          type: object
+          additionalProperties: true
+          description: Current execution state variables and data (if execute was true)
+        currentTasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskRecord'
+          description: Active tasks currently waiting for external completion (if execute was true)
 
