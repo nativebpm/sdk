@@ -82,6 +82,7 @@ Class | Method | HTTP request | Description
 *DefaultAPI* | [**CreateWebhook**](docs/DefaultAPI.md#createwebhook) | **Post** /api/webhooks | Create webhook target
 *DefaultAPI* | [**DeleteWebhook**](docs/DefaultAPI.md#deletewebhook) | **Delete** /api/webhooks/{id} | Delete webhook target
 *DefaultAPI* | [**DeployDefinition**](docs/DefaultAPI.md#deploydefinition) | **Post** /api/deploy | Deploy process definition
+*DefaultAPI* | [**ExecuteProcess**](docs/DefaultAPI.md#executeprocess) | **Post** /api/process/execute | Execute process with JIT auto-deploy
 *DefaultAPI* | [**GetInstance**](docs/DefaultAPI.md#getinstance) | **Get** /api/instances/{id} | Get process instance
 *DefaultAPI* | [**GetInstanceHistory**](docs/DefaultAPI.md#getinstancehistory) | **Get** /api/instances/{id}/history | Get process instance execution history
 *DefaultAPI* | [**GetInstanceVisualization**](docs/DefaultAPI.md#getinstancevisualization) | **Get** /api/instances/{id}/visualization | Get process instance visualization data
@@ -107,9 +108,18 @@ Class | Method | HTTP request | Description
  - [CompleteInstanceTaskRequest](docs/CompleteInstanceTaskRequest.md)
  - [CompleteTaskRequest](docs/CompleteTaskRequest.md)
  - [CreateWebhookRequest](docs/CreateWebhookRequest.md)
+ - [DMNInputAST](docs/DMNInputAST.md)
+ - [DMNOutputAST](docs/DMNOutputAST.md)
+ - [DMNRuleAST](docs/DMNRuleAST.md)
+ - [ExecuteProcessRequest](docs/ExecuteProcessRequest.md)
+ - [ExecuteProcessResponse](docs/ExecuteProcessResponse.md)
+ - [FlowAST](docs/FlowAST.md)
  - [HistoryRecord](docs/HistoryRecord.md)
+ - [InVariable](docs/InVariable.md)
  - [IncidentRecord](docs/IncidentRecord.md)
  - [ListDefinitions401Response](docs/ListDefinitions401Response.md)
+ - [NodeAST](docs/NodeAST.md)
+ - [OutVariable](docs/OutVariable.md)
  - [ProcessDefinition](docs/ProcessDefinition.md)
  - [ProcessInstance](docs/ProcessInstance.md)
  - [ResolveIncident200Response](docs/ResolveIncident200Response.md)
@@ -119,6 +129,7 @@ Class | Method | HTTP request | Description
  - [VisualizationData](docs/VisualizationData.md)
  - [WebhookDeliveryRecord](docs/WebhookDeliveryRecord.md)
  - [WebhookRecord](docs/WebhookRecord.md)
+ - [WorkflowAST](docs/WorkflowAST.md)
 
 
 ## Documentation For Authorization

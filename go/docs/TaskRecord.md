@@ -13,6 +13,7 @@ Name | Type | Description | Notes
 **Status** | **string** |  | 
 **DueDate** | Pointer to **time.Time** |  | [optional] 
 **InputSchema** | Pointer to **string** | JSON schema definition of form widgets | [optional] 
+**FormId** | Pointer to **string** | Form identifier or Camunda form key for dynamic schema rendering | [optional] 
 **CreatedAt** | **time.Time** |  | 
 **ClaimedAt** | Pointer to **time.Time** |  | [optional] 
 **CompletedAt** | Pointer to **time.Time** |  | [optional] 
@@ -227,6 +228,31 @@ SetInputSchema sets InputSchema field to given value.
 `func (o *TaskRecord) HasInputSchema() bool`
 
 HasInputSchema returns a boolean if a field has been set.
+
+### GetFormId
+
+`func (o *TaskRecord) GetFormId() string`
+
+GetFormId returns the FormId field if non-nil, zero value otherwise.
+
+### GetFormIdOk
+
+`func (o *TaskRecord) GetFormIdOk() (*string, bool)`
+
+GetFormIdOk returns a tuple with the FormId field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetFormId
+
+`func (o *TaskRecord) SetFormId(v string)`
+
+SetFormId sets FormId field to given value.
+
+### HasFormId
+
+`func (o *TaskRecord) HasFormId() bool`
+
+HasFormId returns a boolean if a field has been set.
 
 ### GetCreatedAt
 

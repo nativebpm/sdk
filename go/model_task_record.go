@@ -32,6 +32,8 @@ type TaskRecord struct {
 	DueDate *time.Time `json:"due_date,omitempty"`
 	// JSON schema definition of form widgets
 	InputSchema *string `json:"input_schema,omitempty"`
+	// Form identifier or Camunda form key for dynamic schema rendering
+	FormId *string `json:"form_id,omitempty"`
 	CreatedAt time.Time `json:"created_at"`
 	ClaimedAt *time.Time `json:"claimed_at,omitempty"`
 	CompletedAt *time.Time `json:"completed_at,omitempty"`
@@ -298,6 +300,38 @@ func (o *TaskRecord) SetInputSchema(v string) {
 	o.InputSchema = &v
 }
 
+// GetFormId returns the FormId field value if set, zero value otherwise.
+func (o *TaskRecord) GetFormId() string {
+	if o == nil || IsNil(o.FormId) {
+		var ret string
+		return ret
+	}
+	return *o.FormId
+}
+
+// GetFormIdOk returns a tuple with the FormId field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *TaskRecord) GetFormIdOk() (*string, bool) {
+	if o == nil || IsNil(o.FormId) {
+		return nil, false
+	}
+	return o.FormId, true
+}
+
+// HasFormId returns a boolean if a field has been set.
+func (o *TaskRecord) HasFormId() bool {
+	if o != nil && !IsNil(o.FormId) {
+		return true
+	}
+
+	return false
+}
+
+// SetFormId gets a reference to the given string and assigns it to the FormId field.
+func (o *TaskRecord) SetFormId(v string) {
+	o.FormId = &v
+}
+
 // GetCreatedAt returns the CreatedAt field value
 func (o *TaskRecord) GetCreatedAt() time.Time {
 	if o == nil {
@@ -472,6 +506,9 @@ func (o TaskRecord) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.InputSchema) {
 		toSerialize["input_schema"] = o.InputSchema
+	}
+	if !IsNil(o.FormId) {
+		toSerialize["form_id"] = o.FormId
 	}
 	toSerialize["created_at"] = o.CreatedAt
 	if !IsNil(o.ClaimedAt) {

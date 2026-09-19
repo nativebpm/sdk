@@ -102,6 +102,18 @@ func Test_nativebpm_DefaultAPIService(t *testing.T) {
 
 	})
 
+	t.Run("Test DefaultAPIService ExecuteProcess", func(t *testing.T) {
+
+		t.Skip("skip test")  // remove to run test
+
+		resp, httpRes, err := apiClient.DefaultAPI.ExecuteProcess(context.Background()).Execute()
+
+		require.Nil(t, err)
+		require.NotNil(t, resp)
+		assert.Equal(t, 200, httpRes.StatusCode)
+
+	})
+
 	t.Run("Test DefaultAPIService GetInstance", func(t *testing.T) {
 
 		t.Skip("skip test")  // remove to run test
@@ -151,6 +163,18 @@ func Test_nativebpm_DefaultAPIService(t *testing.T) {
 		var id string
 
 		resp, httpRes, err := apiClient.DefaultAPI.GetInstanceVisualizationWidget(context.Background(), id).Execute()
+
+		require.Nil(t, err)
+		require.NotNil(t, resp)
+		assert.Equal(t, 200, httpRes.StatusCode)
+
+	})
+
+	t.Run("Test DefaultAPIService GetSMTPConfig", func(t *testing.T) {
+
+		t.Skip("skip test")  // remove to run test
+
+		resp, httpRes, err := apiClient.DefaultAPI.GetSMTPConfig(context.Background()).Execute()
 
 		require.Nil(t, err)
 		require.NotNil(t, resp)

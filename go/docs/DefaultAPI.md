@@ -10,6 +10,7 @@ Method | HTTP request | Description
 [**CreateWebhook**](DefaultAPI.md#CreateWebhook) | **Post** /api/webhooks | Create webhook target
 [**DeleteWebhook**](DefaultAPI.md#DeleteWebhook) | **Delete** /api/webhooks/{id} | Delete webhook target
 [**DeployDefinition**](DefaultAPI.md#DeployDefinition) | **Post** /api/deploy | Deploy process definition
+[**ExecuteProcess**](DefaultAPI.md#ExecuteProcess) | **Post** /api/process/execute | Execute process with JIT auto-deploy
 [**GetInstance**](DefaultAPI.md#GetInstance) | **Get** /api/instances/{id} | Get process instance
 [**GetInstanceHistory**](DefaultAPI.md#GetInstanceHistory) | **Get** /api/instances/{id}/history | Get process instance execution history
 [**GetInstanceVisualization**](DefaultAPI.md#GetInstanceVisualization) | **Get** /api/instances/{id}/visualization | Get process instance visualization data
@@ -441,6 +442,72 @@ No authorization required
 ### HTTP request headers
 
 - **Content-Type**: multipart/form-data, application/json
+- **Accept**: application/json
+
+[[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
+[[Back to Model list]](../README.md#documentation-for-models)
+[[Back to README]](../README.md)
+
+
+## ExecuteProcess
+
+> ExecuteProcessResponse ExecuteProcess(ctx).ExecuteProcessRequest(executeProcessRequest).Execute()
+
+Execute process with JIT auto-deploy
+
+
+
+### Example
+
+```go
+package main
+
+import (
+	"context"
+	"fmt"
+	"os"
+	openapiclient "gitlab.com/nativebpm/sdk/go"
+)
+
+func main() {
+	executeProcessRequest := *openapiclient.NewExecuteProcessRequest() // ExecuteProcessRequest | 
+
+	configuration := openapiclient.NewConfiguration()
+	apiClient := openapiclient.NewAPIClient(configuration)
+	resp, r, err := apiClient.DefaultAPI.ExecuteProcess(context.Background()).ExecuteProcessRequest(executeProcessRequest).Execute()
+	if err != nil {
+		fmt.Fprintf(os.Stderr, "Error when calling `DefaultAPI.ExecuteProcess``: %v\n", err)
+		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
+	}
+	// response from `ExecuteProcess`: ExecuteProcessResponse
+	fmt.Fprintf(os.Stdout, "Response from `DefaultAPI.ExecuteProcess`: %v\n", resp)
+}
+```
+
+### Path Parameters
+
+
+
+### Other Parameters
+
+Other parameters are passed through a pointer to a apiExecuteProcessRequest struct via the builder pattern
+
+
+Name | Type | Description  | Notes
+------------- | ------------- | ------------- | -------------
+ **executeProcessRequest** | [**ExecuteProcessRequest**](ExecuteProcessRequest.md) |  | 
+
+### Return type
+
+[**ExecuteProcessResponse**](ExecuteProcessResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: application/json
 - **Accept**: application/json
 
 [[Back to top]](#) [[Back to API list]](../README.md#documentation-for-api-endpoints)
