@@ -100,23 +100,40 @@ To ensure client-side SDKs remain extremely lightweight, reliable, and free of h
 
 ```mermaid
 flowchart TD
-    subgraph "Host Application (Go, Python, JS, Rust, Swift, etc.)"
+    subgraph "Host Application (Go, Python, TypeScript, Rust, Swift, etc.)"
         API[Fluent Workflow API Builder] -->|Builds AST| AST[Workflow AST JSON]
-        AST -->|Direct HTTP POST| REST[REST API Client]
+        AST -->|Single Call: workflow.run / POST /api/process/execute| REST[REST API Client]
     end
 
     subgraph "NativeBPM Engine Server"
-        POST_DEPLOY[POST /api/deploy] -->|Receives JSON AST| COMPILER[Embedded Go-in-WASM Compiler]
-        COMPILER -->|Compiles & Validates| BPMN[BPMN 2.0 XML]
-        BPMN -->|Registers & Runs| ENGINE[Execution Engine]
+        POST_EXEC[POST /api/process/execute] -->|Checks contentHash in DB| HASH_CHECK{Hash Exists?}
+        HASH_CHECK -- "No (Cold Path)" --> COMPILER[Embedded Go-in-WASM Compiler]
+        COMPILER -->|Compiles & Stores Definition| BPMN[BPMN 2.0 XML]
+        BPMN -->|Auto-deploys & Starts Instance| ENGINE[Execution Engine]
+        HASH_CHECK -- "Yes (Hot Path)" --> ENGINE
     end
 
-    REST -->|Sends JSON AST| POST_DEPLOY
+    REST -->|Sends { definitionId, contentHash, variables }| POST_EXEC
 
     style COMPILER fill:#4F46E5,stroke:#fff,stroke-width:2px,color:#fff
     style BPMN fill:#10B981,stroke:#fff,stroke-width:2px,color:#fff
     style ENGINE fill:#06B6D4,stroke:#fff,stroke-width:2px,color:#fff
 ```
+
+### 🚀 Just-In-Time (JIT) Auto-Deploy & Single-Call Execution (`workflow.run()`)
+
+Traditionally, workflow systems require a two-step ceremony: first registering the diagram (`POST /api/deploy`), then initiating execution (`POST /api/definitions/{id}/start`). 
+
+NativeBPM eliminates this overhead with **Just-In-Time (JIT) Auto-Deploy** via `POST /api/process/execute`:
+* **Single-Line Invocation**:
+  ```typescript
+  // Cold start auto-deploys; hot start runs with zero re-deployment overhead!
+  const instance = await orderWorkflow.run({ orderId: "12345", amount: 499 });
+  console.log(`Started process instance ${instance.id} (status: ${instance.state})`);
+  ```
+* **Deterministic SHA-256 Content Hashing**: Each workflow AST computes a canonical JSON hash (`sha256:...`).
+* **Hot-Path Zero-AST Transmission**: Once deployed, the client caches the hash and transmits only `{ definitionId, contentHash, variables }`, reducing payload size by over 90%.
+* **Self-Healing Transparent Fallback**: If the server clears its cache or an unknown hash error (HTTP 404 `DEFINITION_HASH_UNKNOWN`) is returned, the client automatically re-transmits the full definition without breaking the application logic.
 
 By offloading the compilation to the engine backend, NativeBPM client SDKs require:
 * **Zero Client Dependencies**: No WebAssembly interpreters (like Wazero or Wasmtime) or local `.wasm` files are bundled.
