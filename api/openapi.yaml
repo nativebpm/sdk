@@ -105,6 +105,13 @@ paths:
         Atomically deploys the workflow definition if changed (or not yet known) and immediately starts an execution instance.
         Supports lightweight repeat execution via contentHash and definitionId.
       operationId: executeProcess
+      parameters:
+        - name: X-NativeBPM-Signature
+          in: header
+          required: false
+          description: HMAC-SHA256 signature of the workflow contentHash
+          schema:
+            type: string
       requestBody:
         required: true
         content:
@@ -126,6 +133,8 @@ paths:
           $ref: '#/components/responses/403Forbidden'
         '404':
           description: Definition hash unknown (requires full AST resubmission)
+        '429':
+          $ref: '#/components/responses/429TooManyRequests'
         '500':
           $ref: '#/components/responses/500InternalError'
 
@@ -726,6 +735,16 @@ components:
               error:
                 type: string
                 example: Forbidden - Insufficient permissions
+    429TooManyRequests:
+      description: Too Many Requests - rate limit or version rollout quota exceeded
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              error:
+                type: string
+                example: VERSION_ROLLOUT_LIMIT_EXCEEDED
     500InternalError:
       description: Internal Server Error - database failure or execution crash
 
@@ -1328,6 +1347,9 @@ components:
           type: object
           additionalProperties: true
           description: Initial variables to start the process with
+        signature:
+          type: string
+          description: Optional HMAC signature verifying workflow authenticity
 
     ExecuteProcessResponse:
       type: object

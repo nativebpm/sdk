@@ -14,6 +14,7 @@ const testFiles = [
   'case8_zod_openapi_ast.test.ts',
   'case9_polyglot_360_generation.test.ts',
   'case10_jit_auto_deploy.test.ts',
+  'case11_security_guard.test.ts',
 ].map(f => join(__dirname, f));
 
 console.log('================================================================');

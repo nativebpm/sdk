@@ -114,6 +114,7 @@ export declare class Workflow {
         forms?: Record<string, any>;
         baseUrl?: string;
         apiToken?: string;
+        signature?: string;
     }): Promise<ProcessInstanceHandle>;
 }
 export interface ProcessInstanceHandle {
@@ -130,6 +131,9 @@ export interface ProcessInstanceHandle {
 }
 export declare function canonicalJsonStringify(obj: any): string;
 export declare function computeWorkflowHash(ast: WorkflowAST | string): string;
+export declare function computeWorkflowSignature(contentHash: string, secretKey: string): string;
+export declare function setDefaultSigningKey(key: string | undefined): void;
+export declare function getDefaultSigningKey(): string | undefined;
 export declare function clearDeployedHashCache(): void;
 export declare class WorkflowBuilder extends Workflow {
 }

@@ -41,8 +41,12 @@ export {
   evaluateDMNRule,
   canonicalJsonStringify,
   computeWorkflowHash,
+  computeWorkflowSignature,
   clearDeployedHashCache,
+  setDefaultSigningKey,
+  getDefaultSigningKey,
 } from './builder.js';
 export type { ProcessInstanceHandle } from './builder.js';
 
 export * from './client.js';
+export * from './bundler.js';

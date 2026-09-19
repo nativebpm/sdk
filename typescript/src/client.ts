@@ -126,13 +126,23 @@ export class ExecuteProcessBuilder {
     return this;
   }
 
+  public withSignature(sig: string): this {
+    (this.req as any).signature = sig;
+    return this;
+  }
+
   public async send(): Promise<api.ExecuteProcessResponse> {
+    const headers: Record<string, string> = {
+      ...this.client.getHeaders(),
+      "Content-Type": "application/json",
+    };
+    if ((this.req as any).signature) {
+      headers["X-NativeBPM-Signature"] = (this.req as any).signature;
+    }
+
     const res = await fetch(`${this.client.getBaseUrl()}/api/process/execute`, {
       method: "POST",
-      headers: {
-        ...this.client.getHeaders(),
-        "Content-Type": "application/json",
-      },
+      headers,
       body: JSON.stringify(this.req),
     });
     if (!res.ok) {

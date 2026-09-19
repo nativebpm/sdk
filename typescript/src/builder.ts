@@ -1,5 +1,5 @@
 // Zero-dependency AST Workflow builder with native Zod 4 & BPMN 2.0 XML generation
-import { createHash } from 'node:crypto';
+import { createHash, createHmac } from 'node:crypto';
 import { z } from 'zod';
 import {
   WorkflowASTSchema,
@@ -733,6 +733,7 @@ export class Workflow {
       forms?: Record<string, any>;
       baseUrl?: string;
       apiToken?: string;
+      signature?: string;
     }
   ): Promise<ProcessInstanceHandle> {
     let cl = options?.client || this.clientInstance || getDefaultClient();
@@ -752,6 +753,15 @@ export class Workflow {
 
     const hash = this.getContentHash();
     const forms = options?.forms || this.extractForms();
+
+    // Resolve or compute signature if signing key is configured
+    let sig = options?.signature;
+    if (!sig) {
+      const key = getDefaultSigningKey();
+      if (key) {
+        sig = computeWorkflowSignature(hash, key);
+      }
+    }
 
     const buildHandle = (res: any): ProcessInstanceHandle => {
       return {
@@ -780,6 +790,7 @@ export class Workflow {
           contentHash: hash,
           businessKey: options?.businessKey,
           variables: variables as any,
+          signature: sig,
         });
         return buildHandle(res);
       } catch (err: any) {
@@ -798,6 +809,7 @@ export class Workflow {
       contentHash: hash,
       businessKey: options?.businessKey,
       variables: variables as any,
+      signature: sig,
     });
     knownDeployedHashes.add(hash);
     return buildHandle(res);
@@ -835,6 +847,27 @@ export function computeWorkflowHash(ast: WorkflowAST | string): string {
   hasher.update(canonical);
   hasher.update(astObj.id || '');
   return 'sha256:' + hasher.digest('hex');
+}
+
+export function computeWorkflowSignature(contentHash: string, secretKey: string): string {
+  const cleanHash = contentHash.replace(/^sha256:/, '');
+  const hmac = createHmac('sha256', secretKey);
+  hmac.update(cleanHash);
+  return hmac.digest('hex');
+}
+
+let defaultSigningKey: string | undefined;
+
+export function setDefaultSigningKey(key: string | undefined): void {
+  defaultSigningKey = key;
+}
+
+export function getDefaultSigningKey(): string | undefined {
+  if (defaultSigningKey) return defaultSigningKey;
+  if (typeof process !== 'undefined' && process.env?.NATIVEBPM_SIGNING_SECRET) {
+    return process.env.NATIVEBPM_SIGNING_SECRET;
+  }
+  return undefined;
 }
 
 const knownDeployedHashes = new Set<string>();

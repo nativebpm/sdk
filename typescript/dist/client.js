@@ -85,13 +85,21 @@ export class ExecuteProcessBuilder {
         this.req.variables = vars;
         return this;
     }
+    withSignature(sig) {
+        this.req.signature = sig;
+        return this;
+    }
     async send() {
+        const headers = {
+            ...this.client.getHeaders(),
+            "Content-Type": "application/json",
+        };
+        if (this.req.signature) {
+            headers["X-NativeBPM-Signature"] = this.req.signature;
+        }
         const res = await fetch(`${this.client.getBaseUrl()}/api/process/execute`, {
             method: "POST",
-            headers: {
-                ...this.client.getHeaders(),
-                "Content-Type": "application/json",
-            },
+            headers,
             body: JSON.stringify(this.req),
         });
         if (!res.ok) {

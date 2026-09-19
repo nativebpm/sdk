@@ -1,5 +1,5 @@
 // Zero-dependency AST Workflow builder with native Zod 4 & BPMN 2.0 XML generation
-import { createHash } from 'node:crypto';
+import { createHash, createHmac } from 'node:crypto';
 import { z } from 'zod';
 import { WorkflowASTSchema, } from './schemas/workflow-ast.js';
 import { getDefaultClient } from './client.js';
@@ -638,6 +638,14 @@ export class Workflow {
         }
         const hash = this.getContentHash();
         const forms = options?.forms || this.extractForms();
+        // Resolve or compute signature if signing key is configured
+        let sig = options?.signature;
+        if (!sig) {
+            const key = getDefaultSigningKey();
+            if (key) {
+                sig = computeWorkflowSignature(hash, key);
+            }
+        }
         const buildHandle = (res) => {
             return {
                 instanceId: res.instanceId,
@@ -664,6 +672,7 @@ export class Workflow {
                     contentHash: hash,
                     businessKey: options?.businessKey,
                     variables: variables,
+                    signature: sig,
                 });
                 return buildHandle(res);
             }
@@ -683,6 +692,7 @@ export class Workflow {
             contentHash: hash,
             businessKey: options?.businessKey,
             variables: variables,
+            signature: sig,
         });
         knownDeployedHashes.add(hash);
         return buildHandle(res);
@@ -705,6 +715,24 @@ export function computeWorkflowHash(ast) {
     hasher.update(canonical);
     hasher.update(astObj.id || '');
     return 'sha256:' + hasher.digest('hex');
+}
+export function computeWorkflowSignature(contentHash, secretKey) {
+    const cleanHash = contentHash.replace(/^sha256:/, '');
+    const hmac = createHmac('sha256', secretKey);
+    hmac.update(cleanHash);
+    return hmac.digest('hex');
+}
+let defaultSigningKey;
+export function setDefaultSigningKey(key) {
+    defaultSigningKey = key;
+}
+export function getDefaultSigningKey() {
+    if (defaultSigningKey)
+        return defaultSigningKey;
+    if (typeof process !== 'undefined' && process.env?.NATIVEBPM_SIGNING_SECRET) {
+        return process.env.NATIVEBPM_SIGNING_SECRET;
+    }
+    return undefined;
 }
 const knownDeployedHashes = new Set();
 export function clearDeployedHashCache() {

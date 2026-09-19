@@ -42,6 +42,7 @@ export declare class ExecuteProcessBuilder {
     withDefinitionId(id: string): this;
     withBusinessKey(key: string): this;
     withVariables(vars: Record<string, any>): this;
+    withSignature(sig: string): this;
     send(): Promise<api.ExecuteProcessResponse>;
 }
 export declare class DefinitionsService {
