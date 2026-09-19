@@ -8,6 +8,10 @@ export type TaskRecord = api.TaskRecord;
 export type WebhookRecord = api.WebhookRecord;
 export type WebhookDeliveryRecord = api.WebhookDeliveryRecord;
 export type VisualizationData = api.VisualizationData;
+export type ExecuteProcessRequest = api.ExecuteProcessRequest;
+export type ExecuteProcessResponse = api.ExecuteProcessResponse;
+export declare function setDefaultClient(client: Client): void;
+export declare function getDefaultClient(): Client | undefined;
 export declare class Client {
     private baseUrl;
     private apiToken;
@@ -19,6 +23,26 @@ export declare class Client {
     instances(): InstancesService;
     tasks(): TasksService;
     webhooks(): WebhooksService;
+    execute(request: api.ExecuteProcessRequest): Promise<api.ExecuteProcessResponse>;
+    process(): ProcessService;
+}
+export declare class ProcessService {
+    private client;
+    constructor(client: Client);
+    execute(): ExecuteProcessBuilder;
+}
+export declare class ExecuteProcessBuilder {
+    private client;
+    private req;
+    constructor(client: Client);
+    withRequest(req: api.ExecuteProcessRequest): this;
+    withAST(ast: any): this;
+    withForms(forms: Record<string, any>): this;
+    withContentHash(hash: string): this;
+    withDefinitionId(id: string): this;
+    withBusinessKey(key: string): this;
+    withVariables(vars: Record<string, any>): this;
+    send(): Promise<api.ExecuteProcessResponse>;
 }
 export declare class DefinitionsService {
     private client;

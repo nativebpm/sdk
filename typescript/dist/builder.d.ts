@@ -104,7 +104,33 @@ export declare class Workflow {
     toJSON(): string;
     toBPMN(): string;
     extractForms(): Record<string, any>;
+    private clientInstance?;
+    withClient(client: any): this;
+    getClient(): any;
+    getContentHash(): string;
+    run<TVariables extends Record<string, any> = Record<string, any>>(variables?: TVariables, options?: {
+        client?: any;
+        businessKey?: string;
+        forms?: Record<string, any>;
+        baseUrl?: string;
+        apiToken?: string;
+    }): Promise<ProcessInstanceHandle>;
 }
+export interface ProcessInstanceHandle {
+    instanceId: string;
+    definitionId: string;
+    version: number;
+    isNewVersionDeployed: boolean;
+    status: string;
+    state?: Record<string, any>;
+    currentTasks: any[];
+    client?: any;
+    claimTask?(taskId: string, assignee: string): Promise<any>;
+    completeTask?(taskId: string, variables?: Record<string, any>): Promise<any>;
+}
+export declare function canonicalJsonStringify(obj: any): string;
+export declare function computeWorkflowHash(ast: WorkflowAST | string): string;
+export declare function clearDeployedHashCache(): void;
 export declare class WorkflowBuilder extends Workflow {
 }
 export declare function generateBPMNXML(ast: WorkflowAST): string;

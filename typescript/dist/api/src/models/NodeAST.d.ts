@@ -22,130 +22,194 @@ import type { OutVariable } from './OutVariable';
 export interface NodeAST {
     /**
      *
+     * @type {string}
+     * @memberof NodeAST
      */
     id: string;
     /**
      *
+     * @type {string}
+     * @memberof NodeAST
      */
     name: string;
     /**
      *
+     * @type {NodeASTTypeEnum}
+     * @memberof NodeAST
      */
     type: NodeASTTypeEnum;
     /**
      *
+     * @type {string}
+     * @memberof NodeAST
      */
     topic?: string;
     /**
      *
+     * @type {string}
+     * @memberof NodeAST
      */
     wasmPath?: string;
     /**
      *
+     * @type {string}
+     * @memberof NodeAST
      */
     provider?: string;
     /**
      *
+     * @type {string}
+     * @memberof NodeAST
      */
     model?: string;
     /**
      *
+     * @type {string}
+     * @memberof NodeAST
      */
     prompt?: string;
     /**
      *
+     * @type {string}
+     * @memberof NodeAST
      */
     systemInstruction?: string;
     /**
      *
+     * @type {string}
+     * @memberof NodeAST
      */
     responseSchema?: string;
     /**
      *
+     * @type {number}
+     * @memberof NodeAST
      */
     temperature?: number;
     /**
      *
+     * @type {string}
+     * @memberof NodeAST
      */
     resultVar?: string;
     /**
      *
+     * @type {string}
+     * @memberof NodeAST
      */
     assignee?: string;
     /**
      *
+     * @type {string}
+     * @memberof NodeAST
      */
     candidateGroups?: string;
     /**
      *
+     * @type {string}
+     * @memberof NodeAST
      */
     dueDate?: string;
     /**
      *
+     * @type {string}
+     * @memberof NodeAST
      */
     inputSchema?: string;
     /**
      *
+     * @type {string}
+     * @memberof NodeAST
      */
     formId?: string;
     /**
      *
+     * @type {string}
+     * @memberof NodeAST
      */
     formKey?: string;
     /**
      *
+     * @type {string}
+     * @memberof NodeAST
      */
     calledElement?: string;
     /**
      *
+     * @type {Array<InVariable>}
+     * @memberof NodeAST
      */
     inVariables?: Array<InVariable>;
     /**
      *
+     * @type {Array<OutVariable>}
+     * @memberof NodeAST
      */
     outVariables?: Array<OutVariable>;
     /**
      *
+     * @type {string}
+     * @memberof NodeAST
      */
     decisionRef?: string;
     /**
      *
+     * @type {string}
+     * @memberof NodeAST
      */
     mapDecisionResult?: string;
     /**
      *
+     * @type {string}
+     * @memberof NodeAST
      */
     hitPolicy?: string;
     /**
      *
+     * @type {Array<DMNInputAST>}
+     * @memberof NodeAST
      */
     inputs?: Array<DMNInputAST>;
     /**
      *
+     * @type {Array<DMNOutputAST>}
+     * @memberof NodeAST
      */
     outputs?: Array<DMNOutputAST>;
     /**
      *
+     * @type {Array<DMNRuleAST>}
+     * @memberof NodeAST
      */
     rules?: Array<DMNRuleAST>;
     /**
      *
+     * @type {string}
+     * @memberof NodeAST
      */
     attachedToRef?: string;
     /**
      *
+     * @type {string}
+     * @memberof NodeAST
      */
     timeDuration?: string;
     /**
      *
+     * @type {string}
+     * @memberof NodeAST
      */
     timeDate?: string;
     /**
      *
+     * @type {string}
+     * @memberof NodeAST
      */
     timeCycle?: string;
     /**
      *
+     * @type {boolean}
+     * @memberof NodeAST
      */
     cancelActivity?: boolean;
 }

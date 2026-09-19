@@ -21,6 +21,8 @@ import { mapValues } from '../runtime';
 export interface ListDefinitions401Response {
     /**
      * 
+     * @type {string}
+     * @memberof ListDefinitions401Response
      */
     error?: string;
 }

@@ -10,6 +10,7 @@ All URIs are relative to *http://localhost*
 | [**createWebhook**](DefaultApi.md#createwebhookoperation) | **POST** /api/webhooks | Create webhook target |
 | [**deleteWebhook**](DefaultApi.md#deletewebhook) | **DELETE** /api/webhooks/{id} | Delete webhook target |
 | [**deployDefinition**](DefaultApi.md#deploydefinition) | **POST** /api/deploy | Deploy process definition |
+| [**executeProcess**](DefaultApi.md#executeprocessoperation) | **POST** /api/process/execute | Execute process with JIT auto-deploy |
 | [**getInstance**](DefaultApi.md#getinstance) | **GET** /api/instances/{id} | Get process instance |
 | [**getInstanceHistory**](DefaultApi.md#getinstancehistory) | **GET** /api/instances/{id}/history | Get process instance execution history |
 | [**getInstanceVisualization**](DefaultApi.md#getinstancevisualization) | **GET** /api/instances/{id}/visualization | Get process instance visualization data |
@@ -327,7 +328,7 @@ No authorization required
 
 ## deleteWebhook
 
-> DeleteWebhook200Response deleteWebhook(id)
+> ResolveIncident200Response deleteWebhook(id)
 
 Delete webhook target
 
@@ -372,7 +373,7 @@ example().catch(console.error);
 
 ### Return type
 
-[**DeleteWebhook200Response**](DeleteWebhook200Response.md)
+[**ResolveIncident200Response**](ResolveIncident200Response.md)
 
 ### Authorization
 
@@ -462,6 +463,78 @@ No authorization required
 | **400** | Invalid request body or malformed BPMN XML |  -  |
 | **401** | Unauthorized - missing or invalid session cookie / API Bearer Token |  -  |
 | **403** | Forbidden - insufficient operator permissions or role level |  -  |
+| **500** | Internal Server Error - database failure or execution crash |  -  |
+
+[[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
+
+
+## executeProcess
+
+> ExecuteProcessResponse executeProcess(executeProcessRequest)
+
+Execute process with JIT auto-deploy
+
+Atomically deploys the workflow definition if changed (or not yet known) and immediately starts an execution instance. Supports lightweight repeat execution via contentHash and definitionId. 
+
+### Example
+
+```ts
+import {
+  Configuration,
+  DefaultApi,
+} from '@nativebpm/client';
+import type { ExecuteProcessOperationRequest } from '@nativebpm/client';
+
+async function example() {
+  console.log("🚀 Testing @nativebpm/client SDK...");
+  const api = new DefaultApi();
+
+  const body = {
+    // ExecuteProcessRequest
+    executeProcessRequest: ...,
+  } satisfies ExecuteProcessOperationRequest;
+
+  try {
+    const data = await api.executeProcess(body);
+    console.log(data);
+  } catch (error) {
+    console.error(error);
+  }
+}
+
+// Run the test
+example().catch(console.error);
+```
+
+### Parameters
+
+
+| Name | Type | Description  | Notes |
+|------------- | ------------- | ------------- | -------------|
+| **executeProcessRequest** | [ExecuteProcessRequest](ExecuteProcessRequest.md) |  | |
+
+### Return type
+
+[**ExecuteProcessResponse**](ExecuteProcessResponse.md)
+
+### Authorization
+
+No authorization required
+
+### HTTP request headers
+
+- **Content-Type**: `application/json`
+- **Accept**: `application/json`
+
+
+### HTTP response details
+| Status code | Description | Response headers |
+|-------------|-------------|------------------|
+| **200** | Process started successfully |  -  |
+| **400** | Invalid workflow AST or input variables |  -  |
+| **401** | Unauthorized - missing or invalid session cookie / API Bearer Token |  -  |
+| **403** | Forbidden - insufficient operator permissions or role level |  -  |
+| **404** | Definition hash unknown (requires full AST resubmission) |  -  |
 | **500** | Internal Server Error - database failure or execution crash |  -  |
 
 [[Back to top]](#) [[Back to API list]](../README.md#api-endpoints) [[Back to Model list]](../README.md#models) [[Back to README]](../README.md)
@@ -1501,7 +1574,7 @@ No authorization required
 
 ## testWebhook
 
-> TestWebhook200Response testWebhook(id)
+> ResolveIncident200Response testWebhook(id)
 
 Test webhook target
 
@@ -1546,7 +1619,7 @@ example().catch(console.error);
 
 ### Return type
 
-[**TestWebhook200Response**](TestWebhook200Response.md)
+[**ResolveIncident200Response**](ResolveIncident200Response.md)
 
 ### Authorization
 

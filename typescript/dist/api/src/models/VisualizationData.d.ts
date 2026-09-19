@@ -18,34 +18,50 @@ import type { HistoryRecord } from './HistoryRecord';
 export interface VisualizationData {
     /**
      *
+     * @type {string}
+     * @memberof VisualizationData
      */
     instanceId: string;
     /**
      *
+     * @type {string}
+     * @memberof VisualizationData
      */
     definitionId: string;
     /**
      *
+     * @type {string}
+     * @memberof VisualizationData
      */
     xml: string;
     /**
      *
+     * @type {Array<string>}
+     * @memberof VisualizationData
      */
     activeNodes: Array<string>;
     /**
      *
+     * @type {Array<string>}
+     * @memberof VisualizationData
      */
     waitingNodes: Array<string>;
     /**
      *
+     * @type {Array<string>}
+     * @memberof VisualizationData
      */
     completedNodes: Array<string>;
     /**
      *
+     * @type {Array<HistoryRecord>}
+     * @memberof VisualizationData
      */
     history: Array<HistoryRecord>;
     /**
      *
+     * @type {boolean}
+     * @memberof VisualizationData
      */
     completed: boolean;
 }

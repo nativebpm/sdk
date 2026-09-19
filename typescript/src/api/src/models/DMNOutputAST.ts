@@ -21,10 +21,14 @@ import { mapValues } from '../runtime';
 export interface DMNOutputAST {
     /**
      * 
+     * @type {string}
+     * @memberof DMNOutputAST
      */
     name: string;
     /**
      * 
+     * @type {string}
+     * @memberof DMNOutputAST
      */
     type: string;
 }

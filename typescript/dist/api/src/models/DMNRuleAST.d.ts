@@ -17,10 +17,14 @@
 export interface DMNRuleAST {
     /**
      *
+     * @type {Array<string>}
+     * @memberof DMNRuleAST
      */
     inputs: Array<string>;
     /**
      *
+     * @type {Array<string>}
+     * @memberof DMNRuleAST
      */
     outputs: Array<string>;
 }

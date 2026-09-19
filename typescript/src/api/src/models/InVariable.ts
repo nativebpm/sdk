@@ -21,18 +21,26 @@ import { mapValues } from '../runtime';
 export interface InVariable {
     /**
      * 
+     * @type {string}
+     * @memberof InVariable
      */
     source?: string;
     /**
      * 
+     * @type {string}
+     * @memberof InVariable
      */
     target?: string;
     /**
      * 
+     * @type {string}
+     * @memberof InVariable
      */
     variables?: string;
     /**
      * 
+     * @type {boolean}
+     * @memberof InVariable
      */
     local?: boolean;
 }

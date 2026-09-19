@@ -34,15 +34,15 @@ import {
     CreateWebhookRequestToJSON,
 } from '../models/CreateWebhookRequest';
 import {
-    type DeleteWebhook200Response,
-    DeleteWebhook200ResponseFromJSON,
-    DeleteWebhook200ResponseToJSON,
-} from '../models/DeleteWebhook200Response';
+    type ExecuteProcessRequest,
+    ExecuteProcessRequestFromJSON,
+    ExecuteProcessRequestToJSON,
+} from '../models/ExecuteProcessRequest';
 import {
-    type DeployDefinition403Response,
-    DeployDefinition403ResponseFromJSON,
-    DeployDefinition403ResponseToJSON,
-} from '../models/DeployDefinition403Response';
+    type ExecuteProcessResponse,
+    ExecuteProcessResponseFromJSON,
+    ExecuteProcessResponseToJSON,
+} from '../models/ExecuteProcessResponse';
 import {
     type HistoryRecord,
     HistoryRecordFromJSON,
@@ -89,11 +89,6 @@ import {
     TaskRecordToJSON,
 } from '../models/TaskRecord';
 import {
-    type TestWebhook200Response,
-    TestWebhook200ResponseFromJSON,
-    TestWebhook200ResponseToJSON,
-} from '../models/TestWebhook200Response';
-import {
     type VisualizationData,
     VisualizationDataFromJSON,
     VisualizationDataToJSON,
@@ -110,171 +105,91 @@ import {
 } from '../models/WebhookRecord';
 
 export interface ClaimTaskOperationRequest {
-    /**
-     * 
-     */
     id: string;
-    /**
-     * 
-     */
     claimTaskRequest: ClaimTaskRequest;
 }
 
 export interface CompleteInstanceTaskOperationRequest {
-    /**
-     * 
-     */
     id: string;
-    /**
-     * 
-     */
     completeInstanceTaskRequest: CompleteInstanceTaskRequest;
 }
 
 export interface CompleteTaskOperationRequest {
-    /**
-     * 
-     */
     id: string;
-    /**
-     * 
-     */
     completeTaskRequest?: CompleteTaskRequest;
 }
 
 export interface CreateWebhookOperationRequest {
-    /**
-     * 
-     */
     createWebhookRequest: CreateWebhookRequest;
 }
 
 export interface DeleteWebhookRequest {
-    /**
-     * 
-     */
     id: string;
 }
 
 export interface DeployDefinitionRequest {
-    /**
-     * BPMN 2.0 XML file content to deploy
-     */
     file?: Blob;
 }
 
+export interface ExecuteProcessOperationRequest {
+    executeProcessRequest: ExecuteProcessRequest;
+}
+
 export interface GetInstanceRequest {
-    /**
-     * 
-     */
     id: string;
 }
 
 export interface GetInstanceHistoryRequest {
-    /**
-     * 
-     */
     id: string;
 }
 
 export interface GetInstanceVisualizationRequest {
-    /**
-     * 
-     */
     id: string;
 }
 
 export interface GetInstanceVisualizationWidgetRequest {
-    /**
-     * 
-     */
     id: string;
-    /**
-     * Optional custom title for the visualization widget. If empty, the title header is hidden.
-     */
     title?: string;
 }
 
 export interface GetUserGroupsRequest {
-    /**
-     * The username to retrieve groups for
-     */
     username: string;
 }
 
 export interface ListIncidentsRequest {
-    /**
-     * 
-     */
     id: string;
 }
 
 export interface ListTasksRequest {
-    /**
-     * 
-     */
     assignee?: string;
-    /**
-     * 
-     */
     candidateGroup?: string;
-    /**
-     * 
-     */
     status?: ListTasksStatusEnum;
 }
 
 export interface ListWebhookDeliveriesRequest {
-    /**
-     * 
-     */
     id: string;
 }
 
 export interface ResolveIncidentRequest {
-    /**
-     * 
-     */
     id: string;
-    /**
-     * 
-     */
     incidentId: string;
 }
 
 export interface ResumeInstanceRequest {
-    /**
-     * 
-     */
     id: string;
 }
 
 export interface StartInstanceOperationRequest {
-    /**
-     * The process definition ID (e.g., matching the BPMN process element ID)
-     */
     id: string;
-    /**
-     * 
-     */
     startInstanceRequest?: StartInstanceRequest;
 }
 
 export interface TestWebhookRequest {
-    /**
-     * 
-     */
     id: string;
 }
 
 export interface UpdateWebhookRequest {
-    /**
-     * 
-     */
     id: string;
-    /**
-     * 
-     */
     createWebhookRequest: CreateWebhookRequest;
 }
 
@@ -527,18 +442,18 @@ export class DefaultApi extends runtime.BaseAPI {
      * Delete a webhook configuration.
      * Delete webhook target
      */
-    async deleteWebhookRaw(requestParameters: DeleteWebhookRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DeleteWebhook200Response>> {
+    async deleteWebhookRaw(requestParameters: DeleteWebhookRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResolveIncident200Response>> {
         const requestOptions = await this.deleteWebhookRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => DeleteWebhook200ResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => ResolveIncident200ResponseFromJSON(jsonValue));
     }
 
     /**
      * Delete a webhook configuration.
      * Delete webhook target
      */
-    async deleteWebhook(requestParameters: DeleteWebhookRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DeleteWebhook200Response> {
+    async deleteWebhook(requestParameters: DeleteWebhookRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResolveIncident200Response> {
         const response = await this.deleteWebhookRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -601,6 +516,55 @@ export class DefaultApi extends runtime.BaseAPI {
      */
     async deployDefinition(requestParameters: DeployDefinitionRequest = {}, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ProcessDefinition> {
         const response = await this.deployDefinitionRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+
+    /**
+     * Creates request options for executeProcess without sending the request
+     */
+    async executeProcessRequestOpts(requestParameters: ExecuteProcessOperationRequest): Promise<runtime.RequestOpts> {
+        if (requestParameters['executeProcessRequest'] == null) {
+            throw new runtime.RequiredError(
+                'executeProcessRequest',
+                'Required parameter "executeProcessRequest" was null or undefined when calling executeProcess().'
+            );
+        }
+
+        const queryParameters: any = {};
+
+        const headerParameters: runtime.HTTPHeaders = {};
+
+        headerParameters['Content-Type'] = 'application/json';
+
+
+        let urlPath = `/api/process/execute`;
+
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: ExecuteProcessRequestToJSON(requestParameters['executeProcessRequest']),
+        };
+    }
+
+    /**
+     * Atomically deploys the workflow definition if changed (or not yet known) and immediately starts an execution instance. Supports lightweight repeat execution via contentHash and definitionId. 
+     * Execute process with JIT auto-deploy
+     */
+    async executeProcessRaw(requestParameters: ExecuteProcessOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ExecuteProcessResponse>> {
+        const requestOptions = await this.executeProcessRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+
+        return new runtime.JSONApiResponse(response, (jsonValue) => ExecuteProcessResponseFromJSON(jsonValue));
+    }
+
+    /**
+     * Atomically deploys the workflow definition if changed (or not yet known) and immediately starts an execution instance. Supports lightweight repeat execution via contentHash and definitionId. 
+     * Execute process with JIT auto-deploy
+     */
+    async executeProcess(requestParameters: ExecuteProcessOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ExecuteProcessResponse> {
+        const response = await this.executeProcessRaw(requestParameters, initOverrides);
         return await response.value();
     }
 
@@ -1331,18 +1295,18 @@ export class DefaultApi extends runtime.BaseAPI {
      * Send a test ping event delivery to verification URL.
      * Test webhook target
      */
-    async testWebhookRaw(requestParameters: TestWebhookRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TestWebhook200Response>> {
+    async testWebhookRaw(requestParameters: TestWebhookRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResolveIncident200Response>> {
         const requestOptions = await this.testWebhookRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
 
-        return new runtime.JSONApiResponse(response, (jsonValue) => TestWebhook200ResponseFromJSON(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => ResolveIncident200ResponseFromJSON(jsonValue));
     }
 
     /**
      * Send a test ping event delivery to verification URL.
      * Test webhook target
      */
-    async testWebhook(requestParameters: TestWebhookRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TestWebhook200Response> {
+    async testWebhook(requestParameters: TestWebhookRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResolveIncident200Response> {
         const response = await this.testWebhookRaw(requestParameters, initOverrides);
         return await response.value();
     }
@@ -1412,6 +1376,6 @@ export class DefaultApi extends runtime.BaseAPI {
 export const ListTasksStatusEnum = {
     Created: 'CREATED',
     Claimed: 'CLAIMED',
-    Completed: 'COMPLETED',
+    Completed: 'COMPLETED'
 } as const;
 export type ListTasksStatusEnum = typeof ListTasksStatusEnum[keyof typeof ListTasksStatusEnum];

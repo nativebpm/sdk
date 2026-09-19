@@ -36,22 +36,32 @@ import {
 export interface WorkflowAST {
     /**
      * Unique process definition identifier
+     * @type {string}
+     * @memberof WorkflowAST
      */
     id: string;
     /**
      * Human-readable process name
+     * @type {string}
+     * @memberof WorkflowAST
      */
     name: string;
     /**
      * JSON Schema contract for process start variables
+     * @type {string}
+     * @memberof WorkflowAST
      */
     inputSchema?: string;
     /**
      * 
+     * @type {Array<NodeAST>}
+     * @memberof WorkflowAST
      */
     nodes: Array<NodeAST>;
     /**
      * 
+     * @type {Array<FlowAST>}
+     * @memberof WorkflowAST
      */
     flows: Array<FlowAST>;
 }

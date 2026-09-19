@@ -18,7 +18,6 @@ exports.IncidentRecordFromJSON = IncidentRecordFromJSON;
 exports.IncidentRecordFromJSONTyped = IncidentRecordFromJSONTyped;
 exports.IncidentRecordToJSON = IncidentRecordToJSON;
 exports.IncidentRecordToJSONTyped = IncidentRecordToJSONTyped;
-const runtime_1 = require("../runtime");
 /**
  * Check if a given object implements the IncidentRecord interface.
  */
@@ -54,8 +53,8 @@ function IncidentRecordFromJSONTyped(json, ignoreDiscriminator) {
         'stackTrace': json['stack_trace'] == null ? undefined : json['stack_trace'],
         'attemptsMade': json['attempts_made'],
         'resolved': json['resolved'],
-        'createdAt': (json['created_at'] == null ? json['created_at'] : (0, runtime_1.parseDateTime)(json['created_at'])),
-        'resolvedAt': json['resolved_at'] == null ? undefined : ((0, runtime_1.parseDateTime)(json['resolved_at'])),
+        'createdAt': (new Date(json['created_at'])),
+        'resolvedAt': json['resolved_at'] == null ? undefined : (new Date(json['resolved_at'])),
     };
 }
 function IncidentRecordToJSON(json) {
@@ -73,7 +72,7 @@ function IncidentRecordToJSONTyped(value, ignoreDiscriminator = false) {
         'stack_trace': value['stackTrace'],
         'attempts_made': value['attemptsMade'],
         'resolved': value['resolved'],
-        'created_at': value['createdAt'] == null ? value['createdAt'] : (0, runtime_1.serializeDateTime)(value['createdAt']),
-        'resolved_at': value['resolvedAt'] == null ? value['resolvedAt'] : (0, runtime_1.serializeDateTime)(value['resolvedAt']),
+        'created_at': value['createdAt'].toISOString(),
+        'resolved_at': value['resolvedAt'] == null ? value['resolvedAt'] : value['resolvedAt'].toISOString(),
     };
 }

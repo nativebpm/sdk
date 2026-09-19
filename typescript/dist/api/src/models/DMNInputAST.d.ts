@@ -17,10 +17,14 @@
 export interface DMNInputAST {
     /**
      *
+     * @type {string}
+     * @memberof DMNInputAST
      */
     expression: string;
     /**
      *
+     * @type {string}
+     * @memberof DMNInputAST
      */
     type: string;
 }

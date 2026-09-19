@@ -18,7 +18,6 @@ exports.ProcessInstanceFromJSON = ProcessInstanceFromJSON;
 exports.ProcessInstanceFromJSONTyped = ProcessInstanceFromJSONTyped;
 exports.ProcessInstanceToJSON = ProcessInstanceToJSON;
 exports.ProcessInstanceToJSONTyped = ProcessInstanceToJSONTyped;
-const runtime_1 = require("../runtime");
 /**
  * Check if a given object implements the ProcessInstance interface.
  */
@@ -58,7 +57,7 @@ function ProcessInstanceFromJSONTyped(json, ignoreDiscriminator) {
         'state': json['state'],
         'version': json['version'],
         'completed': json['completed'],
-        'updatedAt': (json['updated_at'] == null ? json['updated_at'] : (0, runtime_1.parseDateTime)(json['updated_at'])),
+        'updatedAt': (new Date(json['updated_at'])),
         'tenantId': json['tenant_id'],
     };
 }
@@ -77,7 +76,7 @@ function ProcessInstanceToJSONTyped(value, ignoreDiscriminator = false) {
         'state': value['state'],
         'version': value['version'],
         'completed': value['completed'],
-        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : (0, runtime_1.serializeDateTime)(value['updatedAt']),
+        'updated_at': value['updatedAt'].toISOString(),
         'tenant_id': value['tenantId'],
     };
 }

@@ -52,7 +52,8 @@ const ClaimTaskRequest_1 = require("../models/ClaimTaskRequest");
 const CompleteInstanceTaskRequest_1 = require("../models/CompleteInstanceTaskRequest");
 const CompleteTaskRequest_1 = require("../models/CompleteTaskRequest");
 const CreateWebhookRequest_1 = require("../models/CreateWebhookRequest");
-const DeleteWebhook200Response_1 = require("../models/DeleteWebhook200Response");
+const ExecuteProcessRequest_1 = require("../models/ExecuteProcessRequest");
+const ExecuteProcessResponse_1 = require("../models/ExecuteProcessResponse");
 const HistoryRecord_1 = require("../models/HistoryRecord");
 const IncidentRecord_1 = require("../models/IncidentRecord");
 const ProcessDefinition_1 = require("../models/ProcessDefinition");
@@ -61,7 +62,6 @@ const ResolveIncident200Response_1 = require("../models/ResolveIncident200Respon
 const SMTPConfig_1 = require("../models/SMTPConfig");
 const StartInstanceRequest_1 = require("../models/StartInstanceRequest");
 const TaskRecord_1 = require("../models/TaskRecord");
-const TestWebhook200Response_1 = require("../models/TestWebhook200Response");
 const VisualizationData_1 = require("../models/VisualizationData");
 const WebhookDeliveryRecord_1 = require("../models/WebhookDeliveryRecord");
 const WebhookRecord_1 = require("../models/WebhookRecord");
@@ -247,7 +247,7 @@ class DefaultApi extends runtime.BaseAPI {
     async deleteWebhookRaw(requestParameters, initOverrides) {
         const requestOptions = await this.deleteWebhookRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
-        return new runtime.JSONApiResponse(response, (jsonValue) => (0, DeleteWebhook200Response_1.DeleteWebhook200ResponseFromJSON)(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => (0, ResolveIncident200Response_1.ResolveIncident200ResponseFromJSON)(jsonValue));
     }
     /**
      * Delete a webhook configuration.
@@ -306,6 +306,42 @@ class DefaultApi extends runtime.BaseAPI {
      */
     async deployDefinition(requestParameters = {}, initOverrides) {
         const response = await this.deployDefinitionRaw(requestParameters, initOverrides);
+        return await response.value();
+    }
+    /**
+     * Creates request options for executeProcess without sending the request
+     */
+    async executeProcessRequestOpts(requestParameters) {
+        if (requestParameters['executeProcessRequest'] == null) {
+            throw new runtime.RequiredError('executeProcessRequest', 'Required parameter "executeProcessRequest" was null or undefined when calling executeProcess().');
+        }
+        const queryParameters = {};
+        const headerParameters = {};
+        headerParameters['Content-Type'] = 'application/json';
+        let urlPath = `/api/process/execute`;
+        return {
+            path: urlPath,
+            method: 'POST',
+            headers: headerParameters,
+            query: queryParameters,
+            body: (0, ExecuteProcessRequest_1.ExecuteProcessRequestToJSON)(requestParameters['executeProcessRequest']),
+        };
+    }
+    /**
+     * Atomically deploys the workflow definition if changed (or not yet known) and immediately starts an execution instance. Supports lightweight repeat execution via contentHash and definitionId.
+     * Execute process with JIT auto-deploy
+     */
+    async executeProcessRaw(requestParameters, initOverrides) {
+        const requestOptions = await this.executeProcessRequestOpts(requestParameters);
+        const response = await this.request(requestOptions, initOverrides);
+        return new runtime.JSONApiResponse(response, (jsonValue) => (0, ExecuteProcessResponse_1.ExecuteProcessResponseFromJSON)(jsonValue));
+    }
+    /**
+     * Atomically deploys the workflow definition if changed (or not yet known) and immediately starts an execution instance. Supports lightweight repeat execution via contentHash and definitionId.
+     * Execute process with JIT auto-deploy
+     */
+    async executeProcess(requestParameters, initOverrides) {
+        const response = await this.executeProcessRaw(requestParameters, initOverrides);
         return await response.value();
     }
     /**
@@ -861,7 +897,7 @@ class DefaultApi extends runtime.BaseAPI {
     async testWebhookRaw(requestParameters, initOverrides) {
         const requestOptions = await this.testWebhookRequestOpts(requestParameters);
         const response = await this.request(requestOptions, initOverrides);
-        return new runtime.JSONApiResponse(response, (jsonValue) => (0, TestWebhook200Response_1.TestWebhook200ResponseFromJSON)(jsonValue));
+        return new runtime.JSONApiResponse(response, (jsonValue) => (0, ResolveIncident200Response_1.ResolveIncident200ResponseFromJSON)(jsonValue));
     }
     /**
      * Send a test ping event delivery to verification URL.
@@ -919,5 +955,5 @@ exports.DefaultApi = DefaultApi;
 exports.ListTasksStatusEnum = {
     Created: 'CREATED',
     Claimed: 'CLAIMED',
-    Completed: 'COMPLETED',
+    Completed: 'COMPLETED'
 };

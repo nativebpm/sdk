@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -21,34 +21,50 @@ import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime }
 export interface HistoryRecord {
     /**
      * 
+     * @type {string}
+     * @memberof HistoryRecord
      */
     id: string;
     /**
      * 
+     * @type {string}
+     * @memberof HistoryRecord
      */
     instanceId: string;
     /**
      * 
+     * @type {string}
+     * @memberof HistoryRecord
      */
     nodeId: string;
     /**
      * 
+     * @type {string}
+     * @memberof HistoryRecord
      */
     nodeName: string;
     /**
      * 
+     * @type {string}
+     * @memberof HistoryRecord
      */
     nodeType: string;
     /**
      * 
+     * @type {string}
+     * @memberof HistoryRecord
      */
     action: string;
     /**
      * JSON encoded payload variables associated with this transition
+     * @type {object}
+     * @memberof HistoryRecord
      */
     variables?: object;
     /**
      * 
+     * @type {Date}
+     * @memberof HistoryRecord
      */
     timestamp: Date;
 }
@@ -58,10 +74,10 @@ export interface HistoryRecord {
  */
 export function instanceOfHistoryRecord(value: object): value is HistoryRecord {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if ((!('instanceId' in (value as Record<string, any>)) && !('instance_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['instanceId'] === undefined && (value as Record<string, any>)['instance_id'] === undefined)) return false;
-    if ((!('nodeId' in (value as Record<string, any>)) && !('node_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['nodeId'] === undefined && (value as Record<string, any>)['node_id'] === undefined)) return false;
-    if ((!('nodeName' in (value as Record<string, any>)) && !('node_name' in (value as Record<string, any>))) || ((value as Record<string, any>)['nodeName'] === undefined && (value as Record<string, any>)['node_name'] === undefined)) return false;
-    if ((!('nodeType' in (value as Record<string, any>)) && !('node_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['nodeType'] === undefined && (value as Record<string, any>)['node_type'] === undefined)) return false;
+    if ((!('instanceId' in value) && !('instance_id' in value)) || (value['instanceId'] === undefined && value['instance_id'] === undefined)) return false;
+    if ((!('nodeId' in value) && !('node_id' in value)) || (value['nodeId'] === undefined && value['node_id'] === undefined)) return false;
+    if ((!('nodeName' in value) && !('node_name' in value)) || (value['nodeName'] === undefined && value['node_name'] === undefined)) return false;
+    if ((!('nodeType' in value) && !('node_type' in value)) || (value['nodeType'] === undefined && value['node_type'] === undefined)) return false;
     if (!('action' in value) || value['action'] === undefined) return false;
     if (!('timestamp' in value) || value['timestamp'] === undefined) return false;
     return true;
@@ -84,7 +100,7 @@ export function HistoryRecordFromJSONTyped(json: any, ignoreDiscriminator: boole
         'nodeType': json['node_type'],
         'action': json['action'],
         'variables': json['variables'] == null ? undefined : json['variables'],
-        'timestamp': (json['timestamp'] == null ? json['timestamp'] : parseDateTime(json['timestamp'])),
+        'timestamp': (new Date(json['timestamp'])),
     };
 }
 
@@ -106,7 +122,7 @@ export function HistoryRecordToJSONTyped(value?: HistoryRecord | null, ignoreDis
         'node_type': value['nodeType'],
         'action': value['action'],
         'variables': value['variables'],
-        'timestamp': value['timestamp'] == null ? value['timestamp'] : serializeDateTime(value['timestamp']),
+        'timestamp': value['timestamp'].toISOString(),
     };
 }
 

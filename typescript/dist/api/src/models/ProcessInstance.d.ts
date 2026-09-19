@@ -17,38 +17,56 @@
 export interface ProcessInstance {
     /**
      *
+     * @type {string}
+     * @memberof ProcessInstance
      */
     id: string;
     /**
      *
+     * @type {string}
+     * @memberof ProcessInstance
      */
     processId: string;
     /**
      *
+     * @type {string}
+     * @memberof ProcessInstance
      */
     definitionHash: string;
     /**
      *
+     * @type {string}
+     * @memberof ProcessInstance
      */
     businessKey: string;
     /**
      * Raw JSON object representing internal Wazero process engine state representation
+     * @type {object}
+     * @memberof ProcessInstance
      */
     state: object;
     /**
      *
+     * @type {number}
+     * @memberof ProcessInstance
      */
     version: number;
     /**
      *
+     * @type {boolean}
+     * @memberof ProcessInstance
      */
     completed: boolean;
     /**
      *
+     * @type {Date}
+     * @memberof ProcessInstance
      */
     updatedAt: Date;
     /**
      *
+     * @type {string}
+     * @memberof ProcessInstance
      */
     tenantId: string;
 }

@@ -98,6 +98,37 @@ paths:
         '500':
           $ref: '#/components/responses/500InternalError'
 
+  /api/process/execute:
+    post:
+      summary: Execute process with JIT auto-deploy
+      description: |
+        Atomically deploys the workflow definition if changed (or not yet known) and immediately starts an execution instance.
+        Supports lightweight repeat execution via contentHash and definitionId.
+      operationId: executeProcess
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ExecuteProcessRequest'
+      responses:
+        '200':
+          description: Process started successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ExecuteProcessResponse'
+        '400':
+          description: Invalid workflow AST or input variables
+        '401':
+          $ref: '#/components/responses/401Unauthorized'
+        '403':
+          $ref: '#/components/responses/403Forbidden'
+        '404':
+          description: Definition hash unknown (requires full AST resubmission)
+        '500':
+          $ref: '#/components/responses/500InternalError'
+
   /api/instances:
     get:
       summary: List process instances
@@ -1273,4 +1304,62 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/FlowAST'
+
+    ExecuteProcessRequest:
+      type: object
+      properties:
+        ast:
+          $ref: '#/components/schemas/WorkflowAST'
+        forms:
+          type: object
+          additionalProperties:
+            type: object
+          description: Optional map of formId to JSON Schema definition objects
+        contentHash:
+          type: string
+          description: Deterministic SHA-256 hash of the workflow AST and forms
+        definitionId:
+          type: string
+          description: Process definition identifier (optional if specified in AST)
+        businessKey:
+          type: string
+          description: Optional business correlation key
+        variables:
+          type: object
+          additionalProperties: true
+          description: Initial variables to start the process with
+
+    ExecuteProcessResponse:
+      type: object
+      required:
+        - instanceId
+        - definitionId
+        - version
+        - isNewVersionDeployed
+        - status
+      properties:
+        instanceId:
+          type: string
+          description: Process instance identifier
+        definitionId:
+          type: string
+          description: Process definition identifier
+        version:
+          type: integer
+          description: Version number of the process definition
+        isNewVersionDeployed:
+          type: boolean
+          description: Indicates whether a new process definition version was deployed in this call
+        status:
+          type: string
+          description: Status of the created instance (e.g., ACTIVE, COMPLETED)
+        state:
+          type: object
+          additionalProperties: true
+          description: Current execution state variables and data
+        currentTasks:
+          type: array
+          items:
+            $ref: '#/components/schemas/TaskRecord'
+          description: Active tasks currently waiting for human intervention or external completion
 

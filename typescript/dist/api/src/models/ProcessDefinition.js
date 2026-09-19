@@ -18,7 +18,6 @@ exports.ProcessDefinitionFromJSON = ProcessDefinitionFromJSON;
 exports.ProcessDefinitionFromJSONTyped = ProcessDefinitionFromJSONTyped;
 exports.ProcessDefinitionToJSON = ProcessDefinitionToJSON;
 exports.ProcessDefinitionToJSONTyped = ProcessDefinitionToJSONTyped;
-const runtime_1 = require("../runtime");
 /**
  * Check if a given object implements the ProcessDefinition interface.
  */
@@ -47,7 +46,7 @@ function ProcessDefinitionFromJSONTyped(json, ignoreDiscriminator) {
         'id': json['id'],
         'name': json['name'],
         'xmlData': json['xml_data'],
-        'deployedAt': (json['deployed_at'] == null ? json['deployed_at'] : (0, runtime_1.parseDateTime)(json['deployed_at'])),
+        'deployedAt': (new Date(json['deployed_at'])),
     };
 }
 function ProcessDefinitionToJSON(json) {
@@ -62,6 +61,6 @@ function ProcessDefinitionToJSONTyped(value, ignoreDiscriminator = false) {
         'id': value['id'],
         'name': value['name'],
         'xml_data': value['xmlData'],
-        'deployed_at': value['deployedAt'] == null ? value['deployedAt'] : (0, runtime_1.serializeDateTime)(value['deployedAt']),
+        'deployed_at': value['deployedAt'].toISOString(),
     };
 }

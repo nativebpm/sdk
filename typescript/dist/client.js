@@ -1,3 +1,10 @@
+let defaultClientInstance;
+export function setDefaultClient(client) {
+    defaultClientInstance = client;
+}
+export function getDefaultClient() {
+    return defaultClientInstance;
+}
 export class Client {
     baseUrl;
     apiToken;
@@ -27,6 +34,73 @@ export class Client {
     }
     webhooks() {
         return new WebhooksService(this);
+    }
+    execute(request) {
+        return this.process().execute().withRequest(request).send();
+    }
+    process() {
+        return new ProcessService(this);
+    }
+}
+export class ProcessService {
+    client;
+    constructor(client) {
+        this.client = client;
+    }
+    execute() {
+        return new ExecuteProcessBuilder(this.client);
+    }
+}
+export class ExecuteProcessBuilder {
+    client;
+    req = {};
+    constructor(client) {
+        this.client = client;
+    }
+    withRequest(req) {
+        this.req = req;
+        return this;
+    }
+    withAST(ast) {
+        this.req.ast = ast;
+        return this;
+    }
+    withForms(forms) {
+        this.req.forms = forms;
+        return this;
+    }
+    withContentHash(hash) {
+        this.req.contentHash = hash;
+        return this;
+    }
+    withDefinitionId(id) {
+        this.req.definitionId = id;
+        return this;
+    }
+    withBusinessKey(key) {
+        this.req.businessKey = key;
+        return this;
+    }
+    withVariables(vars) {
+        this.req.variables = vars;
+        return this;
+    }
+    async send() {
+        const res = await fetch(`${this.client.getBaseUrl()}/api/process/execute`, {
+            method: "POST",
+            headers: {
+                ...this.client.getHeaders(),
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify(this.req),
+        });
+        if (!res.ok) {
+            const text = await res.text();
+            const err = new Error(`Failed to execute process: ${res.status} ${text}`);
+            err.status = res.status;
+            throw err;
+        }
+        return res.json();
     }
 }
 export class DefinitionsService {

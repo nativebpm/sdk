@@ -10,6 +10,18 @@ export type TaskRecord = api.TaskRecord;
 export type WebhookRecord = api.WebhookRecord;
 export type WebhookDeliveryRecord = api.WebhookDeliveryRecord;
 export type VisualizationData = api.VisualizationData;
+export type ExecuteProcessRequest = api.ExecuteProcessRequest;
+export type ExecuteProcessResponse = api.ExecuteProcessResponse;
+
+let defaultClientInstance: Client | undefined;
+
+export function setDefaultClient(client: Client): void {
+  defaultClientInstance = client;
+}
+
+export function getDefaultClient(): Client | undefined {
+  return defaultClientInstance;
+}
 
 export class Client {
   private baseUrl: string;
@@ -48,6 +60,88 @@ export class Client {
 
   public webhooks(): WebhooksService {
     return new WebhooksService(this);
+  }
+
+  public execute(request: api.ExecuteProcessRequest): Promise<api.ExecuteProcessResponse> {
+    return this.process().execute().withRequest(request).send();
+  }
+
+  public process(): ProcessService {
+    return new ProcessService(this);
+  }
+}
+
+export class ProcessService {
+  private client: Client;
+
+  constructor(client: Client) {
+    this.client = client;
+  }
+
+  public execute(): ExecuteProcessBuilder {
+    return new ExecuteProcessBuilder(this.client);
+  }
+}
+
+export class ExecuteProcessBuilder {
+  private client: Client;
+  private req: api.ExecuteProcessRequest = {};
+
+  constructor(client: Client) {
+    this.client = client;
+  }
+
+  public withRequest(req: api.ExecuteProcessRequest): this {
+    this.req = req;
+    return this;
+  }
+
+  public withAST(ast: any): this {
+    this.req.ast = ast;
+    return this;
+  }
+
+  public withForms(forms: Record<string, any>): this {
+    this.req.forms = forms;
+    return this;
+  }
+
+  public withContentHash(hash: string): this {
+    this.req.contentHash = hash;
+    return this;
+  }
+
+  public withDefinitionId(id: string): this {
+    this.req.definitionId = id;
+    return this;
+  }
+
+  public withBusinessKey(key: string): this {
+    this.req.businessKey = key;
+    return this;
+  }
+
+  public withVariables(vars: Record<string, any>): this {
+    this.req.variables = vars;
+    return this;
+  }
+
+  public async send(): Promise<api.ExecuteProcessResponse> {
+    const res = await fetch(`${this.client.getBaseUrl()}/api/process/execute`, {
+      method: "POST",
+      headers: {
+        ...this.client.getHeaders(),
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(this.req),
+    });
+    if (!res.ok) {
+      const text = await res.text();
+      const err: any = new Error(`Failed to execute process: ${res.status} ${text}`);
+      err.status = res.status;
+      throw err;
+    }
+    return res.json();
   }
 }
 

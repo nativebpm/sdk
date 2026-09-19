@@ -29,34 +29,50 @@ import {
 export interface VisualizationData {
     /**
      * 
+     * @type {string}
+     * @memberof VisualizationData
      */
     instanceId: string;
     /**
      * 
+     * @type {string}
+     * @memberof VisualizationData
      */
     definitionId: string;
     /**
      * 
+     * @type {string}
+     * @memberof VisualizationData
      */
     xml: string;
     /**
      * 
+     * @type {Array<string>}
+     * @memberof VisualizationData
      */
     activeNodes: Array<string>;
     /**
      * 
+     * @type {Array<string>}
+     * @memberof VisualizationData
      */
     waitingNodes: Array<string>;
     /**
      * 
+     * @type {Array<string>}
+     * @memberof VisualizationData
      */
     completedNodes: Array<string>;
     /**
      * 
+     * @type {Array<HistoryRecord>}
+     * @memberof VisualizationData
      */
     history: Array<HistoryRecord>;
     /**
      * 
+     * @type {boolean}
+     * @memberof VisualizationData
      */
     completed: boolean;
 }
@@ -65,12 +81,12 @@ export interface VisualizationData {
  * Check if a given object implements the VisualizationData interface.
  */
 export function instanceOfVisualizationData(value: object): value is VisualizationData {
-    if ((!('instanceId' in (value as Record<string, any>)) && !('instance_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['instanceId'] === undefined && (value as Record<string, any>)['instance_id'] === undefined)) return false;
-    if ((!('definitionId' in (value as Record<string, any>)) && !('definition_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['definitionId'] === undefined && (value as Record<string, any>)['definition_id'] === undefined)) return false;
+    if ((!('instanceId' in value) && !('instance_id' in value)) || (value['instanceId'] === undefined && value['instance_id'] === undefined)) return false;
+    if ((!('definitionId' in value) && !('definition_id' in value)) || (value['definitionId'] === undefined && value['definition_id'] === undefined)) return false;
     if (!('xml' in value) || value['xml'] === undefined) return false;
-    if ((!('activeNodes' in (value as Record<string, any>)) && !('active_nodes' in (value as Record<string, any>))) || ((value as Record<string, any>)['activeNodes'] === undefined && (value as Record<string, any>)['active_nodes'] === undefined)) return false;
-    if ((!('waitingNodes' in (value as Record<string, any>)) && !('waiting_nodes' in (value as Record<string, any>))) || ((value as Record<string, any>)['waitingNodes'] === undefined && (value as Record<string, any>)['waiting_nodes'] === undefined)) return false;
-    if ((!('completedNodes' in (value as Record<string, any>)) && !('completed_nodes' in (value as Record<string, any>))) || ((value as Record<string, any>)['completedNodes'] === undefined && (value as Record<string, any>)['completed_nodes'] === undefined)) return false;
+    if ((!('activeNodes' in value) && !('active_nodes' in value)) || (value['activeNodes'] === undefined && value['active_nodes'] === undefined)) return false;
+    if ((!('waitingNodes' in value) && !('waiting_nodes' in value)) || (value['waitingNodes'] === undefined && value['waiting_nodes'] === undefined)) return false;
+    if ((!('completedNodes' in value) && !('completed_nodes' in value)) || (value['completedNodes'] === undefined && value['completed_nodes'] === undefined)) return false;
     if (!('history' in value) || value['history'] === undefined) return false;
     if (!('completed' in value) || value['completed'] === undefined) return false;
     return true;

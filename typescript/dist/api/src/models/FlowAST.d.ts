@@ -17,18 +17,26 @@
 export interface FlowAST {
     /**
      *
+     * @type {string}
+     * @memberof FlowAST
      */
     id: string;
     /**
      *
+     * @type {string}
+     * @memberof FlowAST
      */
     source: string;
     /**
      *
+     * @type {string}
+     * @memberof FlowAST
      */
     target: string;
     /**
      *
+     * @type {string}
+     * @memberof FlowAST
      */
     condition?: string;
 }

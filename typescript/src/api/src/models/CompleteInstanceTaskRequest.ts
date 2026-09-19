@@ -21,10 +21,14 @@ import { mapValues } from '../runtime';
 export interface CompleteInstanceTaskRequest {
     /**
      * BPMN task element identifier
+     * @type {string}
+     * @memberof CompleteInstanceTaskRequest
      */
     nodeId: string;
     /**
      * 
+     * @type {{ [key: string]: any; }}
+     * @memberof CompleteInstanceTaskRequest
      */
     variables?: { [key: string]: any; };
 }
@@ -33,7 +37,7 @@ export interface CompleteInstanceTaskRequest {
  * Check if a given object implements the CompleteInstanceTaskRequest interface.
  */
 export function instanceOfCompleteInstanceTaskRequest(value: object): value is CompleteInstanceTaskRequest {
-    if ((!('nodeId' in (value as Record<string, any>)) && !('node_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['nodeId'] === undefined && (value as Record<string, any>)['node_id'] === undefined)) return false;
+    if ((!('nodeId' in value) && !('node_id' in value)) || (value['nodeId'] === undefined && value['node_id'] === undefined)) return false;
     return true;
 }
 

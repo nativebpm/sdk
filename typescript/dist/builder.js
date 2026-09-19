@@ -1,6 +1,8 @@
 // Zero-dependency AST Workflow builder with native Zod 4 & BPMN 2.0 XML generation
+import { createHash } from 'node:crypto';
 import { z } from 'zod';
 import { WorkflowASTSchema, } from './schemas/workflow-ast.js';
+import { getDefaultClient } from './client.js';
 export { WorkflowASTSchema };
 export function serializeFormSchema(form) {
     if (!form)
@@ -610,6 +612,103 @@ export class Workflow {
         }
         return forms;
     }
+    clientInstance;
+    withClient(client) {
+        this.clientInstance = client;
+        return this;
+    }
+    getClient() {
+        return this.clientInstance;
+    }
+    getContentHash() {
+        return computeWorkflowHash(this.toAST());
+    }
+    async run(variables, options) {
+        let cl = options?.client || this.clientInstance || getDefaultClient();
+        if (!cl && options?.baseUrl) {
+            const { Client } = await import('./client.js');
+            cl = new Client(options.baseUrl, options.apiToken || '');
+        }
+        if (!cl && typeof process !== 'undefined' && process.env?.NATIVEBPM_URL) {
+            const { Client } = await import('./client.js');
+            cl = new Client(process.env.NATIVEBPM_URL, process.env.NATIVEBPM_API_TOKEN || '');
+        }
+        if (!cl) {
+            throw new Error('NativeBPM Client not configured. Pass { client } to workflow.run(), call workflow.withClient(client), or call setDefaultClient(client).');
+        }
+        const hash = this.getContentHash();
+        const forms = options?.forms || this.extractForms();
+        const buildHandle = (res) => {
+            return {
+                instanceId: res.instanceId,
+                definitionId: res.definitionId,
+                version: res.version,
+                isNewVersionDeployed: res.isNewVersionDeployed,
+                status: res.status,
+                state: res.state,
+                currentTasks: res.currentTasks || [],
+                client: cl,
+                claimTask: async (taskId, assignee) => {
+                    return cl.tasks().claim(taskId).withAssignee(assignee).send();
+                },
+                completeTask: async (taskId, vars) => {
+                    return cl.tasks().complete(taskId).withVariables(vars || {}).send();
+                },
+            };
+        };
+        // Fast-path: if definition hash is already confirmed, send lightweight payload
+        if (knownDeployedHashes.has(hash)) {
+            try {
+                const res = await cl.execute({
+                    definitionId: this.id,
+                    contentHash: hash,
+                    businessKey: options?.businessKey,
+                    variables: variables,
+                });
+                return buildHandle(res);
+            }
+            catch (err) {
+                if (err?.status === 404 || String(err?.message || '').includes('404') || String(err?.message || '').includes('DEFINITION_HASH_UNKNOWN')) {
+                    knownDeployedHashes.delete(hash); // Evict from cache and fall through to full AST
+                }
+                else {
+                    throw err;
+                }
+            }
+        }
+        // Cold-path: send complete AST and forms
+        const res = await cl.execute({
+            ast: this.toAST(),
+            forms: Object.keys(forms).length > 0 ? forms : undefined,
+            contentHash: hash,
+            businessKey: options?.businessKey,
+            variables: variables,
+        });
+        knownDeployedHashes.add(hash);
+        return buildHandle(res);
+    }
+}
+export function canonicalJsonStringify(obj) {
+    if (obj === null || typeof obj !== 'object') {
+        return JSON.stringify(obj);
+    }
+    if (Array.isArray(obj)) {
+        return '[' + obj.map(canonicalJsonStringify).join(',') + ']';
+    }
+    const keys = Object.keys(obj).sort();
+    return '{' + keys.map(k => JSON.stringify(k) + ':' + canonicalJsonStringify(obj[k])).join(',') + '}';
+}
+export function computeWorkflowHash(ast) {
+    const astObj = typeof ast === 'string' ? JSON.parse(ast) : ast;
+    const canonical = canonicalJsonStringify(astObj);
+    const hasher = createHash('sha256');
+    hasher.update(canonical);
+    hasher.update(astObj.id || '');
+    return 'sha256:' + hasher.digest('hex');
+}
+const knownDeployedHashes = new Set();
+export function clearDeployedHashCache() {
+    knownDeployedHashes.clear();
 }
 export class WorkflowBuilder extends Workflow {
 }

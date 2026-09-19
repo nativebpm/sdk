@@ -39,7 +39,7 @@ exports.NodeASTTypeEnum = {
     EventBasedGateway: 'eventBasedGateway',
     CallActivity: 'callActivity',
     BusinessRuleTask: 'businessRuleTask',
-    BoundaryTimerEvent: 'boundaryTimerEvent',
+    BoundaryTimerEvent: 'boundaryTimerEvent'
 };
 /**
  * Check if a given object implements the NodeAST interface.

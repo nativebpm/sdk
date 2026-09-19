@@ -21,6 +21,8 @@ import { mapValues } from '../runtime';
 export interface ClaimTaskRequest {
     /**
      * 
+     * @type {string}
+     * @memberof ClaimTaskRequest
      */
     assignee: string;
 }

@@ -17,22 +17,32 @@
 export interface ProcessDefinition {
     /**
      * MD5/SHA256 content hash of the process XML schema definition
+     * @type {string}
+     * @memberof ProcessDefinition
      */
     hash: string;
     /**
      * Unique process definition identifier
+     * @type {string}
+     * @memberof ProcessDefinition
      */
     id: string;
     /**
      * Friendly name of the process
+     * @type {string}
+     * @memberof ProcessDefinition
      */
     name: string;
     /**
      * Base64-encoded raw BPMN 2.0 XML schema data
+     * @type {string}
+     * @memberof ProcessDefinition
      */
     xmlData: string;
     /**
      *
+     * @type {Date}
+     * @memberof ProcessDefinition
      */
     deployedAt: Date;
 }

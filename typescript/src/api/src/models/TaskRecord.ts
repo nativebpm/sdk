@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -21,62 +21,92 @@ import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime }
 export interface TaskRecord {
     /**
      * 
+     * @type {string}
+     * @memberof TaskRecord
      */
     id: string;
     /**
      * 
+     * @type {string}
+     * @memberof TaskRecord
      */
     instanceId: string;
     /**
      * 
+     * @type {string}
+     * @memberof TaskRecord
      */
     activityId: string;
     /**
      * 
+     * @type {string}
+     * @memberof TaskRecord
      */
     name: string;
     /**
      * 
+     * @type {string}
+     * @memberof TaskRecord
      */
     assignee: string;
     /**
      * 
+     * @type {string}
+     * @memberof TaskRecord
      */
     candidateGroups: string;
     /**
      * 
+     * @type {string}
+     * @memberof TaskRecord
      */
     status: string;
     /**
      * 
+     * @type {Date}
+     * @memberof TaskRecord
      */
     dueDate?: Date;
     /**
      * JSON schema definition of form widgets
+     * @type {string}
+     * @memberof TaskRecord
      */
     inputSchema?: string;
     /**
      * Form identifier or Camunda form key for dynamic schema rendering
+     * @type {string}
+     * @memberof TaskRecord
      */
     formId?: string;
     /**
      * 
+     * @type {Date}
+     * @memberof TaskRecord
      */
     createdAt: Date;
     /**
      * 
+     * @type {Date}
+     * @memberof TaskRecord
      */
     claimedAt?: Date;
     /**
      * 
+     * @type {Date}
+     * @memberof TaskRecord
      */
     completedAt?: Date;
     /**
      * 
+     * @type {number}
+     * @memberof TaskRecord
      */
     currentStep?: number;
     /**
      * 
+     * @type {{ [key: string]: any; }}
+     * @memberof TaskRecord
      */
     draftVariables?: { [key: string]: any; };
 }
@@ -86,13 +116,13 @@ export interface TaskRecord {
  */
 export function instanceOfTaskRecord(value: object): value is TaskRecord {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if ((!('instanceId' in (value as Record<string, any>)) && !('instance_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['instanceId'] === undefined && (value as Record<string, any>)['instance_id'] === undefined)) return false;
-    if ((!('activityId' in (value as Record<string, any>)) && !('activity_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['activityId'] === undefined && (value as Record<string, any>)['activity_id'] === undefined)) return false;
+    if ((!('instanceId' in value) && !('instance_id' in value)) || (value['instanceId'] === undefined && value['instance_id'] === undefined)) return false;
+    if ((!('activityId' in value) && !('activity_id' in value)) || (value['activityId'] === undefined && value['activity_id'] === undefined)) return false;
     if (!('name' in value) || value['name'] === undefined) return false;
     if (!('assignee' in value) || value['assignee'] === undefined) return false;
-    if ((!('candidateGroups' in (value as Record<string, any>)) && !('candidate_groups' in (value as Record<string, any>))) || ((value as Record<string, any>)['candidateGroups'] === undefined && (value as Record<string, any>)['candidate_groups'] === undefined)) return false;
+    if ((!('candidateGroups' in value) && !('candidate_groups' in value)) || (value['candidateGroups'] === undefined && value['candidate_groups'] === undefined)) return false;
     if (!('status' in value) || value['status'] === undefined) return false;
-    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
+    if ((!('createdAt' in value) && !('created_at' in value)) || (value['createdAt'] === undefined && value['created_at'] === undefined)) return false;
     return true;
 }
 
@@ -113,12 +143,12 @@ export function TaskRecordFromJSONTyped(json: any, ignoreDiscriminator: boolean)
         'assignee': json['assignee'],
         'candidateGroups': json['candidate_groups'],
         'status': json['status'],
-        'dueDate': json['due_date'] == null ? undefined : (parseDateTime(json['due_date'])),
+        'dueDate': json['due_date'] == null ? undefined : (new Date(json['due_date'])),
         'inputSchema': json['input_schema'] == null ? undefined : json['input_schema'],
         'formId': json['form_id'] == null ? undefined : json['form_id'],
-        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
-        'claimedAt': json['claimed_at'] == null ? undefined : (parseDateTime(json['claimed_at'])),
-        'completedAt': json['completed_at'] == null ? undefined : (parseDateTime(json['completed_at'])),
+        'createdAt': (new Date(json['created_at'])),
+        'claimedAt': json['claimed_at'] == null ? undefined : (new Date(json['claimed_at'])),
+        'completedAt': json['completed_at'] == null ? undefined : (new Date(json['completed_at'])),
         'currentStep': json['current_step'] == null ? undefined : json['current_step'],
         'draftVariables': json['draft_variables'] == null ? undefined : json['draft_variables'],
     };
@@ -142,12 +172,12 @@ export function TaskRecordToJSONTyped(value?: TaskRecord | null, ignoreDiscrimin
         'assignee': value['assignee'],
         'candidate_groups': value['candidateGroups'],
         'status': value['status'],
-        'due_date': value['dueDate'] == null ? value['dueDate'] : serializeDateTime(value['dueDate']),
+        'due_date': value['dueDate'] == null ? value['dueDate'] : value['dueDate'].toISOString(),
         'input_schema': value['inputSchema'],
         'form_id': value['formId'],
-        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
-        'claimed_at': value['claimedAt'] == null ? value['claimedAt'] : serializeDateTime(value['claimedAt']),
-        'completed_at': value['completedAt'] == null ? value['completedAt'] : serializeDateTime(value['completedAt']),
+        'created_at': value['createdAt'].toISOString(),
+        'claimed_at': value['claimedAt'] == null ? value['claimedAt'] : value['claimedAt'].toISOString(),
+        'completed_at': value['completedAt'] == null ? value['completedAt'] : value['completedAt'].toISOString(),
         'current_step': value['currentStep'],
         'draft_variables': value['draftVariables'],
     };

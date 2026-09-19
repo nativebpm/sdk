@@ -17,14 +17,20 @@
 export interface OutVariable {
     /**
      *
+     * @type {string}
+     * @memberof OutVariable
      */
     source?: string;
     /**
      *
+     * @type {string}
+     * @memberof OutVariable
      */
     target?: string;
     /**
      *
+     * @type {string}
+     * @memberof OutVariable
      */
     variables?: string;
 }

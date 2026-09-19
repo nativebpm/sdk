@@ -14,7 +14,8 @@ import { type ClaimTaskRequest } from '../models/ClaimTaskRequest';
 import { type CompleteInstanceTaskRequest } from '../models/CompleteInstanceTaskRequest';
 import { type CompleteTaskRequest } from '../models/CompleteTaskRequest';
 import { type CreateWebhookRequest } from '../models/CreateWebhookRequest';
-import { type DeleteWebhook200Response } from '../models/DeleteWebhook200Response';
+import { type ExecuteProcessRequest } from '../models/ExecuteProcessRequest';
+import { type ExecuteProcessResponse } from '../models/ExecuteProcessResponse';
 import { type HistoryRecord } from '../models/HistoryRecord';
 import { type IncidentRecord } from '../models/IncidentRecord';
 import { type ProcessDefinition } from '../models/ProcessDefinition';
@@ -23,158 +24,76 @@ import { type ResolveIncident200Response } from '../models/ResolveIncident200Res
 import { type SMTPConfig } from '../models/SMTPConfig';
 import { type StartInstanceRequest } from '../models/StartInstanceRequest';
 import { type TaskRecord } from '../models/TaskRecord';
-import { type TestWebhook200Response } from '../models/TestWebhook200Response';
 import { type VisualizationData } from '../models/VisualizationData';
 import { type WebhookDeliveryRecord } from '../models/WebhookDeliveryRecord';
 import { type WebhookRecord } from '../models/WebhookRecord';
 export interface ClaimTaskOperationRequest {
-    /**
-     *
-     */
     id: string;
-    /**
-     *
-     */
     claimTaskRequest: ClaimTaskRequest;
 }
 export interface CompleteInstanceTaskOperationRequest {
-    /**
-     *
-     */
     id: string;
-    /**
-     *
-     */
     completeInstanceTaskRequest: CompleteInstanceTaskRequest;
 }
 export interface CompleteTaskOperationRequest {
-    /**
-     *
-     */
     id: string;
-    /**
-     *
-     */
     completeTaskRequest?: CompleteTaskRequest;
 }
 export interface CreateWebhookOperationRequest {
-    /**
-     *
-     */
     createWebhookRequest: CreateWebhookRequest;
 }
 export interface DeleteWebhookRequest {
-    /**
-     *
-     */
     id: string;
 }
 export interface DeployDefinitionRequest {
-    /**
-     * BPMN 2.0 XML file content to deploy
-     */
     file?: Blob;
 }
+export interface ExecuteProcessOperationRequest {
+    executeProcessRequest: ExecuteProcessRequest;
+}
 export interface GetInstanceRequest {
-    /**
-     *
-     */
     id: string;
 }
 export interface GetInstanceHistoryRequest {
-    /**
-     *
-     */
     id: string;
 }
 export interface GetInstanceVisualizationRequest {
-    /**
-     *
-     */
     id: string;
 }
 export interface GetInstanceVisualizationWidgetRequest {
-    /**
-     *
-     */
     id: string;
-    /**
-     * Optional custom title for the visualization widget. If empty, the title header is hidden.
-     */
     title?: string;
 }
 export interface GetUserGroupsRequest {
-    /**
-     * The username to retrieve groups for
-     */
     username: string;
 }
 export interface ListIncidentsRequest {
-    /**
-     *
-     */
     id: string;
 }
 export interface ListTasksRequest {
-    /**
-     *
-     */
     assignee?: string;
-    /**
-     *
-     */
     candidateGroup?: string;
-    /**
-     *
-     */
     status?: ListTasksStatusEnum;
 }
 export interface ListWebhookDeliveriesRequest {
-    /**
-     *
-     */
     id: string;
 }
 export interface ResolveIncidentRequest {
-    /**
-     *
-     */
     id: string;
-    /**
-     *
-     */
     incidentId: string;
 }
 export interface ResumeInstanceRequest {
-    /**
-     *
-     */
     id: string;
 }
 export interface StartInstanceOperationRequest {
-    /**
-     * The process definition ID (e.g., matching the BPMN process element ID)
-     */
     id: string;
-    /**
-     *
-     */
     startInstanceRequest?: StartInstanceRequest;
 }
 export interface TestWebhookRequest {
-    /**
-     *
-     */
     id: string;
 }
 export interface UpdateWebhookRequest {
-    /**
-     *
-     */
     id: string;
-    /**
-     *
-     */
     createWebhookRequest: CreateWebhookRequest;
 }
 /**
@@ -245,12 +164,12 @@ export declare class DefaultApi extends runtime.BaseAPI {
      * Delete a webhook configuration.
      * Delete webhook target
      */
-    deleteWebhookRaw(requestParameters: DeleteWebhookRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<DeleteWebhook200Response>>;
+    deleteWebhookRaw(requestParameters: DeleteWebhookRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResolveIncident200Response>>;
     /**
      * Delete a webhook configuration.
      * Delete webhook target
      */
-    deleteWebhook(requestParameters: DeleteWebhookRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<DeleteWebhook200Response>;
+    deleteWebhook(requestParameters: DeleteWebhookRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResolveIncident200Response>;
     /**
      * Creates request options for deployDefinition without sending the request
      */
@@ -265,6 +184,20 @@ export declare class DefaultApi extends runtime.BaseAPI {
      * Deploy process definition
      */
     deployDefinition(requestParameters?: DeployDefinitionRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ProcessDefinition>;
+    /**
+     * Creates request options for executeProcess without sending the request
+     */
+    executeProcessRequestOpts(requestParameters: ExecuteProcessOperationRequest): Promise<runtime.RequestOpts>;
+    /**
+     * Atomically deploys the workflow definition if changed (or not yet known) and immediately starts an execution instance. Supports lightweight repeat execution via contentHash and definitionId.
+     * Execute process with JIT auto-deploy
+     */
+    executeProcessRaw(requestParameters: ExecuteProcessOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ExecuteProcessResponse>>;
+    /**
+     * Atomically deploys the workflow definition if changed (or not yet known) and immediately starts an execution instance. Supports lightweight repeat execution via contentHash and definitionId.
+     * Execute process with JIT auto-deploy
+     */
+    executeProcess(requestParameters: ExecuteProcessOperationRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ExecuteProcessResponse>;
     /**
      * Creates request options for getInstance without sending the request
      */
@@ -483,12 +416,12 @@ export declare class DefaultApi extends runtime.BaseAPI {
      * Send a test ping event delivery to verification URL.
      * Test webhook target
      */
-    testWebhookRaw(requestParameters: TestWebhookRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<TestWebhook200Response>>;
+    testWebhookRaw(requestParameters: TestWebhookRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<runtime.ApiResponse<ResolveIncident200Response>>;
     /**
      * Send a test ping event delivery to verification URL.
      * Test webhook target
      */
-    testWebhook(requestParameters: TestWebhookRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<TestWebhook200Response>;
+    testWebhook(requestParameters: TestWebhookRequest, initOverrides?: RequestInit | runtime.InitOverrideFunction): Promise<ResolveIncident200Response>;
     /**
      * Creates request options for updateWebhook without sending the request
      */

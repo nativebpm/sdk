@@ -124,21 +124,9 @@ export interface RequestOpts {
 }
 export declare function querystring(params: HTTPQuery, prefix?: string): string;
 export declare function exists(json: any, key: string): boolean;
-/**
- * Every generated date call site routes through these.
- *
- * `format: date` is a calendar date, with no time and no offset, so it is converted
- * against the local calendar on both ends: they have to agree or the date shifts by
- * a day. `format: date-time` is an instant and uses UTC.
- */
-export declare function serializeDateTime(value: Date): string;
-export declare function serializeDate(value: Date): string;
-export declare function parseDate(value: Date | string): Date;
-export declare function parseDateTime(value: any): Date;
 export declare function mapValues(data: any, fn: (item: any) => any): {
     [key: string]: any;
 };
-export declare function anyToJSON(value: any): any;
 export declare function canConsumeForm(consumes: Consume[]): boolean;
 export interface Consume {
     contentType: string;

@@ -39,6 +39,10 @@ export {
   serializeFormSchema,
   generateBPMNXML,
   evaluateDMNRule,
+  canonicalJsonStringify,
+  computeWorkflowHash,
+  clearDeployedHashCache,
 } from './builder.js';
+export type { ProcessInstanceHandle } from './builder.js';
 
 export * from './client.js';

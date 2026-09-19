@@ -18,7 +18,6 @@ exports.HistoryRecordFromJSON = HistoryRecordFromJSON;
 exports.HistoryRecordFromJSONTyped = HistoryRecordFromJSONTyped;
 exports.HistoryRecordToJSON = HistoryRecordToJSON;
 exports.HistoryRecordToJSONTyped = HistoryRecordToJSONTyped;
-const runtime_1 = require("../runtime");
 /**
  * Check if a given object implements the HistoryRecord interface.
  */
@@ -54,7 +53,7 @@ function HistoryRecordFromJSONTyped(json, ignoreDiscriminator) {
         'nodeType': json['node_type'],
         'action': json['action'],
         'variables': json['variables'] == null ? undefined : json['variables'],
-        'timestamp': (json['timestamp'] == null ? json['timestamp'] : (0, runtime_1.parseDateTime)(json['timestamp'])),
+        'timestamp': (new Date(json['timestamp'])),
     };
 }
 function HistoryRecordToJSON(json) {
@@ -72,6 +71,6 @@ function HistoryRecordToJSONTyped(value, ignoreDiscriminator = false) {
         'node_type': value['nodeType'],
         'action': value['action'],
         'variables': value['variables'],
-        'timestamp': value['timestamp'] == null ? value['timestamp'] : (0, runtime_1.serializeDateTime)(value['timestamp']),
+        'timestamp': value['timestamp'].toISOString(),
     };
 }

@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -21,38 +21,56 @@ import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime }
 export interface IncidentRecord {
     /**
      * 
+     * @type {string}
+     * @memberof IncidentRecord
      */
     id: string;
     /**
      * 
+     * @type {string}
+     * @memberof IncidentRecord
      */
     instanceId: string;
     /**
      * 
+     * @type {string}
+     * @memberof IncidentRecord
      */
     activityId: string;
     /**
      * 
+     * @type {string}
+     * @memberof IncidentRecord
      */
     errorMessage: string;
     /**
      * 
+     * @type {string}
+     * @memberof IncidentRecord
      */
     stackTrace?: string;
     /**
      * 
+     * @type {number}
+     * @memberof IncidentRecord
      */
     attemptsMade: number;
     /**
      * 
+     * @type {boolean}
+     * @memberof IncidentRecord
      */
     resolved: boolean;
     /**
      * 
+     * @type {Date}
+     * @memberof IncidentRecord
      */
     createdAt: Date;
     /**
      * 
+     * @type {Date}
+     * @memberof IncidentRecord
      */
     resolvedAt?: Date;
 }
@@ -62,12 +80,12 @@ export interface IncidentRecord {
  */
 export function instanceOfIncidentRecord(value: object): value is IncidentRecord {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if ((!('instanceId' in (value as Record<string, any>)) && !('instance_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['instanceId'] === undefined && (value as Record<string, any>)['instance_id'] === undefined)) return false;
-    if ((!('activityId' in (value as Record<string, any>)) && !('activity_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['activityId'] === undefined && (value as Record<string, any>)['activity_id'] === undefined)) return false;
-    if ((!('errorMessage' in (value as Record<string, any>)) && !('error_message' in (value as Record<string, any>))) || ((value as Record<string, any>)['errorMessage'] === undefined && (value as Record<string, any>)['error_message'] === undefined)) return false;
-    if ((!('attemptsMade' in (value as Record<string, any>)) && !('attempts_made' in (value as Record<string, any>))) || ((value as Record<string, any>)['attemptsMade'] === undefined && (value as Record<string, any>)['attempts_made'] === undefined)) return false;
+    if ((!('instanceId' in value) && !('instance_id' in value)) || (value['instanceId'] === undefined && value['instance_id'] === undefined)) return false;
+    if ((!('activityId' in value) && !('activity_id' in value)) || (value['activityId'] === undefined && value['activity_id'] === undefined)) return false;
+    if ((!('errorMessage' in value) && !('error_message' in value)) || (value['errorMessage'] === undefined && value['error_message'] === undefined)) return false;
+    if ((!('attemptsMade' in value) && !('attempts_made' in value)) || (value['attemptsMade'] === undefined && value['attempts_made'] === undefined)) return false;
     if (!('resolved' in value) || value['resolved'] === undefined) return false;
-    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
+    if ((!('createdAt' in value) && !('created_at' in value)) || (value['createdAt'] === undefined && value['created_at'] === undefined)) return false;
     return true;
 }
 
@@ -88,8 +106,8 @@ export function IncidentRecordFromJSONTyped(json: any, ignoreDiscriminator: bool
         'stackTrace': json['stack_trace'] == null ? undefined : json['stack_trace'],
         'attemptsMade': json['attempts_made'],
         'resolved': json['resolved'],
-        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
-        'resolvedAt': json['resolved_at'] == null ? undefined : (parseDateTime(json['resolved_at'])),
+        'createdAt': (new Date(json['created_at'])),
+        'resolvedAt': json['resolved_at'] == null ? undefined : (new Date(json['resolved_at'])),
     };
 }
 
@@ -111,8 +129,8 @@ export function IncidentRecordToJSONTyped(value?: IncidentRecord | null, ignoreD
         'stack_trace': value['stackTrace'],
         'attempts_made': value['attemptsMade'],
         'resolved': value['resolved'],
-        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
-        'resolved_at': value['resolvedAt'] == null ? value['resolvedAt'] : serializeDateTime(value['resolvedAt']),
+        'created_at': value['createdAt'].toISOString(),
+        'resolved_at': value['resolvedAt'] == null ? value['resolvedAt'] : value['resolvedAt'].toISOString(),
     };
 }
 

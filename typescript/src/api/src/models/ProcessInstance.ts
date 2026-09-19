@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -21,38 +21,56 @@ import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime }
 export interface ProcessInstance {
     /**
      * 
+     * @type {string}
+     * @memberof ProcessInstance
      */
     id: string;
     /**
      * 
+     * @type {string}
+     * @memberof ProcessInstance
      */
     processId: string;
     /**
      * 
+     * @type {string}
+     * @memberof ProcessInstance
      */
     definitionHash: string;
     /**
      * 
+     * @type {string}
+     * @memberof ProcessInstance
      */
     businessKey: string;
     /**
      * Raw JSON object representing internal Wazero process engine state representation
+     * @type {object}
+     * @memberof ProcessInstance
      */
     state: object;
     /**
      * 
+     * @type {number}
+     * @memberof ProcessInstance
      */
     version: number;
     /**
      * 
+     * @type {boolean}
+     * @memberof ProcessInstance
      */
     completed: boolean;
     /**
      * 
+     * @type {Date}
+     * @memberof ProcessInstance
      */
     updatedAt: Date;
     /**
      * 
+     * @type {string}
+     * @memberof ProcessInstance
      */
     tenantId: string;
 }
@@ -62,14 +80,14 @@ export interface ProcessInstance {
  */
 export function instanceOfProcessInstance(value: object): value is ProcessInstance {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if ((!('processId' in (value as Record<string, any>)) && !('process_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['processId'] === undefined && (value as Record<string, any>)['process_id'] === undefined)) return false;
-    if ((!('definitionHash' in (value as Record<string, any>)) && !('definition_hash' in (value as Record<string, any>))) || ((value as Record<string, any>)['definitionHash'] === undefined && (value as Record<string, any>)['definition_hash'] === undefined)) return false;
-    if ((!('businessKey' in (value as Record<string, any>)) && !('business_key' in (value as Record<string, any>))) || ((value as Record<string, any>)['businessKey'] === undefined && (value as Record<string, any>)['business_key'] === undefined)) return false;
+    if ((!('processId' in value) && !('process_id' in value)) || (value['processId'] === undefined && value['process_id'] === undefined)) return false;
+    if ((!('definitionHash' in value) && !('definition_hash' in value)) || (value['definitionHash'] === undefined && value['definition_hash'] === undefined)) return false;
+    if ((!('businessKey' in value) && !('business_key' in value)) || (value['businessKey'] === undefined && value['business_key'] === undefined)) return false;
     if (!('state' in value) || value['state'] === undefined) return false;
     if (!('version' in value) || value['version'] === undefined) return false;
     if (!('completed' in value) || value['completed'] === undefined) return false;
-    if ((!('updatedAt' in (value as Record<string, any>)) && !('updated_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['updatedAt'] === undefined && (value as Record<string, any>)['updated_at'] === undefined)) return false;
-    if ((!('tenantId' in (value as Record<string, any>)) && !('tenant_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['tenantId'] === undefined && (value as Record<string, any>)['tenant_id'] === undefined)) return false;
+    if ((!('updatedAt' in value) && !('updated_at' in value)) || (value['updatedAt'] === undefined && value['updated_at'] === undefined)) return false;
+    if ((!('tenantId' in value) && !('tenant_id' in value)) || (value['tenantId'] === undefined && value['tenant_id'] === undefined)) return false;
     return true;
 }
 
@@ -90,7 +108,7 @@ export function ProcessInstanceFromJSONTyped(json: any, ignoreDiscriminator: boo
         'state': json['state'],
         'version': json['version'],
         'completed': json['completed'],
-        'updatedAt': (json['updated_at'] == null ? json['updated_at'] : parseDateTime(json['updated_at'])),
+        'updatedAt': (new Date(json['updated_at'])),
         'tenantId': json['tenant_id'],
     };
 }
@@ -113,7 +131,7 @@ export function ProcessInstanceToJSONTyped(value?: ProcessInstance | null, ignor
         'state': value['state'],
         'version': value['version'],
         'completed': value['completed'],
-        'updated_at': value['updatedAt'] == null ? value['updatedAt'] : serializeDateTime(value['updatedAt']),
+        'updated_at': value['updatedAt'].toISOString(),
         'tenant_id': value['tenantId'],
     };
 }

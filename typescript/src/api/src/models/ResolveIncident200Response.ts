@@ -21,6 +21,8 @@ import { mapValues } from '../runtime';
 export interface ResolveIncident200Response {
     /**
      * 
+     * @type {string}
+     * @memberof ResolveIncident200Response
      */
     status?: string;
 }

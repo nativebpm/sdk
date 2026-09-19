@@ -12,7 +12,7 @@
  * Do not edit the class manually.
  */
 
-import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime } from '../runtime';
+import { mapValues } from '../runtime';
 /**
  * 
  * @export
@@ -21,50 +21,74 @@ import { mapValues, parseDate, parseDateTime, serializeDate, serializeDateTime }
 export interface WebhookDeliveryRecord {
     /**
      * 
+     * @type {string}
+     * @memberof WebhookDeliveryRecord
      */
     id: string;
     /**
      * 
+     * @type {string}
+     * @memberof WebhookDeliveryRecord
      */
     webhookId: string;
     /**
      * 
+     * @type {string}
+     * @memberof WebhookDeliveryRecord
      */
     tenantId: string;
     /**
      * 
+     * @type {string}
+     * @memberof WebhookDeliveryRecord
      */
     eventType: string;
     /**
      * 
+     * @type {string}
+     * @memberof WebhookDeliveryRecord
      */
     payload: string;
     /**
      * 
+     * @type {string}
+     * @memberof WebhookDeliveryRecord
      */
     status: string;
     /**
      * 
+     * @type {number}
+     * @memberof WebhookDeliveryRecord
      */
     responseCode?: number;
     /**
      * 
+     * @type {string}
+     * @memberof WebhookDeliveryRecord
      */
     responseBody?: string;
     /**
      * 
+     * @type {number}
+     * @memberof WebhookDeliveryRecord
      */
     attempts: number;
     /**
      * 
+     * @type {Date}
+     * @memberof WebhookDeliveryRecord
      */
     nextRetry?: Date;
     /**
      * 
+     * @type {Date}
+     * @memberof WebhookDeliveryRecord
      */
     createdAt: Date;
     /**
      * 
+     * @type {Date}
+     * @memberof WebhookDeliveryRecord
      */
     processedAt?: Date;
 }
@@ -74,13 +98,13 @@ export interface WebhookDeliveryRecord {
  */
 export function instanceOfWebhookDeliveryRecord(value: object): value is WebhookDeliveryRecord {
     if (!('id' in value) || value['id'] === undefined) return false;
-    if ((!('webhookId' in (value as Record<string, any>)) && !('webhook_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['webhookId'] === undefined && (value as Record<string, any>)['webhook_id'] === undefined)) return false;
-    if ((!('tenantId' in (value as Record<string, any>)) && !('tenant_id' in (value as Record<string, any>))) || ((value as Record<string, any>)['tenantId'] === undefined && (value as Record<string, any>)['tenant_id'] === undefined)) return false;
-    if ((!('eventType' in (value as Record<string, any>)) && !('event_type' in (value as Record<string, any>))) || ((value as Record<string, any>)['eventType'] === undefined && (value as Record<string, any>)['event_type'] === undefined)) return false;
+    if ((!('webhookId' in value) && !('webhook_id' in value)) || (value['webhookId'] === undefined && value['webhook_id'] === undefined)) return false;
+    if ((!('tenantId' in value) && !('tenant_id' in value)) || (value['tenantId'] === undefined && value['tenant_id'] === undefined)) return false;
+    if ((!('eventType' in value) && !('event_type' in value)) || (value['eventType'] === undefined && value['event_type'] === undefined)) return false;
     if (!('payload' in value) || value['payload'] === undefined) return false;
     if (!('status' in value) || value['status'] === undefined) return false;
     if (!('attempts' in value) || value['attempts'] === undefined) return false;
-    if ((!('createdAt' in (value as Record<string, any>)) && !('created_at' in (value as Record<string, any>))) || ((value as Record<string, any>)['createdAt'] === undefined && (value as Record<string, any>)['created_at'] === undefined)) return false;
+    if ((!('createdAt' in value) && !('created_at' in value)) || (value['createdAt'] === undefined && value['created_at'] === undefined)) return false;
     return true;
 }
 
@@ -103,9 +127,9 @@ export function WebhookDeliveryRecordFromJSONTyped(json: any, ignoreDiscriminato
         'responseCode': json['response_code'] == null ? undefined : json['response_code'],
         'responseBody': json['response_body'] == null ? undefined : json['response_body'],
         'attempts': json['attempts'],
-        'nextRetry': json['next_retry'] == null ? undefined : (parseDateTime(json['next_retry'])),
-        'createdAt': (json['created_at'] == null ? json['created_at'] : parseDateTime(json['created_at'])),
-        'processedAt': json['processed_at'] == null ? undefined : (parseDateTime(json['processed_at'])),
+        'nextRetry': json['next_retry'] == null ? undefined : (new Date(json['next_retry'])),
+        'createdAt': (new Date(json['created_at'])),
+        'processedAt': json['processed_at'] == null ? undefined : (new Date(json['processed_at'])),
     };
 }
 
@@ -129,9 +153,9 @@ export function WebhookDeliveryRecordToJSONTyped(value?: WebhookDeliveryRecord |
         'response_code': value['responseCode'],
         'response_body': value['responseBody'],
         'attempts': value['attempts'],
-        'next_retry': value['nextRetry'] == null ? value['nextRetry'] : serializeDateTime(value['nextRetry']),
-        'created_at': value['createdAt'] == null ? value['createdAt'] : serializeDateTime(value['createdAt']),
-        'processed_at': value['processedAt'] == null ? value['processedAt'] : serializeDateTime(value['processedAt']),
+        'next_retry': value['nextRetry'] == null ? value['nextRetry'] : value['nextRetry'].toISOString(),
+        'created_at': value['createdAt'].toISOString(),
+        'processed_at': value['processedAt'] == null ? value['processedAt'] : value['processedAt'].toISOString(),
     };
 }
 

@@ -18,7 +18,6 @@ exports.WebhookDeliveryRecordFromJSON = WebhookDeliveryRecordFromJSON;
 exports.WebhookDeliveryRecordFromJSONTyped = WebhookDeliveryRecordFromJSONTyped;
 exports.WebhookDeliveryRecordToJSON = WebhookDeliveryRecordToJSON;
 exports.WebhookDeliveryRecordToJSONTyped = WebhookDeliveryRecordToJSONTyped;
-const runtime_1 = require("../runtime");
 /**
  * Check if a given object implements the WebhookDeliveryRecord interface.
  */
@@ -58,9 +57,9 @@ function WebhookDeliveryRecordFromJSONTyped(json, ignoreDiscriminator) {
         'responseCode': json['response_code'] == null ? undefined : json['response_code'],
         'responseBody': json['response_body'] == null ? undefined : json['response_body'],
         'attempts': json['attempts'],
-        'nextRetry': json['next_retry'] == null ? undefined : ((0, runtime_1.parseDateTime)(json['next_retry'])),
-        'createdAt': (json['created_at'] == null ? json['created_at'] : (0, runtime_1.parseDateTime)(json['created_at'])),
-        'processedAt': json['processed_at'] == null ? undefined : ((0, runtime_1.parseDateTime)(json['processed_at'])),
+        'nextRetry': json['next_retry'] == null ? undefined : (new Date(json['next_retry'])),
+        'createdAt': (new Date(json['created_at'])),
+        'processedAt': json['processed_at'] == null ? undefined : (new Date(json['processed_at'])),
     };
 }
 function WebhookDeliveryRecordToJSON(json) {
@@ -80,8 +79,8 @@ function WebhookDeliveryRecordToJSONTyped(value, ignoreDiscriminator = false) {
         'response_code': value['responseCode'],
         'response_body': value['responseBody'],
         'attempts': value['attempts'],
-        'next_retry': value['nextRetry'] == null ? value['nextRetry'] : (0, runtime_1.serializeDateTime)(value['nextRetry']),
-        'created_at': value['createdAt'] == null ? value['createdAt'] : (0, runtime_1.serializeDateTime)(value['createdAt']),
-        'processed_at': value['processedAt'] == null ? value['processedAt'] : (0, runtime_1.serializeDateTime)(value['processedAt']),
+        'next_retry': value['nextRetry'] == null ? value['nextRetry'] : value['nextRetry'].toISOString(),
+        'created_at': value['createdAt'].toISOString(),
+        'processed_at': value['processedAt'] == null ? value['processedAt'] : value['processedAt'].toISOString(),
     };
 }
