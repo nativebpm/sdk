@@ -451,7 +451,7 @@ No authorization required
 
 ## ExecuteProcess
 
-> ExecuteProcessResponse ExecuteProcess(ctx).ExecuteProcessRequest(executeProcessRequest).Execute()
+> ExecuteProcessResponse ExecuteProcess(ctx).ExecuteProcessRequest(executeProcessRequest).XNativeBPMSignature(xNativeBPMSignature).Execute()
 
 Execute process with JIT auto-deploy
 
@@ -471,10 +471,11 @@ import (
 
 func main() {
 	executeProcessRequest := *openapiclient.NewExecuteProcessRequest() // ExecuteProcessRequest | 
+	xNativeBPMSignature := "xNativeBPMSignature_example" // string | HMAC-SHA256 signature of the workflow contentHash (optional)
 
 	configuration := openapiclient.NewConfiguration()
 	apiClient := openapiclient.NewAPIClient(configuration)
-	resp, r, err := apiClient.DefaultAPI.ExecuteProcess(context.Background()).ExecuteProcessRequest(executeProcessRequest).Execute()
+	resp, r, err := apiClient.DefaultAPI.ExecuteProcess(context.Background()).ExecuteProcessRequest(executeProcessRequest).XNativeBPMSignature(xNativeBPMSignature).Execute()
 	if err != nil {
 		fmt.Fprintf(os.Stderr, "Error when calling `DefaultAPI.ExecuteProcess``: %v\n", err)
 		fmt.Fprintf(os.Stderr, "Full HTTP response: %v\n", r)
@@ -496,6 +497,7 @@ Other parameters are passed through a pointer to a apiExecuteProcessRequest stru
 Name | Type | Description  | Notes
 ------------- | ------------- | ------------- | -------------
  **executeProcessRequest** | [**ExecuteProcessRequest**](ExecuteProcessRequest.md) |  | 
+ **xNativeBPMSignature** | **string** | HMAC-SHA256 signature of the workflow contentHash | 
 
 ### Return type
 

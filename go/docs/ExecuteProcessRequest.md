@@ -10,6 +10,7 @@ Name | Type | Description | Notes
 **DefinitionId** | Pointer to **string** | Process definition identifier (optional if specified in AST) | [optional] 
 **BusinessKey** | Pointer to **string** | Optional business correlation key | [optional] 
 **Variables** | Pointer to **map[string]interface{}** | Initial variables to start the process with | [optional] 
+**Signature** | Pointer to **string** | Optional HMAC signature verifying workflow authenticity | [optional] 
 
 ## Methods
 
@@ -179,6 +180,31 @@ SetVariables sets Variables field to given value.
 `func (o *ExecuteProcessRequest) HasVariables() bool`
 
 HasVariables returns a boolean if a field has been set.
+
+### GetSignature
+
+`func (o *ExecuteProcessRequest) GetSignature() string`
+
+GetSignature returns the Signature field if non-nil, zero value otherwise.
+
+### GetSignatureOk
+
+`func (o *ExecuteProcessRequest) GetSignatureOk() (*string, bool)`
+
+GetSignatureOk returns a tuple with the Signature field if it's non-nil, zero value otherwise
+and a boolean to check if the value has been set.
+
+### SetSignature
+
+`func (o *ExecuteProcessRequest) SetSignature(v string)`
+
+SetSignature sets Signature field to given value.
+
+### HasSignature
+
+`func (o *ExecuteProcessRequest) HasSignature() bool`
+
+HasSignature returns a boolean if a field has been set.
 
 
 [[Back to Model list]](../README.md#documentation-for-models) [[Back to API list]](../README.md#documentation-for-api-endpoints) [[Back to README]](../README.md)

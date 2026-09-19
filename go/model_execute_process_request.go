@@ -30,6 +30,8 @@ type ExecuteProcessRequest struct {
 	BusinessKey *string `json:"businessKey,omitempty"`
 	// Initial variables to start the process with
 	Variables map[string]interface{} `json:"variables,omitempty"`
+	// Optional HMAC signature verifying workflow authenticity
+	Signature *string `json:"signature,omitempty"`
 }
 
 // NewExecuteProcessRequest instantiates a new ExecuteProcessRequest object
@@ -241,6 +243,38 @@ func (o *ExecuteProcessRequest) SetVariables(v map[string]interface{}) {
 	o.Variables = v
 }
 
+// GetSignature returns the Signature field value if set, zero value otherwise.
+func (o *ExecuteProcessRequest) GetSignature() string {
+	if o == nil || IsNil(o.Signature) {
+		var ret string
+		return ret
+	}
+	return *o.Signature
+}
+
+// GetSignatureOk returns a tuple with the Signature field value if set, nil otherwise
+// and a boolean to check if the value has been set.
+func (o *ExecuteProcessRequest) GetSignatureOk() (*string, bool) {
+	if o == nil || IsNil(o.Signature) {
+		return nil, false
+	}
+	return o.Signature, true
+}
+
+// HasSignature returns a boolean if a field has been set.
+func (o *ExecuteProcessRequest) HasSignature() bool {
+	if o != nil && !IsNil(o.Signature) {
+		return true
+	}
+
+	return false
+}
+
+// SetSignature gets a reference to the given string and assigns it to the Signature field.
+func (o *ExecuteProcessRequest) SetSignature(v string) {
+	o.Signature = &v
+}
+
 func (o ExecuteProcessRequest) MarshalJSON() ([]byte, error) {
 	toSerialize,err := o.ToMap()
 	if err != nil {
@@ -268,6 +302,9 @@ func (o ExecuteProcessRequest) ToMap() (map[string]interface{}, error) {
 	}
 	if !IsNil(o.Variables) {
 		toSerialize["variables"] = o.Variables
+	}
+	if !IsNil(o.Signature) {
+		toSerialize["signature"] = o.Signature
 	}
 	return toSerialize, nil
 }

@@ -833,10 +833,17 @@ type ApiExecuteProcessRequest struct {
 	ctx context.Context
 	ApiService *DefaultAPIService
 	executeProcessRequest *ExecuteProcessRequest
+	xNativeBPMSignature *string
 }
 
 func (r ApiExecuteProcessRequest) ExecuteProcessRequest(executeProcessRequest ExecuteProcessRequest) ApiExecuteProcessRequest {
 	r.executeProcessRequest = &executeProcessRequest
+	return r
+}
+
+// HMAC-SHA256 signature of the workflow contentHash
+func (r ApiExecuteProcessRequest) XNativeBPMSignature(xNativeBPMSignature string) ApiExecuteProcessRequest {
+	r.xNativeBPMSignature = &xNativeBPMSignature
 	return r
 }
 
@@ -902,6 +909,9 @@ func (a *DefaultAPIService) ExecuteProcessExecute(r ApiExecuteProcessRequest) (*
 	if localVarHTTPHeaderAccept != "" {
 		localVarHeaderParams["Accept"] = localVarHTTPHeaderAccept
 	}
+	if r.xNativeBPMSignature != nil {
+		parameterAddToHeaderOrQuery(localVarHeaderParams, "X-NativeBPM-Signature", r.xNativeBPMSignature, "simple", "")
+	}
 	// body params
 	localVarPostBody = r.executeProcessRequest
 	req, err := a.client.prepareRequest(r.ctx, localVarPath, localVarHTTPMethod, localVarPostBody, localVarHeaderParams, localVarQueryParams, localVarFormParams, formFiles)
@@ -938,6 +948,17 @@ func (a *DefaultAPIService) ExecuteProcessExecute(r ApiExecuteProcessRequest) (*
 			return localVarReturnValue, localVarHTTPResponse, newErr
 		}
 		if localVarHTTPResponse.StatusCode == 403 {
+			var v ListDefinitions401Response
+			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
+			if err != nil {
+				newErr.error = err.Error()
+				return localVarReturnValue, localVarHTTPResponse, newErr
+			}
+					newErr.error = formatErrorMessage(localVarHTTPResponse.Status, &v)
+					newErr.model = v
+			return localVarReturnValue, localVarHTTPResponse, newErr
+		}
+		if localVarHTTPResponse.StatusCode == 429 {
 			var v ListDefinitions401Response
 			err = a.client.decode(&v, localVarBody, localVarHTTPResponse.Header.Get("Content-Type"))
 			if err != nil {

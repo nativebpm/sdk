@@ -122,6 +122,15 @@ paths:
         Atomically deploys the workflow definition if changed (or not yet known) and immediately starts an execution instance.
         Supports lightweight repeat execution via contentHash and definitionId.
       operationId: executeProcess
+      parameters:
+      - description: HMAC-SHA256 signature of the workflow contentHash
+        explode: false
+        in: header
+        name: X-NativeBPM-Signature
+        required: false
+        schema:
+          type: string
+        style: simple
       requestBody:
         content:
           application/json:
@@ -152,6 +161,12 @@ paths:
           description: Forbidden - insufficient operator permissions or role level
         "404":
           description: Definition hash unknown (requires full AST resubmission)
+        "429":
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/listDefinitions_401_response"
+          description: Too Many Requests - rate limit or version rollout quota exceeded
         "500":
           description: Internal Server Error - database failure or execution crash
       summary: Execute process with JIT auto-deploy
@@ -905,6 +920,12 @@ components:
           schema:
             $ref: "#/components/schemas/listDefinitions_401_response"
       description: Forbidden - insufficient operator permissions or role level
+    "429TooManyRequests":
+      content:
+        application/json:
+          schema:
+            $ref: "#/components/schemas/listDefinitions_401_response"
+      description: Too Many Requests - rate limit or version rollout quota exceeded
     "500InternalError":
       description: Internal Server Error - database failure or execution crash
   schemas:
@@ -1997,6 +2018,7 @@ components:
         businessKey: businessKey
         variables:
           key: ""
+        signature: signature
       properties:
         ast:
           $ref: "#/components/schemas/WorkflowAST"
@@ -2018,6 +2040,9 @@ components:
           additionalProperties: true
           description: Initial variables to start the process with
           type: object
+        signature:
+          description: Optional HMAC signature verifying workflow authenticity
+          type: string
       type: object
     ExecuteProcessResponse:
       example:
