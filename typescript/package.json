@@ -25,6 +25,10 @@
     "./bundler": {
       "types": "./dist/bundler.d.ts",
       "import": "./dist/bundler.js"
+    },
+    "./nativeWorkflow": {
+      "types": "./dist/nativeWorkflow.d.ts",
+      "import": "./dist/nativeWorkflow.js"
     }
   },
   "scripts": {

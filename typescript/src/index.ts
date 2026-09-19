@@ -50,3 +50,4 @@ export type { ProcessInstanceHandle } from './builder.js';
 
 export * from './client.js';
 export * from './bundler.js';
+export * from './nativeWorkflow.js';

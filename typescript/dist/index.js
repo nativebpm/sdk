@@ -3,3 +3,4 @@ export { InVariableSchema, OutVariableSchema, DMNInputSchema, DMNOutputSchema, D
 export { Workflow, WorkflowBuilder, Branch, WhenBuilder, ThenBuilder, WhenBranchBuilder, ThenBranchBuilder, Variable, Expression, V, v, serializeFormSchema, generateBPMNXML, evaluateDMNRule, canonicalJsonStringify, computeWorkflowHash, computeWorkflowSignature, clearDeployedHashCache, setDefaultSigningKey, getDefaultSigningKey, } from './builder.js';
 export * from './client.js';
 export * from './bundler.js';
+export * from './nativeWorkflow.js';
